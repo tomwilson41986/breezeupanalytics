@@ -52,8 +52,14 @@ def download_asset(
     local_path = _build_local_path(sale_id, hip_number, asset.asset_type)
 
     # Skip if already downloaded and not forcing
-    if not force and local_path.exists() and asset.downloaded_at is not None:
-        logger.debug("Skipping %s (already downloaded)", local_path)
+    if not force and local_path.exists():
+        # File on disk — update DB metadata if needed and skip
+        if asset.downloaded_at is None:
+            size = local_path.stat().st_size
+            asset.local_path = str(local_path)
+            asset.file_size = size
+            asset.downloaded_at = datetime.utcnow()
+            logger.debug("Recovered existing file %s (%d bytes)", local_path, size)
         return False
 
     local_path.parent.mkdir(parents=True, exist_ok=True)
