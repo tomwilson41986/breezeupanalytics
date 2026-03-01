@@ -1,0 +1,33 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# Data files (large media not tracked in git)
+data/sales/*.json
+!data/sales/.gitkeep
+data/exports/*.csv
+data/exports/*.parquet
+!data/exports/.gitkeep
+data/videos/
+
+# Environment
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite3
