@@ -115,8 +115,10 @@ class Asset(Base):
     asset_type: Mapped[str] = mapped_column(String(50))  # breeze_video, walk_video, photo, etc.
     source_url: Mapped[str | None] = mapped_column(Text)
     local_path: Mapped[str | None] = mapped_column(Text)
+    s3_key: Mapped[str | None] = mapped_column(Text)  # e.g. videos/obs_march_2025/1.mp4
     file_size: Mapped[int | None] = mapped_column(Integer)  # bytes
     downloaded_at: Mapped[datetime | None] = mapped_column(DateTime)
+    uploaded_at: Mapped[datetime | None] = mapped_column(DateTime)  # S3 upload timestamp
     checksum: Mapped[str | None] = mapped_column(String(64))  # md5 hex digest
 
     lot: Mapped["Lot"] = relationship(back_populates="assets")

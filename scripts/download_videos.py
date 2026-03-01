@@ -5,6 +5,7 @@ Usage:
     python scripts/download_videos.py obs_march_2025
     python scripts/download_videos.py obs_march_2025 --delay 0.3
     python scripts/download_videos.py obs_march_2025 --force   # re-download all
+    python scripts/download_videos.py obs_march_2025 --s3      # upload to S3 after download
 """
 
 import argparse
@@ -26,6 +27,10 @@ def main():
                         help="Re-download even if already present")
     parser.add_argument("--all-media", action="store_true",
                         help="Download all media types, not just breeze videos")
+    parser.add_argument("--s3", action="store_true",
+                        help="Upload to S3 after each download")
+    parser.add_argument("--delete-local", action="store_true",
+                        help="Delete local file after S3 upload (requires --s3)")
     parser.add_argument("--db-url", default=None)
     parser.add_argument("--verbose", "-v", action="store_true")
     args = parser.parse_args()
@@ -51,10 +56,13 @@ def main():
             asset_types=asset_types,
             delay=args.delay,
             force=args.force,
+            upload_s3=args.s3,
+            delete_local=args.delete_local,
         )
 
     mb = stats.get("bytes", 0) / 1024 / 1024
-    print(f"\nComplete: {stats['downloaded']} downloaded ({mb:.0f} MB), "
+    s3_msg = f", {stats.get('s3_uploaded', 0)} uploaded to S3" if args.s3 else ""
+    print(f"\nComplete: {stats['downloaded']} downloaded ({mb:.0f} MB){s3_msg}, "
           f"{stats['failed']} failed, {stats['skipped']} skipped")
 
 
