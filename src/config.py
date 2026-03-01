@@ -58,9 +58,9 @@ OBS_VIDEO_PLAYER_TEMPLATE = (
 # ---------------------------------------------------------------------------
 # S3 storage (for video/media files)
 # ---------------------------------------------------------------------------
-S3_BUCKET = os.environ.get("S3_BUCKET", "breezeup-media")
+S3_BUCKET = os.environ.get("S3_BUCKET", "breezeup")
 S3_PREFIX = os.environ.get("S3_PREFIX", "videos")  # e.g. videos/obs_march_2025/1.mp4
-S3_REGION = os.environ.get("S3_REGION", "us-east-1")
+S3_REGION = os.environ.get("S3_REGION", "eu-north-1")
 # AWS credentials come from env vars (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 # or IAM role / ~/.aws/credentials
 
