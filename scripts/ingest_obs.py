@@ -31,6 +31,8 @@ def main():
                         help="Fetch and parse but don't write to DB")
     parser.add_argument("--db-url", default=None,
                         help="Database URL (default: SQLite fallback)")
+    parser.add_argument("--delay", type=float, default=0.5,
+                        help="Seconds between downloads (default: 0.5)")
     parser.add_argument("--verbose", "-v", action="store_true")
     args = parser.parse_args()
 
@@ -82,9 +84,10 @@ def main():
         if args.download or args.download_all:
             asset_types = None if args.download_all else ["breeze_video"]
             print(f"\nDownloading {'all media' if args.download_all else 'breeze videos'}...")
-            stats = download_sale_assets(sale.sale_id, db, asset_types=asset_types)
-            print(f"  Downloaded: {stats['downloaded']}")
-            print(f"  Skipped: {stats['skipped']}")
+            stats = download_sale_assets(sale.sale_id, db, asset_types=asset_types,
+                                        delay=args.delay)
+            print(f"  Downloaded: {stats['downloaded']} ({stats.get('bytes', 0) / 1024 / 1024:.0f} MB)")
+            print(f"  Failed: {stats['failed']}")
 
     print("\nDone.")
 

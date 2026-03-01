@@ -119,23 +119,42 @@ def download_sale_assets(
         query = query.filter(Asset.asset_type.in_(asset_types))
 
     assets = query.all()
-    logger.info("Found %d assets to download for sale %s", len(assets), sale_id)
+    total = len(assets)
+    logger.info("Found %d assets to download for sale %s", total, sale_id)
 
     http_session = requests.Session()
     http_session.headers.update({"User-Agent": USER_AGENT})
 
-    stats = {"downloaded": 0, "skipped": 0, "failed": 0}
+    stats = {"downloaded": 0, "skipped": 0, "failed": 0, "bytes": 0}
+    start_time = time.time()
 
-    for asset in assets:
+    for i, asset in enumerate(assets, 1):
         lot = asset.lot
         success = download_asset(asset, sale_id, lot.hip_number, http_session, force=force)
 
         if success:
             stats["downloaded"] += 1
+            stats["bytes"] += asset.file_size or 0
             db.commit()
+
+            # Progress line
+            elapsed = time.time() - start_time
+            mb = stats["bytes"] / 1024 / 1024
+            rate = mb / elapsed * 60 if elapsed > 0 else 0
+            pct = i / total * 100
+            print(f"\r  [{i}/{total}] {pct:.0f}%  "
+                  f"{mb:.0f} MB downloaded  "
+                  f"{rate:.0f} MB/min  "
+                  f"hip {lot.hip_number}   ", end="", flush=True)
+
             time.sleep(delay)
+        elif asset.source_url:
+            stats["failed"] += 1
         else:
             stats["skipped"] += 1
 
-    logger.info("Download complete: %s", stats)
+    print()  # Newline after progress
+    logger.info("Download complete: %d downloaded (%.1f MB), %d failed, %d skipped",
+                stats["downloaded"], stats["bytes"] / 1024 / 1024,
+                stats["failed"], stats["skipped"])
     return stats
