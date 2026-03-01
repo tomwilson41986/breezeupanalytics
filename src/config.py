@@ -29,6 +29,14 @@ OBS_SALES: dict[str, dict] = {
 # Known OBS SPA sale IDs (catalog/#/{sale_id})
 # These change each year - discovered via catalog inspection
 OBS_CATALOG_IDS: dict[str, int] = {
+    # 2023
+    "obs_march_2023": 130,
+    "obs_spring_2023": 131,
+    "obs_june_2023": 132,
+    # 2024
+    "obs_march_2024": 135,
+    "obs_spring_2024": 136,
+    "obs_june_2024": 137,
     # 2025
     "obs_march_2025": 142,
     "obs_spring_2025": 144,
