@@ -44,7 +44,7 @@ def _make_sale_id(obs_sale: OBSSale) -> str:
         month = "march"
     elif "spring" in name or "apr" in name:
         month = "spring"
-    elif "june" in name or "jun" in name:
+    elif "june" in name or "jun" in name or "july" in name or "jul" in name:
         month = "june"
     elif "winter" in name:
         month = "winter"
