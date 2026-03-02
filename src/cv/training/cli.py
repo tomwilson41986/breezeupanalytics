@@ -214,6 +214,72 @@ def cmd_active_learn(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_auto_label_dir(args: argparse.Namespace) -> int:
+    """Auto-label images in a directory using pretrained models."""
+    from src.cv.training.auto_label import AutoLabelAgent
+
+    agent = AutoLabelAgent(
+        detection_confidence=args.det_conf,
+        keypoint_confidence=args.kpt_conf,
+        quality_threshold=args.quality_threshold,
+        min_confident_kpts=args.min_kpts,
+    )
+
+    review_dir = Path(args.output) / "review" if not args.no_review else None
+    result = agent.label_directory(args.image_dir, args.output, review_dir=review_dir)
+
+    print(f"\nAuto-Labeling Complete")
+    print(f"{'=' * 50}")
+    print(f"Images processed:    {result.num_images}")
+    print(f"Images labeled:      {result.num_labeled}")
+    print(f"Total horses:        {result.num_horses}")
+    print(f"Flagged for review:  {result.num_flagged}")
+    print(f"Mean quality:        {result.mean_quality:.3f}")
+    print(f"Mean confident kpts: {result.mean_confident_kpts:.1f}/24")
+    print(f"\nLabels:  {result.labels_dir}")
+    if result.review_manifest:
+        print(f"Review:  {result.review_manifest}")
+    return 0
+
+
+def cmd_auto_label_video(args: argparse.Namespace) -> int:
+    """Extract frames from a video and auto-label them."""
+    from src.cv.training.auto_label import AutoLabelAgent
+
+    agent = AutoLabelAgent(
+        detection_confidence=args.det_conf,
+        keypoint_confidence=args.kpt_conf,
+        quality_threshold=args.quality_threshold,
+        min_confident_kpts=args.min_kpts,
+    )
+
+    result = agent.label_video(
+        args.video,
+        output_dir=args.output,
+        num_frames=args.num_frames,
+        strategy=args.strategy,
+    )
+
+    print(f"\nAuto-Labeling from Video Complete")
+    print(f"{'=' * 50}")
+    print(f"Frames extracted:    {result.num_images}")
+    print(f"Frames labeled:      {result.num_labeled}")
+    print(f"Total horses:        {result.num_horses}")
+    print(f"Flagged for review:  {result.num_flagged}")
+    print(f"Mean quality:        {result.mean_quality:.3f}")
+    print(f"Mean confident kpts: {result.mean_confident_kpts:.1f}/24")
+    print(f"\nLabels:  {result.labels_dir}")
+    if result.review_manifest:
+        print(f"Review:  {result.review_manifest}")
+
+    print(f"\nNext steps:")
+    print(f"  1. Review flagged images in {Path(args.output) / 'review'}")
+    print(f"  2. Correct labels with Roboflow or DLC GUI")
+    print(f"  3. Run: equine-train split {args.output} -o {args.output}_split")
+    print(f"  4. Run: equine-train train {args.output}_split")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         prog="equine-train",
@@ -280,6 +346,27 @@ def main() -> int:
     p.add_argument("--max-frames", type=int, default=500)
     p.add_argument("--strategy", default="combined", choices=["low_confidence", "high_variance", "combined"])
 
+    # auto-label (directory)
+    p = sub.add_parser("auto-label", help="Auto-label images using pretrained models")
+    p.add_argument("image_dir", help="Directory of images to label")
+    p.add_argument("-o", "--output", required=True, help="Output labels directory")
+    p.add_argument("--det-conf", type=float, default=0.4, help="Detection confidence")
+    p.add_argument("--kpt-conf", type=float, default=0.2, help="Keypoint confidence")
+    p.add_argument("--quality-threshold", type=float, default=0.4, help="Min quality to accept")
+    p.add_argument("--min-kpts", type=int, default=8, help="Min confident keypoints")
+    p.add_argument("--no-review", action="store_true", help="Skip review flagging")
+
+    # auto-label-video
+    p = sub.add_parser("auto-label-video", help="Extract frames from video and auto-label")
+    p.add_argument("video", help="Video file")
+    p.add_argument("-o", "--output", required=True, help="Output directory")
+    p.add_argument("-n", "--num-frames", type=int, default=100, help="Frames to extract")
+    p.add_argument("--strategy", default="uniform", choices=["uniform", "random", "motion"])
+    p.add_argument("--det-conf", type=float, default=0.4)
+    p.add_argument("--kpt-conf", type=float, default=0.2)
+    p.add_argument("--quality-threshold", type=float, default=0.4)
+    p.add_argument("--min-kpts", type=int, default=8)
+
     args = parser.parse_args()
     setup_logging(args.verbose)
 
@@ -292,6 +379,8 @@ def main() -> int:
         "evaluate": cmd_evaluate,
         "export": cmd_export,
         "active-learn": cmd_active_learn,
+        "auto-label": cmd_auto_label_dir,
+        "auto-label-video": cmd_auto_label_video,
     }
 
     if args.command in commands:
