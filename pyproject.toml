@@ -46,6 +46,7 @@ target-version = "py312"
 
 [project.scripts]
 equine-gait = "src.cv.cli:main"
+equine-train = "src.cv.training.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
