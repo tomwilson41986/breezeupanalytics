@@ -39,6 +39,7 @@ class StrideMetrics:
 
     # Phase 3: new per-stride metrics
     topline_angle_deg: float | None = None
+    knee_flexion_deg: float | None = None
     fetlock_extension_deg: float | None = None
     hock_flexion_deg: float | None = None
     suspension_duration_s: float = 0.0
@@ -46,6 +47,8 @@ class StrideMetrics:
     overreach_m: float | None = None
     acceleration_px_s2: float | None = None
     speed_efficiency: float | None = None  # speed / stride_frequency ratio
+    ground_cover_px: float = 0.0           # centroid horizontal displacement per stride
+    ground_cover_m: float | None = None
 
 
 @dataclass
@@ -99,6 +102,7 @@ class HorseMetrics:
 
     # Phase 3: new angle averages
     mean_topline_angle_deg: float | None = None
+    mean_knee_flexion_deg: float | None = None
     mean_fetlock_extension_deg: float | None = None
     mean_hock_flexion_deg: float | None = None
 
@@ -116,6 +120,10 @@ class HorseMetrics:
     suspension_ratio: float = 0.0         # suspension time / stride time
     mean_overreach_px: float = 0.0
     mean_overreach_m: float | None = None
+
+    # Ground cover per stride (centroid displacement)
+    mean_ground_cover_px: float = 0.0
+    mean_ground_cover_m: float | None = None
 
     # Phase 3: movement quality
     movement_quality: MovementQuality | None = None
@@ -149,6 +157,8 @@ class HorseMetrics:
         # Phase 3 additions
         if self.mean_topline_angle_deg is not None:
             d["mean_topline_angle_deg"] = round(self.mean_topline_angle_deg, 1)
+        if self.mean_knee_flexion_deg is not None:
+            d["mean_knee_flexion_deg"] = round(self.mean_knee_flexion_deg, 1)
         if self.mean_fetlock_extension_deg is not None:
             d["mean_fetlock_extension_deg"] = round(self.mean_fetlock_extension_deg, 1)
         if self.mean_hock_flexion_deg is not None:
@@ -160,6 +170,10 @@ class HorseMetrics:
             d["mean_overreach_px"] = round(self.mean_overreach_px, 2)
         if self.mean_overreach_m is not None:
             d["mean_overreach_m"] = round(self.mean_overreach_m, 3)
+        if self.mean_ground_cover_px > 0:
+            d["mean_ground_cover_px"] = round(self.mean_ground_cover_px, 2)
+        if self.mean_ground_cover_m is not None:
+            d["mean_ground_cover_m"] = round(self.mean_ground_cover_m, 3)
         if self.speed_efficiency_index is not None:
             d["speed_efficiency_index"] = round(self.speed_efficiency_index, 2)
         if self.speed_profile is not None:
@@ -197,6 +211,8 @@ class HorseMetrics:
                 sd["lateral_symmetry_index"] = round(sm.lateral_symmetry_index, 2)
             if sm.topline_angle_deg is not None:
                 sd["topline_angle_deg"] = round(sm.topline_angle_deg, 1)
+            if sm.knee_flexion_deg is not None:
+                sd["knee_flexion_deg"] = round(sm.knee_flexion_deg, 1)
             if sm.fetlock_extension_deg is not None:
                 sd["fetlock_extension_deg"] = round(sm.fetlock_extension_deg, 1)
             if sm.hock_flexion_deg is not None:
@@ -209,6 +225,10 @@ class HorseMetrics:
                 sd["acceleration_px_s2"] = round(sm.acceleration_px_s2, 2)
             if sm.speed_efficiency is not None:
                 sd["speed_efficiency"] = round(sm.speed_efficiency, 2)
+            if sm.ground_cover_px > 0:
+                sd["ground_cover_px"] = round(sm.ground_cover_px, 2)
+            if sm.ground_cover_m is not None:
+                sd["ground_cover_m"] = round(sm.ground_cover_m, 3)
             d["per_stride"].append(sd)
 
         if self.speed_profile is not None:
@@ -322,6 +342,10 @@ def compute_metrics(
     if topline_angles:
         metrics.mean_topline_angle_deg = float(np.mean(topline_angles))
 
+    knee_angles = [s.knee_flexion_deg for s in stride_metrics_list if s.knee_flexion_deg is not None]
+    if knee_angles:
+        metrics.mean_knee_flexion_deg = float(np.mean(knee_angles))
+
     fetlock_angles = [s.fetlock_extension_deg for s in stride_metrics_list if s.fetlock_extension_deg is not None]
     if fetlock_angles:
         metrics.mean_fetlock_extension_deg = float(np.mean(fetlock_angles))
@@ -349,6 +373,13 @@ def compute_metrics(
         metrics.mean_overreach_px = float(np.mean(overreach_vals))
         if px_per_meter is not None:
             metrics.mean_overreach_m = metrics.mean_overreach_px / px_per_meter
+
+    # Ground cover per stride
+    ground_covers = [s.ground_cover_px for s in stride_metrics_list if s.ground_cover_px > 0]
+    if ground_covers:
+        metrics.mean_ground_cover_px = float(np.mean(ground_covers))
+        if px_per_meter is not None:
+            metrics.mean_ground_cover_m = metrics.mean_ground_cover_px / px_per_meter
 
     # Phase 3: speed profile and acceleration
     metrics.speed_profile = _compute_speed_profile(stride_metrics_list, px_per_meter)
@@ -435,11 +466,19 @@ def _compute_stride_metrics(
     # --- Phase 3: Topline angle ---
     sm.topline_angle_deg = _compute_topline_angle(seg_kpts, seg_conf)
 
+    # --- Knee flexion (fore) ---
+    sm.knee_flexion_deg = _compute_knee_flexion(seg_kpts, seg_conf)
+
     # --- Phase 3: Fetlock extension ---
     sm.fetlock_extension_deg = _compute_fetlock_extension(seg_kpts, seg_conf)
 
     # --- Phase 3: Hock flexion ---
     sm.hock_flexion_deg = _compute_hock_flexion(seg_kpts, seg_conf)
+
+    # --- Ground cover per stride (centroid horizontal displacement) ---
+    sm.ground_cover_px = _compute_ground_cover(seg_kpts, seg_conf)
+    if px_per_meter is not None and sm.ground_cover_px > 0:
+        sm.ground_cover_m = sm.ground_cover_px / px_per_meter
 
     return sm
 
@@ -603,6 +642,46 @@ def _compute_topline_angle(kpts: np.ndarray, conf: np.ndarray) -> float | None:
     return float(np.mean(angles)) if angles else None
 
 
+def _compute_knee_flexion(kpts: np.ndarray, conf: np.ndarray) -> float | None:
+    """Compute fore knee (carpus) flexion at maximum flexion during swing phase.
+
+    Measures the angle at the carpus (elbow-knee-fetlock) at the frame where
+    the knee angle is smallest (peak flexion). Lower angles indicate more
+    knee lift — associated with limb clearance and action quality.
+    """
+    elbow_id = KEYPOINT_NAME_TO_ID["l_elbow"]
+    knee_id = KEYPOINT_NAME_TO_ID["l_knee_fore"]
+    fetlock_id = KEYPOINT_NAME_TO_ID["l_fetlock_fore"]
+
+    valid = (
+        (conf[:, elbow_id] >= 0.3)
+        & (conf[:, knee_id] >= 0.3)
+        & (conf[:, fetlock_id] >= 0.3)
+    )
+
+    if valid.sum() < 3:
+        elbow_id = KEYPOINT_NAME_TO_ID["r_elbow"]
+        knee_id = KEYPOINT_NAME_TO_ID["r_knee_fore"]
+        fetlock_id = KEYPOINT_NAME_TO_ID["r_fetlock_fore"]
+        valid = (
+            (conf[:, elbow_id] >= 0.3)
+            & (conf[:, knee_id] >= 0.3)
+            & (conf[:, fetlock_id] >= 0.3)
+        )
+
+    if valid.sum() < 3:
+        return None
+
+    # Compute angle at each valid frame, return minimum (peak flexion)
+    angles = []
+    valid_indices = np.where(valid)[0]
+    for fi in valid_indices:
+        a = _angle_3pt(kpts[fi, elbow_id], kpts[fi, knee_id], kpts[fi, fetlock_id])
+        angles.append(a)
+
+    return float(min(angles))
+
+
 def _compute_fetlock_extension(kpts: np.ndarray, conf: np.ndarray) -> float | None:
     """Compute fetlock extension angle at maximum extension.
 
@@ -686,6 +765,33 @@ def _compute_hock_flexion(kpts: np.ndarray, conf: np.ndarray) -> float | None:
         angles.append(a)
 
     return float(min(angles))
+
+
+def _compute_ground_cover(kpts: np.ndarray, conf: np.ndarray) -> float:
+    """Compute horizontal displacement of the horse centroid across a stride.
+
+    Uses the mean x-position of all visible keypoints as the centroid,
+    and measures horizontal displacement from stride start to stride end.
+    This differs from stride_length (withers-only) by using the full body centroid.
+    """
+    T = len(kpts)
+    if T < 2:
+        return 0.0
+
+    # Compute centroid x at first and last frame from all visible keypoints
+    def _centroid_x(frame_idx: int) -> float | None:
+        visible = conf[frame_idx] >= 0.3
+        if visible.sum() < 3:
+            return None
+        return float(np.mean(kpts[frame_idx, visible, 0]))
+
+    x_start = _centroid_x(0)
+    x_end = _centroid_x(T - 1)
+
+    if x_start is None or x_end is None:
+        return 0.0
+
+    return abs(x_end - x_start)
 
 
 # ---------- Phase 3: speed profile ----------

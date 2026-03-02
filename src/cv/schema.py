@@ -72,13 +72,14 @@ SKELETON_EDGES: list[tuple[int, int]] = [
 
 # YOLO-Pose horizontal flip indices: maps keypoint[i] -> keypoint[flip[i]].
 # Symmetric keypoints (topline) map to themselves; L/R pairs swap.
+# Note: the schema has L hind fetlock (19) with no R counterpart, so it self-maps.
+# L hind hoof (20) swaps with R hind hoof (23).
 FLIP_INDICES: list[int] = [
     0, 1, 2, 3, 4, 5, 6,          # topline: self-mapped
     12, 13, 14, 15, 16,            # L fore -> R fore
     7, 8, 9, 10, 11,               # R fore -> L fore
-    21, 22, 23,                    # L hind -> R hind (17->21, 18->22, 19->23)
-    20,                            # L hind hoof (20) -> itself (no R hind fetlock pair)
-    17, 18, 19,                    # R hind -> L hind (21->17, 22->18, 23->19)
+    21, 22, 19, 23,                # L hind: 17->21, 18->22, 19->19 (self), 20->23
+    17, 18, 20,                    # R hind: 21->17, 22->18, 23->20
 ]
 
 # Colors for visualization (BGR for OpenCV).

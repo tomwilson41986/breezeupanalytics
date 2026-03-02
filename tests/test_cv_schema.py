@@ -59,6 +59,29 @@ def test_flip_indices_lr_swap():
     assert FLIP_INDICES[12] == 7
 
 
+def test_flip_indices_hind_hoof_swap():
+    """L hind hoof (20) should swap with R hind hoof (23)."""
+    assert FLIP_INDICES[20] == 23
+    assert FLIP_INDICES[23] == 20
+
+
+def test_flip_indices_hind_hip_swap():
+    """L hip (17) should swap with R hip (21)."""
+    assert FLIP_INDICES[17] == 21
+    assert FLIP_INDICES[21] == 17
+
+
+def test_flip_indices_hind_hock_swap():
+    """L hock (18) should swap with R hock (22)."""
+    assert FLIP_INDICES[18] == 22
+    assert FLIP_INDICES[22] == 18
+
+
+def test_flip_indices_hind_fetlock_self_mapped():
+    """L hind fetlock (19) has no R counterpart and should self-map."""
+    assert FLIP_INDICES[19] == 19
+
+
 def test_skeleton_edges_valid():
     """All skeleton edge endpoints should reference valid keypoint IDs."""
     for a, b in SKELETON_EDGES:

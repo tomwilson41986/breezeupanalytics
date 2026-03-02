@@ -27,7 +27,9 @@ from src.cv.metrics import (
     SpeedProfile,
     StrideMetrics,
     _compute_fetlock_extension,
+    _compute_ground_cover,
     _compute_hock_flexion,
+    _compute_knee_flexion,
     _compute_movement_quality,
     _compute_speed_profile,
     _compute_topline_angle,
@@ -425,6 +427,110 @@ class TestHockFlexion:
         assert angle < 180.0
 
 
+# ---------- Knee flexion tests ----------
+
+class TestKneeFlexion:
+    def test_knee_flexion_computed(self):
+        """Knee flexion angle should be computed when keypoints are available."""
+        kpts = np.zeros((10, NUM_KEYPOINTS, 2), dtype=np.float32)
+        conf = np.ones((10, NUM_KEYPOINTS), dtype=np.float32) * 0.8
+
+        elbow_id = KEYPOINT_NAME_TO_ID["l_elbow"]
+        knee_id = KEYPOINT_NAME_TO_ID["l_knee_fore"]
+        fetlock_id = KEYPOINT_NAME_TO_ID["l_fetlock_fore"]
+
+        for t in range(10):
+            kpts[t, elbow_id] = [200, 200]
+            kpts[t, knee_id] = [200, 300]
+            kpts[t, fetlock_id] = [200, 400]
+
+        angle = _compute_knee_flexion(kpts, conf)
+        assert angle is not None
+        # Straight limb = 180
+        assert angle == pytest.approx(180.0, abs=1.0)
+
+    def test_knee_flexion_bent(self):
+        """Flexed knee should give angle < 180."""
+        kpts = np.zeros((10, NUM_KEYPOINTS, 2), dtype=np.float32)
+        conf = np.ones((10, NUM_KEYPOINTS), dtype=np.float32) * 0.8
+
+        elbow_id = KEYPOINT_NAME_TO_ID["l_elbow"]
+        knee_id = KEYPOINT_NAME_TO_ID["l_knee_fore"]
+        fetlock_id = KEYPOINT_NAME_TO_ID["l_fetlock_fore"]
+
+        for t in range(10):
+            kpts[t, elbow_id] = [200, 200]
+            kpts[t, knee_id] = [200, 300]
+            kpts[t, fetlock_id] = [250, 400]  # offset = bent
+
+        angle = _compute_knee_flexion(kpts, conf)
+        assert angle is not None
+        assert angle < 180.0
+
+    def test_knee_flexion_low_confidence(self):
+        """Should return None when confidence is too low."""
+        kpts = np.zeros((5, NUM_KEYPOINTS, 2), dtype=np.float32)
+        conf = np.ones((5, NUM_KEYPOINTS), dtype=np.float32) * 0.1
+
+        angle = _compute_knee_flexion(kpts, conf)
+        assert angle is None
+
+    def test_knee_flexion_falls_back_to_right(self):
+        """Should fall back to right forelimb when left has low confidence."""
+        kpts = np.zeros((10, NUM_KEYPOINTS, 2), dtype=np.float32)
+        conf = np.ones((10, NUM_KEYPOINTS), dtype=np.float32) * 0.1
+
+        # Set right forelimb to high confidence
+        r_elbow_id = KEYPOINT_NAME_TO_ID["r_elbow"]
+        r_knee_id = KEYPOINT_NAME_TO_ID["r_knee_fore"]
+        r_fetlock_id = KEYPOINT_NAME_TO_ID["r_fetlock_fore"]
+        conf[:, r_elbow_id] = 0.8
+        conf[:, r_knee_id] = 0.8
+        conf[:, r_fetlock_id] = 0.8
+
+        for t in range(10):
+            kpts[t, r_elbow_id] = [200, 200]
+            kpts[t, r_knee_id] = [200, 300]
+            kpts[t, r_fetlock_id] = [230, 400]
+
+        angle = _compute_knee_flexion(kpts, conf)
+        assert angle is not None
+        assert angle < 180.0
+
+
+# ---------- Ground cover tests ----------
+
+class TestGroundCover:
+    def test_ground_cover_basic(self):
+        """Ground cover should measure centroid horizontal displacement."""
+        kpts = np.zeros((20, NUM_KEYPOINTS, 2), dtype=np.float32)
+        conf = np.ones((20, NUM_KEYPOINTS), dtype=np.float32) * 0.8
+
+        # All keypoints move 100px to the right
+        for t in range(20):
+            for k in range(NUM_KEYPOINTS):
+                kpts[t, k, 0] = 200 + t * 5  # linear motion
+                kpts[t, k, 1] = 300
+
+        cover = _compute_ground_cover(kpts, conf)
+        assert cover == pytest.approx(95.0, abs=1.0)  # (19 * 5)
+
+    def test_ground_cover_low_confidence(self):
+        """Should return 0 when confidence is too low."""
+        kpts = np.zeros((5, NUM_KEYPOINTS, 2), dtype=np.float32)
+        conf = np.ones((5, NUM_KEYPOINTS), dtype=np.float32) * 0.1
+
+        cover = _compute_ground_cover(kpts, conf)
+        assert cover == 0.0
+
+    def test_ground_cover_single_frame(self):
+        """Should return 0 for a single frame."""
+        kpts = np.zeros((1, NUM_KEYPOINTS, 2), dtype=np.float32)
+        conf = np.ones((1, NUM_KEYPOINTS), dtype=np.float32) * 0.8
+        cover = _compute_ground_cover(kpts, conf)
+        assert cover == 0.0
+
+
 # ---------- Speed profile tests ----------
 
 class TestSpeedProfile:
@@ -619,11 +725,14 @@ class TestDetailExport:
         """The summary to_dict should include phase 3 fields when set."""
         metrics = HorseMetrics(
             mean_topline_angle_deg=175.0,
+            mean_knee_flexion_deg=120.0,
             mean_fetlock_extension_deg=140.0,
             mean_hock_flexion_deg=155.0,
             mean_suspension_duration_s=0.05,
             suspension_ratio=0.10,
             mean_overreach_px=25.0,
+            mean_ground_cover_px=230.0,
+            mean_ground_cover_m=2.3,
             speed_efficiency_index=250.0,
         )
         metrics.speed_profile = SpeedProfile(mean_acceleration_px_s2=15.0)
@@ -631,11 +740,14 @@ class TestDetailExport:
 
         d = metrics.to_dict()
         assert d["mean_topline_angle_deg"] == 175.0
+        assert d["mean_knee_flexion_deg"] == 120.0
         assert d["mean_fetlock_extension_deg"] == 140.0
         assert d["mean_hock_flexion_deg"] == 155.0
         assert d["mean_suspension_duration_s"] == 0.05
         assert d["suspension_ratio"] == 0.1
         assert d["mean_overreach_px"] == 25.0
+        assert d["mean_ground_cover_px"] == 230.0
+        assert d["mean_ground_cover_m"] == 2.3
         assert d["speed_efficiency_index"] == 250.0
         assert d["mean_acceleration_px_s2"] == 15.0
         assert d["movement_quality_score"] == 65.0
@@ -668,8 +780,12 @@ class TestPhase3Integration:
 
         # New angle metrics should be computed (we set all keypoints)
         assert metrics.mean_topline_angle_deg is not None
+        assert metrics.mean_knee_flexion_deg is not None
         assert metrics.mean_fetlock_extension_deg is not None
         assert metrics.mean_hock_flexion_deg is not None
+
+        # Ground cover should be computed
+        assert metrics.mean_ground_cover_px > 0
 
         # Detail export should work
         detail = metrics.to_detail_dict()
