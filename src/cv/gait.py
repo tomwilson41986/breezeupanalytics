@@ -1,8 +1,8 @@
 """Gait cycle detection from equine keypoint trajectories.
 
 Detects stride boundaries from vertical oscillation of the withers keypoint,
-identifies stance/swing phases per limb, and segments the gait cycle for
-metric computation.
+identifies stance/swing phases per limb, suspension phases, overreach distances,
+and segments the gait cycle for metric computation.
 """
 
 from __future__ import annotations
@@ -29,6 +29,30 @@ class StrideCycle:
 
 
 @dataclass
+class SuspensionPhase:
+    """A period where all four hooves are off the ground (aerial phase)."""
+    start_frame: int
+    end_frame: int
+    duration_frames: int
+    duration_s: float
+    stride_index: int | None = None  # which stride this belongs to
+
+
+@dataclass
+class OverreachEvent:
+    """Measurement of hind hoof landing ahead of fore hoof print.
+
+    Positive overreach_px means the hind hoof lands in front of where
+    the ipsilateral fore hoof was — desirable for forward propulsion.
+    """
+    frame: int
+    side: str              # "left" or "right"
+    overreach_px: float    # positive = hind lands ahead of fore
+    overreach_m: float | None = None
+    stride_index: int | None = None
+
+
+@dataclass
 class LimbPhase:
     """Stance and swing phases for a single limb within a stride."""
     limb: str                          # e.g. "l_fore", "r_fore", "l_hind", "r_hind"
@@ -47,10 +71,14 @@ class GaitAnalysis:
     track_id: int | None = None
     strides: list[StrideCycle] = field(default_factory=list)
     limb_phases: dict[str, list[LimbPhase]] = field(default_factory=dict)
+    suspension_phases: list[SuspensionPhase] = field(default_factory=list)
+    overreach_events: list[OverreachEvent] = field(default_factory=list)
     withers_vertical: np.ndarray | None = None  # vertical displacement of withers
     mean_stride_frequency: float = 0.0
     mean_stride_duration_s: float = 0.0
     stride_count: int = 0
+    total_suspension_frames: int = 0
+    mean_overreach_px: float = 0.0
 
 
 def detect_strides(
@@ -259,3 +287,185 @@ def compute_limb_phases(
         phases[limb_name] = limb_phases
 
     return phases
+
+
+def detect_suspension_phases(
+    contacts: dict[str, np.ndarray],
+    strides: list[StrideCycle],
+    fps: float,
+    min_duration_frames: int = 1,
+) -> list[SuspensionPhase]:
+    """Detect aerial (suspension) phases where all four hooves are off the ground.
+
+    In gallop, the horse has a brief suspension phase where no hooves are in
+    contact with the ground. This is a key indicator of speed and athleticism.
+
+    Args:
+        contacts: Per-limb boolean stance arrays from detect_hoof_contacts.
+        strides: Detected stride cycles for assigning suspension to strides.
+        fps: Frame rate.
+        min_duration_frames: Minimum frames to count as a suspension phase.
+
+    Returns:
+        List of SuspensionPhase events.
+    """
+    required = ["l_fore", "r_fore", "l_hind", "r_hind"]
+    if not all(limb in contacts for limb in required):
+        return []
+
+    # All hooves off ground = NOT in stance for any limb
+    any_stance = np.zeros_like(contacts[required[0]], dtype=bool)
+    for limb in required:
+        any_stance |= contacts[limb]
+
+    all_aerial = ~any_stance
+    T = len(all_aerial)
+
+    # Find contiguous runs of aerial frames
+    phases = []
+    in_aerial = False
+    start = 0
+
+    for i in range(T):
+        if all_aerial[i] and not in_aerial:
+            start = i
+            in_aerial = True
+        elif not all_aerial[i] and in_aerial:
+            duration = i - start
+            if duration >= min_duration_frames:
+                # Assign to a stride
+                stride_idx = _find_stride_for_frame(start, strides)
+                phases.append(SuspensionPhase(
+                    start_frame=start,
+                    end_frame=i,
+                    duration_frames=duration,
+                    duration_s=duration / fps,
+                    stride_index=stride_idx,
+                ))
+            in_aerial = False
+
+    # Handle trailing aerial segment
+    if in_aerial and (T - start) >= min_duration_frames:
+        stride_idx = _find_stride_for_frame(start, strides)
+        phases.append(SuspensionPhase(
+            start_frame=start,
+            end_frame=T,
+            duration_frames=T - start,
+            duration_s=(T - start) / fps,
+            stride_index=stride_idx,
+        ))
+
+    return phases
+
+
+def detect_overreach(
+    keypoints_seq: np.ndarray,
+    confidence_seq: np.ndarray,
+    contacts: dict[str, np.ndarray],
+    strides: list[StrideCycle],
+    min_confidence: float = 0.3,
+    px_per_meter: float | None = None,
+) -> list[OverreachEvent]:
+    """Measure overreach: how far the hind hoof lands ahead of the fore hoof print.
+
+    At each hind hoof ground contact (stance onset), measure the horizontal
+    distance between the hind hoof and the ipsilateral fore hoof position at
+    the nearest fore hoof stance onset. Positive = hind lands ahead of fore.
+
+    Args:
+        keypoints_seq: (T, K, 2) smoothed keypoints.
+        confidence_seq: (T, K) confidence.
+        contacts: Per-limb stance arrays.
+        strides: Detected stride cycles.
+        min_confidence: Minimum keypoint confidence.
+        px_per_meter: Optional calibration factor.
+
+    Returns:
+        List of OverreachEvent measurements.
+    """
+    pairs = [
+        ("left", "l_hind", "l_fore", "l_hind_hoof", "l_fore_hoof"),
+        ("right", "r_hind", "r_fore", "r_hind_hoof", "r_fore_hoof"),
+    ]
+
+    events = []
+
+    for side, hind_limb, fore_limb, hind_hoof_name, fore_hoof_name in pairs:
+        if hind_limb not in contacts or fore_limb not in contacts:
+            continue
+
+        hind_stance = contacts[hind_limb]
+        fore_stance = contacts[fore_limb]
+        hind_hoof_id = KEYPOINT_NAME_TO_ID[hind_hoof_name]
+        fore_hoof_id = KEYPOINT_NAME_TO_ID[fore_hoof_name]
+
+        # Find hind hoof stance onsets (transitions from swing to stance)
+        hind_onsets = _find_stance_onsets(hind_stance)
+        fore_onsets = _find_stance_onsets(fore_stance)
+
+        if len(hind_onsets) == 0 or len(fore_onsets) == 0:
+            continue
+
+        for hind_frame in hind_onsets:
+            h_conf = confidence_seq[hind_frame, hind_hoof_id]
+            if h_conf < min_confidence:
+                continue
+
+            # Find the nearest preceding fore stance onset
+            preceding = fore_onsets[fore_onsets < hind_frame]
+            if len(preceding) == 0:
+                continue
+            fore_frame = preceding[-1]
+
+            f_conf = confidence_seq[fore_frame, fore_hoof_id]
+            if f_conf < min_confidence:
+                continue
+
+            # Overreach = horizontal distance (hind position relative to fore)
+            hind_x = keypoints_seq[hind_frame, hind_hoof_id, 0]
+            fore_x = keypoints_seq[fore_frame, fore_hoof_id, 0]
+
+            # Determine direction of travel from withers horizontal displacement
+            w_id = KEYPOINT_NAME_TO_ID["withers"]
+            if hind_frame > 0:
+                dx = keypoints_seq[min(hind_frame + 1, len(keypoints_seq) - 1), w_id, 0] - \
+                     keypoints_seq[max(hind_frame - 1, 0), w_id, 0]
+            else:
+                dx = 1.0  # assume left-to-right
+
+            # If horse moves left-to-right (positive dx), overreach is fore_x - hind_x
+            # being negative means hind lands ahead
+            if dx >= 0:
+                overreach_px = hind_x - fore_x  # positive = hind ahead (further right)
+            else:
+                overreach_px = fore_x - hind_x  # positive = hind ahead (further left)
+
+            stride_idx = _find_stride_for_frame(hind_frame, strides)
+            overreach_m = overreach_px / px_per_meter if px_per_meter else None
+
+            events.append(OverreachEvent(
+                frame=hind_frame,
+                side=side,
+                overreach_px=float(overreach_px),
+                overreach_m=float(overreach_m) if overreach_m is not None else None,
+                stride_index=stride_idx,
+            ))
+
+    return events
+
+
+def _find_stride_for_frame(frame: int, strides: list[StrideCycle]) -> int | None:
+    """Find which stride index a frame belongs to."""
+    for i, s in enumerate(strides):
+        if s.start_frame <= frame < s.end_frame:
+            return i
+    return None
+
+
+def _find_stance_onsets(stance_mask: np.ndarray) -> np.ndarray:
+    """Find frame indices where stance begins (swing -> stance transitions)."""
+    if len(stance_mask) < 2:
+        return np.array([], dtype=int)
+    transitions = np.diff(stance_mask.astype(int))
+    onsets = np.where(transitions == 1)[0] + 1  # +1 because diff shifts by 1
+    return onsets

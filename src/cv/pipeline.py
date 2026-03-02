@@ -17,7 +17,10 @@ import numpy as np
 
 from src.cv.calibration import Calibration
 from src.cv.detection import HorseDetector
-from src.cv.gait import GaitAnalysis, compute_limb_phases, detect_hoof_contacts, detect_strides
+from src.cv.gait import (
+    GaitAnalysis, compute_limb_phases, detect_hoof_contacts, detect_overreach,
+    detect_strides, detect_suspension_phases,
+)
 from src.cv.keypoints import EquineKeypointEstimator, FrameKeypoints, KeypointResult
 from src.cv.metrics import HorseMetrics, compute_metrics
 from src.cv.schema import NUM_KEYPOINTS
@@ -183,7 +186,18 @@ class GaitAnalysisPipeline:
             contacts = detect_hoof_contacts(kpts_smoothed, conf_seq, batch.fps)
             limb_phases = compute_limb_phases(contacts, gait.strides, batch.fps)
 
-            # Compute metrics
+            # Detect suspension phases (all 4 hooves off ground)
+            gait.suspension_phases = detect_suspension_phases(
+                contacts, gait.strides, batch.fps,
+            )
+
+            # Detect overreach
+            gait.overreach_events = detect_overreach(
+                kpts_smoothed, conf_seq, contacts, gait.strides,
+                px_per_meter=calibration_factor,
+            )
+
+            # Compute metrics (including Phase 3 additions)
             horse_m = compute_metrics(
                 kpts_smoothed, conf_seq, gait, batch.fps,
                 limb_phases=limb_phases,
@@ -322,7 +336,7 @@ class GaitAnalysisPipeline:
         logger.info("Wrote metrics CSV to %s", path)
 
     def _write_json(self, path: Path, horse_metrics: list[HorseMetrics], result: PipelineResult) -> None:
-        """Write detailed metrics to JSON."""
+        """Write detailed metrics to JSON including per-stride breakdown."""
         output = {
             "video": result.video_path,
             "duration_s": result.duration_s,
@@ -330,7 +344,7 @@ class GaitAnalysisPipeline:
             "frames_processed": result.frames_processed,
             "horses_detected": result.horses_detected,
             "processing_time_s": round(result.processing_time_s, 2),
-            "horses": [m.to_dict() for m in horse_metrics],
+            "horses": [m.to_detail_dict() for m in horse_metrics],
         }
 
         with open(path, "w") as f:
