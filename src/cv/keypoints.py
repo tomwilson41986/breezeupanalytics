@@ -243,6 +243,40 @@ class EquineKeypointEstimator:
             equine_kpts[20] = kpts[15]   # l_hind_hoof (ankle proxy)
             equine_kpts[23] = kpts[16]   # r_hind_hoof (ankle proxy)
 
+            # Infer structural keypoints from COCO landmarks:
+            # Withers ≈ midpoint of shoulders, shifted up slightly
+            equine_kpts[3] = (kpts[5] + kpts[6]) / 2          # withers
+            equine_kpts[3, 1] -= 10  # shift slightly above shoulder line
+
+            # Croup ≈ midpoint of hips, shifted up slightly
+            equine_kpts[5] = (kpts[11] + kpts[12]) / 2        # croup
+            equine_kpts[5, 1] -= 10
+
+            # Mid-back ≈ midpoint of withers and croup
+            equine_kpts[4] = (equine_kpts[3] + equine_kpts[5]) / 2  # mid_back
+
+            # Poll ≈ above nose (nose + offset upward)
+            equine_kpts[0] = kpts[0].copy()
+            equine_kpts[0, 1] -= 30  # poll above nose
+
+            # Throat ≈ between nose and withers
+            equine_kpts[2] = (kpts[0] + equine_kpts[3]) / 2   # throat
+
+            # Tail base ≈ behind croup
+            equine_kpts[6] = equine_kpts[5].copy()
+            equine_kpts[6, 0] += 20  # slightly behind croup
+
+            # Fore knees ≈ between elbow and wrist
+            equine_kpts[9] = (kpts[7] + kpts[9]) / 2    # l_knee_fore
+            equine_kpts[14] = (kpts[8] + kpts[10]) / 2  # r_knee_fore
+
+            # Fore fetlocks ≈ between knee and hoof
+            equine_kpts[10] = (equine_kpts[9] + kpts[9]) / 2    # l_fetlock_fore
+            equine_kpts[15] = (equine_kpts[14] + kpts[10]) / 2  # r_fetlock_fore
+
+            # Hind fetlock ≈ between hock and hoof
+            equine_kpts[19] = (kpts[13] + kpts[15]) / 2  # l_hind_fetlock
+
         return equine_kpts
 
     def _adapt_confidence(self, conf: np.ndarray) -> np.ndarray:
@@ -252,18 +286,31 @@ class EquineKeypointEstimator:
 
         equine_conf = np.zeros(self.num_keypoints, dtype=np.float32)
         if conf.shape[0] >= 17:
-            equine_conf[1] = conf[0]
-            equine_conf[7] = conf[5]
-            equine_conf[12] = conf[6]
-            equine_conf[8] = conf[7]
-            equine_conf[13] = conf[8]
-            equine_conf[11] = conf[9]
-            equine_conf[16] = conf[10]
-            equine_conf[17] = conf[11]
-            equine_conf[21] = conf[12]
-            equine_conf[18] = conf[13]
-            equine_conf[22] = conf[14]
-            equine_conf[20] = conf[15]
-            equine_conf[23] = conf[16]
+            equine_conf[1] = conf[0]       # nose
+            equine_conf[7] = conf[5]       # l_shoulder
+            equine_conf[12] = conf[6]      # r_shoulder
+            equine_conf[8] = conf[7]       # l_elbow
+            equine_conf[13] = conf[8]      # r_elbow
+            equine_conf[11] = conf[9]      # l_fore_hoof
+            equine_conf[16] = conf[10]     # r_fore_hoof
+            equine_conf[17] = conf[11]     # l_hip
+            equine_conf[21] = conf[12]     # r_hip
+            equine_conf[18] = conf[13]     # l_hock
+            equine_conf[22] = conf[14]     # r_hock
+            equine_conf[20] = conf[15]     # l_hind_hoof
+            equine_conf[23] = conf[16]     # r_hind_hoof
+
+            # Inferred keypoints get min confidence of their source keypoints
+            equine_conf[3] = min(conf[5], conf[6])        # withers from shoulders
+            equine_conf[5] = min(conf[11], conf[12])      # croup from hips
+            equine_conf[4] = min(equine_conf[3], equine_conf[5])  # mid_back
+            equine_conf[0] = conf[0] * 0.8                # poll (inferred from nose)
+            equine_conf[2] = min(conf[0], equine_conf[3]) * 0.8  # throat
+            equine_conf[6] = equine_conf[5] * 0.7         # tail_base (inferred)
+            equine_conf[9] = min(conf[7], conf[9])        # l_knee_fore
+            equine_conf[14] = min(conf[8], conf[10])      # r_knee_fore
+            equine_conf[10] = min(conf[7], conf[9]) * 0.7  # l_fetlock_fore
+            equine_conf[15] = min(conf[8], conf[10]) * 0.7 # r_fetlock_fore
+            equine_conf[19] = min(conf[13], conf[15]) * 0.7 # l_hind_fetlock
 
         return equine_conf

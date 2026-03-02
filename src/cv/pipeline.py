@@ -326,7 +326,12 @@ class GaitAnalysisPipeline:
             return
 
         rows = [m.to_dict() for m in horse_metrics]
-        fieldnames = rows[0].keys()
+        # Use union of all field names to handle varying duty factor columns
+        all_fields: dict[str, None] = {}
+        for row in rows:
+            for key in row:
+                all_fields[key] = None
+        fieldnames = list(all_fields.keys())
 
         with open(path, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
