@@ -62,6 +62,11 @@ class PipelineConfig:
     # Calibration
     px_per_meter: float | None = None
 
+    # S3 upload
+    s3_upload: bool = False
+    s3_bucket: str | None = None
+    s3_prefix: str = "keypoint"
+
 
 @dataclass
 class PipelineResult:
@@ -76,6 +81,7 @@ class PipelineResult:
     output_csv_path: str | None = None
     output_json_path: str | None = None
     processing_time_s: float = 0.0
+    s3_urls: dict[str, str] = field(default_factory=dict)
 
 
 class GaitAnalysisPipeline:
@@ -237,6 +243,10 @@ class GaitAnalysisPipeline:
             self._write_json(out_json, all_horse_metrics, result)
             result.output_json_path = str(out_json)
 
+        # S3 upload
+        if self.config.s3_upload:
+            result.s3_urls = self._upload_to_s3(output_dir, stem)
+
         result.processing_time_s = time.time() - t_start
         logger.info(
             "Pipeline complete: %d horses, %d total strides, %.1fs processing time",
@@ -356,3 +366,16 @@ class GaitAnalysisPipeline:
             json.dump(output, f, indent=2)
 
         logger.info("Wrote metrics JSON to %s", path)
+
+    def _upload_to_s3(self, output_dir: Path, stem: str) -> dict[str, str]:
+        """Upload pipeline output files to S3."""
+        from src.storage import S3Uploader
+
+        s3_prefix = f"{self.config.s3_prefix}/{stem}"
+        uploader = S3Uploader(
+            bucket=self.config.s3_bucket,
+            prefix=s3_prefix,
+        )
+        urls = uploader.upload_pipeline_output(output_dir)
+        logger.info("Uploaded %d files to S3: %s", len(urls), list(urls.keys()))
+        return urls
