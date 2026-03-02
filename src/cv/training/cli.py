@@ -280,6 +280,44 @@ def cmd_auto_label_video(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_label_sale(args: argparse.Namespace) -> int:
+    """Fetch OBS sale videos and auto-label them end-to-end."""
+    from src.cv.training.video_pipeline import SaleVideoLabelPipeline
+
+    pipeline = SaleVideoLabelPipeline(
+        sale_id=args.sale_id,
+        frames_per_video=args.frames_per_video,
+        frame_strategy=args.strategy,
+        detection_confidence=args.det_conf,
+        keypoint_confidence=args.kpt_conf,
+        quality_threshold=args.quality_threshold,
+        min_confident_kpts=args.min_kpts,
+        max_hips=args.max_hips,
+    )
+
+    result = pipeline.run(output_dir=args.output)
+
+    print(f"\nSale Auto-Labeling Complete")
+    print(f"{'=' * 55}")
+    print(f"Sale:                {result.sale_name} (ID: {result.sale_id})")
+    print(f"Hips with video:     {result.num_hips_with_video}")
+    print(f"Videos downloaded:    {result.num_videos_downloaded}")
+    print(f"Download errors:     {result.num_download_errors}")
+    print(f"Frames extracted:    {result.num_frames_extracted}")
+    print(f"Frames labeled:      {result.num_frames_labeled}")
+    print(f"Horses detected:     {result.num_horses_detected}")
+    print(f"Flagged for review:  {result.num_flagged_for_review}")
+    print(f"Mean quality:        {result.mean_quality:.3f}")
+    print(f"\nOutput:   {result.output_dir}")
+
+    print(f"\nNext steps:")
+    print(f"  1. Review flagged images in {Path(args.output) / 'review'}")
+    print(f"  2. Correct labels in Roboflow / DLC GUI")
+    print(f"  3. equine-train split {args.output} -o {args.output}_split")
+    print(f"  4. equine-train train {args.output}_split --preset finetune")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         prog="equine-train",
@@ -367,6 +405,18 @@ def main() -> int:
     p.add_argument("--quality-threshold", type=float, default=0.4)
     p.add_argument("--min-kpts", type=int, default=8)
 
+    # label-sale (end-to-end: fetch OBS sale -> download videos -> auto-label)
+    p = sub.add_parser("label-sale", help="Fetch OBS sale videos and auto-label them")
+    p.add_argument("sale_id", help="OBS sale ID (e.g. 149 for 2026 March)")
+    p.add_argument("-o", "--output", required=True, help="Output directory")
+    p.add_argument("-n", "--frames-per-video", type=int, default=30, help="Frames per video")
+    p.add_argument("--strategy", default="motion", choices=["uniform", "random", "motion"])
+    p.add_argument("--max-hips", type=int, default=None, help="Max hips to process")
+    p.add_argument("--det-conf", type=float, default=0.4)
+    p.add_argument("--kpt-conf", type=float, default=0.2)
+    p.add_argument("--quality-threshold", type=float, default=0.4)
+    p.add_argument("--min-kpts", type=int, default=8)
+
     args = parser.parse_args()
     setup_logging(args.verbose)
 
@@ -381,6 +431,7 @@ def main() -> int:
         "active-learn": cmd_active_learn,
         "auto-label": cmd_auto_label_dir,
         "auto-label-video": cmd_auto_label_video,
+        "label-sale": cmd_label_sale,
     }
 
     if args.command in commands:
