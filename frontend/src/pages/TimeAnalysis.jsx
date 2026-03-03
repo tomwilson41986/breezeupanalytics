@@ -280,6 +280,7 @@ export default function TimeAnalysis() {
                 hips={eighthHips}
                 title="1/8 Mile: Time vs Sale Price"
                 color="#3b82f6"
+                minTime={9}
               />
             )}
             {quarterHips.length > 0 && (
@@ -287,6 +288,7 @@ export default function TimeAnalysis() {
                 hips={quarterHips}
                 title="1/4 Mile: Time vs Sale Price"
                 color="#8b5cf6"
+                minTime={19}
               />
             )}
           </div>
@@ -348,10 +350,11 @@ function TimeDistribution({ hips, title, color }) {
           <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
           <XAxis
             dataKey="label"
-            tick={{ fill: "#6b7280", fontSize: 10 }}
+            tick={{ fill: "#6b7280", fontSize: 10, angle: -45, textAnchor: "end" }}
             axisLine={{ stroke: "#e5e7eb" }}
             tickLine={false}
-            interval={1}
+            interval="preserveStartEnd"
+            height={50}
           />
           <YAxis
             tick={{ fill: "#6b7280", fontSize: 11 }}
@@ -374,7 +377,7 @@ function TimeDistribution({ hips, title, color }) {
   );
 }
 
-function TimeVsPrice({ hips, title, color }) {
+function TimeVsPrice({ hips, title, color, minTime }) {
   const data = hips
     .filter((h) => h.price && h.price > 0)
     .map((h) => ({
@@ -396,6 +399,7 @@ function TimeVsPrice({ hips, title, color }) {
             name="Time"
             unit="s"
             type="number"
+            domain={[minTime || 'auto', 'auto']}
             tick={{ fill: "#6b7280", fontSize: 11 }}
             axisLine={{ stroke: "#e5e7eb" }}
             tickLine={false}
