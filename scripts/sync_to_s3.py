@@ -230,7 +230,7 @@ def compute_stats(sale_dict: dict) -> dict:
         {"label": "$100K-$250K", "min": 100_000, "max": 250_000},
         {"label": "$250K-$500K", "min": 250_000, "max": 500_000},
         {"label": "$500K-$1M", "min": 500_000, "max": 1_000_000},
-        {"label": "$1M+", "min": 1_000_000, "max": float("inf")},
+        {"label": "$1M+", "min": 1_000_000, "max": 1_000_000_000},
     ]
     price_distribution = [
         {**b, "count": sum(1 for p in prices if b["min"] <= p < b["max"])}
