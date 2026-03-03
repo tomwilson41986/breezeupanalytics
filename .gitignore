@@ -40,3 +40,4 @@ output/**/*.mp4
 
 # Temporary QA frame extractions
 output/qa_frames*/
+output/qa_detail/
