@@ -19,6 +19,7 @@ export default function App() {
           <Route path="sale/:saleKey/hip/:hipNumber" element={<LotDetail />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="vendors" element={<Vendors />} />
+          <Route path="vendors/:tab" element={<Vendors />} />
         </Route>
       </Routes>
     </BrowserRouter>
