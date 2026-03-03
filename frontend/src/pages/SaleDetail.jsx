@@ -36,15 +36,18 @@ export default function SaleDetail() {
 
   if (!sale) return <ErrorBanner message="Sale not found" />;
 
+  const backLink = meta?.isLive ? "/live" : "/historic";
+  const backLabel = meta?.isLive ? "Live Sales" : "Historic Sales";
+
   return (
     <div className="space-y-6">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm">
         <Link
-          to="/"
+          to={backLink}
           className="text-gray-400 hover:text-brand-600 transition-colors"
         >
-          Dashboard
+          {backLabel}
         </Link>
         <span className="text-gray-300">/</span>
         <span className="text-gray-700">{sale.saleName}</span>
@@ -117,15 +120,18 @@ function AssetOnlySaleView({ saleKey, meta, assetIndex }) {
     .map(Number)
     .sort((a, b) => a - b);
 
+  const backLink = meta?.isLive ? "/live" : "/historic";
+  const backLabel = meta?.isLive ? "Live Sales" : "Historic Sales";
+
   return (
     <div className="space-y-6">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm">
         <Link
-          to="/"
+          to={backLink}
           className="text-gray-400 hover:text-brand-600 transition-colors"
         >
-          Dashboard
+          {backLabel}
         </Link>
         <span className="text-gray-300">/</span>
         <span className="text-gray-700">{meta?.name || saleKey}</span>

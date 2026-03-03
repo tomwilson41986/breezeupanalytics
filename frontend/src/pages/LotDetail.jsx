@@ -48,10 +48,10 @@ export default function LotDetail() {
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm">
         <Link
-          to="/"
+          to={meta?.isLive ? "/live" : "/historic"}
           className="text-gray-400 hover:text-brand-600 transition-colors"
         >
-          Dashboard
+          {meta?.isLive ? "Live Sales" : "Historic Sales"}
         </Link>
         <span className="text-gray-300">/</span>
         <Link

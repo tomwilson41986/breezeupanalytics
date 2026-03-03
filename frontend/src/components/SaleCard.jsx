@@ -64,11 +64,15 @@ export default function SaleCard({ saleKey, meta, stats, assetCount, dataSource,
         </div>
       )}
 
-      {/* Asset-only mode — show asset count or browse prompt */}
-      {!stats && assetCount > 0 && (
-        <div className="grid grid-cols-2 gap-3 mt-4">
-          <MiniStat label="Hips with Assets" value={formatNumber(assetCount)} accent />
-          <MiniStat label="Data Source" value="S3 Media" />
+      {/* Asset count — show for any sale with S3 assets */}
+      {assetCount > 0 && (
+        <div className={`flex items-center gap-2 ${stats ? "mt-3 pt-3 border-t border-gray-50" : "mt-4"}`}>
+          <span className="text-[11px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+            S3 Media
+          </span>
+          <span className="text-xs text-gray-500">
+            {formatNumber(assetCount)} hips with assets
+          </span>
         </div>
       )}
 
