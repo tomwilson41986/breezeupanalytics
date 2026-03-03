@@ -53,14 +53,35 @@ export default function Sidebar() {
           <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center">
             <svg
               viewBox="0 0 24 24"
-              className="w-4 h-4 text-white"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              className="w-5 h-5 text-white"
+              fill="currentColor"
             >
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              {/* Digital horse icon made of dots */}
+              {/* Head & ear */}
+              <circle cx="19" cy="3.5" r="1.1" />
+              <circle cx="20.5" cy="5" r="1" />
+              <circle cx="19" cy="6" r="1.1" />
+              {/* Neck */}
+              <circle cx="17" cy="7.5" r="1.1" />
+              <circle cx="15.5" cy="9" r="1.1" />
+              {/* Body */}
+              <circle cx="13.5" cy="10.5" r="1.3" />
+              <circle cx="11" cy="10.5" r="1.3" />
+              <circle cx="8.5" cy="10.5" r="1.3" />
+              <circle cx="6.5" cy="9.5" r="1.1" />
+              {/* Front legs */}
+              <circle cx="12.5" cy="13" r="1" />
+              <circle cx="12" cy="15.5" r="0.9" />
+              <circle cx="11.5" cy="18" r="0.8" />
+              <circle cx="11" cy="20.5" r="0.7" />
+              {/* Back legs */}
+              <circle cx="7" cy="12.5" r="1" />
+              <circle cx="6" cy="15" r="0.9" />
+              <circle cx="5.5" cy="17.5" r="0.8" />
+              <circle cx="5" cy="20" r="0.7" />
+              {/* Tail */}
+              <circle cx="4.5" cy="8" r="0.9" />
+              <circle cx="3" cy="6.5" r="0.8" />
             </svg>
           </div>
           <span className="text-[15px] font-semibold tracking-tight text-gray-900">
@@ -107,6 +128,30 @@ export default function Sidebar() {
             }
           >
             Sale Analytics
+          </NavLink>
+          <NavLink
+            to="/analytics/sales"
+            className={({ isActive }) =>
+              `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
+                isActive
+                  ? "bg-brand-50 text-brand-700 font-medium"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+              }`
+            }
+          >
+            Sales Analysis
+          </NavLink>
+          <NavLink
+            to="/analytics/time"
+            className={({ isActive }) =>
+              `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
+                isActive
+                  ? "bg-brand-50 text-brand-700 font-medium"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+              }`
+            }
+          >
+            Time Analysis
           </NavLink>
         </Section>
 
