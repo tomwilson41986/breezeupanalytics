@@ -1,11 +1,13 @@
-"""ViTPose++ keypoint estimation for horses.
+"""ViTPose++ keypoint estimation for horses — hybrid with quality gating.
 
-Uses the HuggingFace transformers ViTPose++ model with the AP-10K animal
-keypoint head (dataset_index=3) to detect 17 anatomical keypoints on horses
-zero-shot, then maps them to our 24-keypoint equine schema.
+Runs ViTPose++ (AP-10K animal head, dataset_index=3) on each detection crop
+to produce 17 keypoints.  A spatial quality gate counts how many keypoints
+land inside the bounding box — if fewer than ``min_valid_keypoints`` pass,
+the frame falls back to ``BBoxKeypointEstimator`` (proportion + contour
+heuristic) which is more robust to challenging angles and jockeys.
 
-Replaces the BBoxKeypointEstimator heuristic with a real learned model —
-no custom training required.
+Valid ViTPose keypoints are mapped to our 24-keypoint equine schema.
+Keypoints that land outside the padded bbox are zeroed out.
 
 AP-10K 17 keypoints (generic quadruped):
     0: left_eye        1: right_eye       2: nose
@@ -36,7 +38,7 @@ import torch
 from PIL import Image
 
 from src.cv.detection import Detection
-from src.cv.keypoints import KeypointResult
+from src.cv.keypoints import BBoxKeypointEstimator, KeypointResult
 from src.cv.schema import NUM_KEYPOINTS
 
 logger = logging.getLogger(__name__)
@@ -99,6 +101,59 @@ VITPOSE_MODELS = {
 # AP-10K is dataset_index=3 in ViTPose++
 _AP10K_DATASET_INDEX = 3
 
+# Minimum in-bbox keypoints for ViTPose to be accepted (out of 17).
+# Below this, output is garbage and we fall back to BBox heuristic.
+_MIN_VALID_KEYPOINTS = 8
+
+# Padding fraction for bbox validity check — keypoints can be slightly
+# outside the detection box and still be valid.
+_BBOX_PAD_FRAC = 0.15
+
+
+def _count_valid_in_bbox(
+    kpts: np.ndarray,
+    scores: np.ndarray,
+    bbox: np.ndarray,
+    pad_frac: float = _BBOX_PAD_FRAC,
+    min_score: float = 0.2,
+) -> int:
+    """Count AP-10K keypoints that land inside the padded bbox."""
+    bw = bbox[2] - bbox[0]
+    bh = bbox[3] - bbox[1]
+    pad_x, pad_y = bw * pad_frac, bh * pad_frac
+    x1, y1 = bbox[0] - pad_x, bbox[1] - pad_y
+    x2, y2 = bbox[2] + pad_x, bbox[3] + pad_y
+
+    count = 0
+    for i in range(len(kpts)):
+        x, y = kpts[i]
+        if scores[i] >= min_score and x1 <= x <= x2 and y1 <= y <= y2:
+            count += 1
+    return count
+
+
+def _filter_out_of_bbox(
+    kpts: np.ndarray,
+    scores: np.ndarray,
+    bbox: np.ndarray,
+    pad_frac: float = _BBOX_PAD_FRAC,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Zero out AP-10K keypoints that land outside the padded bbox."""
+    bw = bbox[2] - bbox[0]
+    bh = bbox[3] - bbox[1]
+    pad_x, pad_y = bw * pad_frac, bh * pad_frac
+    x1, y1 = bbox[0] - pad_x, bbox[1] - pad_y
+    x2, y2 = bbox[2] + pad_x, bbox[3] + pad_y
+
+    kpts = kpts.copy()
+    scores = scores.copy()
+    for i in range(len(kpts)):
+        x, y = kpts[i]
+        if not (x1 <= x <= x2 and y1 <= y <= y2):
+            kpts[i] = 0.0
+            scores[i] = 0.0
+    return kpts, scores
+
 
 def _map_ap10k_to_equine(
     ap10k_kpts: np.ndarray,
@@ -140,9 +195,7 @@ def _map_ap10k_to_equine(
     score_eyes = min(score_l, score_r) if (score_l > 0.1 and score_r > 0.1) else 0.0
     score_neck = ap10k_scores[3]
     if score_eyes > 0.1 and score_neck > 0.1:
-        # Throat sits ~40% from eyes toward neck, and slightly below the line
         throat = eyes_mid + 0.40 * (neck - eyes_mid)
-        # Shift downward (positive y) by ~8% of the eye-to-neck distance
         dy = abs(neck[1] - eyes_mid[1])
         throat[1] += dy * 0.08
         equine_kpts[2] = throat
@@ -161,14 +214,19 @@ def _map_ap10k_to_equine(
 
 
 class ViTPoseKeypointEstimator:
-    """Estimates equine keypoints using ViTPose++ with the AP-10K animal head.
+    """Hybrid estimator: ViTPose++ with automatic fallback to bbox heuristic.
 
-    Uses our existing YOLO horse detector for bounding boxes, then runs
-    ViTPose++ on each crop to produce 17 AP-10K keypoints which are mapped
-    to our 24-keypoint equine schema.
+    For each detection:
+    1. Run ViTPose++ AP-10K to get 17 animal keypoints
+    2. Count how many land inside the bounding box (quality gate)
+    3. If ≥ min_valid_keypoints pass → use ViTPose output, filtering
+       out-of-bbox keypoints and mapping to 24-point equine schema
+    4. If too few pass → ViTPose produced garbage for this crop,
+       fall back to BBoxKeypointEstimator (heuristic)
 
-    This replaces BBoxKeypointEstimator with a real learned model — no custom
-    training or annotation required.
+    This hybrid approach handles challenging scenarios (oblique angles,
+    jockeys, occlusion) where ViTPose fails while still leveraging
+    learned keypoints when the model is confident.
     """
 
     def __init__(
@@ -176,18 +234,13 @@ class ViTPoseKeypointEstimator:
         model_size: str = "base",
         confidence_threshold: float = 0.3,
         device: str | None = None,
+        min_valid_keypoints: int = _MIN_VALID_KEYPOINTS,
     ):
-        """Initialize the ViTPose++ estimator.
-
-        Args:
-            model_size: One of 'small', 'base', 'large', 'huge'.
-            confidence_threshold: Minimum confidence for visible keypoints.
-            device: PyTorch device ('cuda', 'cpu', or None for auto-detect).
-        """
         from transformers import VitPoseForPoseEstimation, VitPoseImageProcessor
 
         self.confidence_threshold = confidence_threshold
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        self.min_valid_keypoints = min_valid_keypoints
 
         model_id = VITPOSE_MODELS.get(model_size)
         if model_id is None:
@@ -201,7 +254,15 @@ class ViTPoseKeypointEstimator:
         self.model = VitPoseForPoseEstimation.from_pretrained(model_id)
         self.model.to(self.device)
         self.model.eval()
-        logger.info("ViTPose++ ready — 17 AP-10K keypoints → 24 equine schema")
+
+        self._fallback = BBoxKeypointEstimator(confidence_threshold=confidence_threshold)
+        self._vitpose_used = 0
+        self._fallback_used = 0
+        logger.info(
+            "ViTPose++ hybrid ready — quality gate at %d/17 in-bbox keypoints, "
+            "fallback to BBox heuristic",
+            self.min_valid_keypoints,
+        )
 
     def estimate(
         self,
@@ -210,24 +271,17 @@ class ViTPoseKeypointEstimator:
     ) -> list[KeypointResult]:
         """Estimate equine keypoints for detected horses in a frame.
 
-        Args:
-            frame: BGR image (H, W, 3).
-            detections: Pre-computed horse bounding boxes from YOLO detector.
-
-        Returns:
-            List of KeypointResult with 24 equine keypoints per horse.
+        Runs ViTPose++ on all detections, then per-detection quality gate
+        decides whether to keep ViTPose output or fall back to heuristic.
         """
         if not detections:
             return []
 
-        # Convert BGR → RGB PIL image (ViTPose expects PIL)
+        # --- ViTPose inference ---
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         pil_image = Image.fromarray(rgb)
-
-        # Collect bounding boxes in [x1, y1, x2, y2] format
         boxes = [det.bbox.tolist() for det in detections]
 
-        # Run ViTPose++ with AP-10K animal head
         inputs = self.processor(pil_image, boxes=[boxes], return_tensors="pt")
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
 
@@ -235,23 +289,40 @@ class ViTPoseKeypointEstimator:
         with torch.no_grad():
             outputs = self.model(**inputs, dataset_index=dataset_idx)
 
-        # Post-process to get keypoints in original image space
         pose_results = self.processor.post_process_pose_estimation(
             outputs, boxes=[boxes]
         )
 
-        # Map each result to our 24-keypoint equine schema
+        # --- Per-detection quality gate ---
         results: list[KeypointResult] = []
 
         for i, det in enumerate(detections):
             if i >= len(pose_results[0]):
-                break
+                # ViTPose didn't produce output for this detection
+                fb = self._fallback.estimate(frame, [det])
+                results.extend(fb)
+                self._fallback_used += 1
+                continue
 
             result = pose_results[0][i]
             ap10k_kpts = result["keypoints"].cpu().numpy()    # (17, 2)
             ap10k_scores = result["scores"].cpu().numpy()     # (17,)
 
-            # Map 17 AP-10K → 24 equine keypoints
+            # Quality gate: count keypoints inside the bbox
+            n_valid = _count_valid_in_bbox(ap10k_kpts, ap10k_scores, det.bbox)
+
+            if n_valid < self.min_valid_keypoints:
+                # ViTPose failed for this detection — use heuristic
+                fb = self._fallback.estimate(frame, [det])
+                results.extend(fb)
+                self._fallback_used += 1
+                continue
+
+            # ViTPose passed — filter out-of-bbox keypoints, then map
+            self._vitpose_used += 1
+            ap10k_kpts, ap10k_scores = _filter_out_of_bbox(
+                ap10k_kpts, ap10k_scores, det.bbox
+            )
             equine_kpts, equine_conf = _map_ap10k_to_equine(ap10k_kpts, ap10k_scores)
 
             results.append(KeypointResult(
@@ -262,3 +333,14 @@ class ViTPoseKeypointEstimator:
             ))
 
         return results
+
+    @property
+    def stats(self) -> dict[str, int]:
+        """Return usage statistics for ViTPose vs fallback."""
+        total = self._vitpose_used + self._fallback_used
+        return {
+            "vitpose_used": self._vitpose_used,
+            "fallback_used": self._fallback_used,
+            "total": total,
+            "vitpose_pct": round(self._vitpose_used / total * 100, 1) if total else 0,
+        }

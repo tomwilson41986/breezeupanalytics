@@ -177,6 +177,15 @@ class GaitAnalysisPipeline:
 
             all_keypoints.append(fk)
 
+        # Log ViTPose hybrid stats if applicable
+        if self.config.use_vitpose and hasattr(self._estimator, "stats"):
+            s = self._estimator.stats
+            logger.info(
+                "ViTPose hybrid: %d/%d frames used learned model (%.0f%%), "
+                "%d fell back to heuristic",
+                s["vitpose_used"], s["total"], s["vitpose_pct"], s["fallback_used"],
+            )
+
         # --- Step 4: Organize by horse track ID ---
         horse_tracks = self._organize_by_track(all_keypoints, batch.fps)
 

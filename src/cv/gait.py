@@ -121,12 +121,20 @@ def detect_strides(
         logger.warning("Insufficient withers data for gait detection (%d valid frames)", valid.sum())
         return GaitAnalysis()
 
+    # Estimate prominence threshold from withers displacement range.
+    # Real gallop oscillation is typically 5-10% of body height.
+    # Use 2% of the withers Y range as minimum prominence, floored at 15px
+    # to reject bbox-jitter noise that creates false stride peaks.
+    valid_y = withers_y[valid]
+    y_range = float(valid_y.max() - valid_y.min()) if valid_y.size > 0 else 0.0
+    prominence = max(15.0, y_range * 0.15)
+
     # Find peaks in withers vertical position (lowest point of oscillation = highest y value)
     # In image coordinates, y increases downward, so peaks in y = lowest point of body
     peaks, properties = find_peaks(
         withers_y,
         distance=min_stride_frames,
-        prominence=5.0,  # minimum pixel displacement to count as a stride
+        prominence=prominence,
     )
 
     # Filter peaks to valid (confident) frames
