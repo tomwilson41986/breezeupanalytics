@@ -322,6 +322,20 @@ def cmd_label_sale(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_label(args: argparse.Namespace) -> int:
+    """Launch the web-based keypoint labeling GUI."""
+    from src.cv.training.labeler import run_labeler
+
+    run_labeler(
+        images_dir=args.images,
+        labels_dir=args.labels,
+        host=args.host,
+        port=args.port,
+        debug=args.debug,
+    )
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         prog="equine-train",
@@ -417,6 +431,14 @@ def main() -> int:
     p.add_argument("--quality-threshold", type=float, default=0.4)
     p.add_argument("--min-kpts", type=int, default=8)
 
+    # label (interactive GUI)
+    p = sub.add_parser("label", help="Launch web-based keypoint labeling GUI")
+    p.add_argument("--images", required=True, help="Directory containing images to label")
+    p.add_argument("--labels", required=True, help="Directory for YOLO-Pose label output")
+    p.add_argument("--host", default="0.0.0.0", help="Server host (default: 0.0.0.0)")
+    p.add_argument("--port", type=int, default=5000, help="Server port (default: 5000)")
+    p.add_argument("--debug", action="store_true", help="Enable debug mode")
+
     # label-sale (end-to-end: fetch OBS sale -> download videos -> auto-label)
     p = sub.add_parser("label-sale", help="Fetch OBS sale videos and auto-label them")
     p.add_argument("sale_id", help="OBS sale ID (e.g. 149 for 2026 March)")
@@ -443,6 +465,7 @@ def main() -> int:
         "active-learn": cmd_active_learn,
         "auto-label": cmd_auto_label_dir,
         "auto-label-video": cmd_auto_label_video,
+        "label": cmd_label,
         "label-sale": cmd_label_sale,
     }
 
