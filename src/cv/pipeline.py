@@ -37,12 +37,18 @@ class PipelineConfig:
     # Detection
     detection_model: str = "yolo11n.pt"
     detection_confidence: float = 0.5
+    use_sam: bool = False              # Use Grounding DINO + SAM 2 for detection
+    sam_model_size: str = "tiny"       # tiny | small | base | large
 
     # Keypoints
     keypoint_model: str = "yolo11n-pose.pt"
     keypoint_confidence: float = 0.3
     use_vitpose: bool = False
     vitpose_size: str = "base"       # small | base | large | huge
+
+    # Anatomy corrections (post-processing)
+    enable_anatomy_correction: bool = False
+    anatomy_correction_strength: float = 0.7
 
     # Tracking
     enable_tracking: bool = True
@@ -97,10 +103,18 @@ class GaitAnalysisPipeline:
     def _init_models(self) -> None:
         """Lazy-initialize detection and keypoint models."""
         if self._detector is None:
-            self._detector = HorseDetector(
-                model_path=self.config.detection_model,
-                confidence_threshold=self.config.detection_confidence,
-            )
+            if self.config.use_sam:
+                from src.cv.sam_detector import SAMHorseDetector
+
+                self._sam_detector = SAMHorseDetector(
+                    sam_model_size=self.config.sam_model_size,
+                    box_threshold=self.config.detection_confidence,
+                )
+            else:
+                self._detector = HorseDetector(
+                    model_path=self.config.detection_model,
+                    confidence_threshold=self.config.detection_confidence,
+                )
         if self._estimator is None:
             if self.config.use_vitpose:
                 from src.cv.vitpose import ViTPoseKeypointEstimator
@@ -149,7 +163,6 @@ class GaitAnalysisPipeline:
 
         # --- Step 2: Initialize models ---
         self._init_models()
-        assert self._detector is not None
         assert self._estimator is not None
 
         # --- Step 3: Detect + track + estimate keypoints ---
@@ -158,8 +171,10 @@ class GaitAnalysisPipeline:
         all_detections = []
         all_keypoints: list[FrameKeypoints] = []
 
-        # Track horses across frames for consistent IDs
-        if self.config.enable_tracking:
+        # Detection: SAM 2 or YOLO
+        if self.config.use_sam:
+            all_detections = self._sam_detector.detect_and_track(batch.frames)
+        elif self.config.enable_tracking:
             tracked = self._detector.detect_and_track(batch.frames, self.config.tracker)
             all_detections = tracked
         else:
@@ -176,6 +191,10 @@ class GaitAnalysisPipeline:
                 kr.frame_idx = batch.indices[i]
 
             all_keypoints.append(fk)
+
+        # Apply anatomy corrections if enabled
+        if self.config.enable_anatomy_correction:
+            self._apply_anatomy_corrections(all_keypoints)
 
         # Log ViTPose hybrid stats if applicable
         if self.config.use_vitpose and hasattr(self._estimator, "stats"):
@@ -315,6 +334,41 @@ class GaitAnalysisPipeline:
 
         return result
 
+    def _apply_anatomy_corrections(
+        self,
+        all_keypoints: list[FrameKeypoints],
+    ) -> None:
+        """Apply equine anatomy corrections to all keypoint results.
+
+        Uses AnatomyValidator + AnatomyCorrector to fix anatomically
+        implausible predictions (vertical order, joint angles, limb
+        proportions) while preserving high-confidence keypoints.
+        """
+        from src.cv.training.anatomy import AnatomyCorrector, AnatomyValidator
+
+        corrector = AnatomyCorrector(
+            confidence_threshold=self.config.keypoint_confidence,
+            correction_strength=self.config.anatomy_correction_strength,
+        )
+
+        total_corrections = 0
+        for fk in all_keypoints:
+            for kr in fk.horses:
+                corrected_kpts, corrected_conf, report = corrector.correct(
+                    kr.keypoints, kr.confidence,
+                )
+                if report.violations:
+                    total_corrections += 1
+                kr.keypoints = corrected_kpts
+                kr.confidence = corrected_conf
+
+        if total_corrections > 0:
+            logger.info(
+                "Anatomy corrections applied: %d/%d frames had violations corrected",
+                total_corrections,
+                sum(len(fk.horses) for fk in all_keypoints),
+            )
+
     def _write_annotated_video(
         self,
         output_path: Path,
@@ -334,7 +388,8 @@ class GaitAnalysisPipeline:
         symmetry = None
 
         if horse_metrics:
-            m = horse_metrics[0]
+            # Use the horse with the most strides (primary tracked horse)
+            m = max(horse_metrics, key=lambda h: h.num_strides)
             stride_freq = m.mean_stride_frequency_hz if m.mean_stride_frequency_hz > 0 else None
             stride_len = m.mean_stride_length_px if m.mean_stride_length_px > 0 else None
             speed = m.mean_speed_px_s if m.mean_speed_px_s > 0 else None

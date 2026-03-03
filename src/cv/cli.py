@@ -39,6 +39,10 @@ def cmd_analyze(args: argparse.Namespace) -> int:
         keypoint_confidence=args.kpt_conf,
         use_vitpose=args.vitpose,
         vitpose_size=args.vitpose_size,
+        use_sam=args.sam,
+        sam_model_size=args.sam_size,
+        enable_anatomy_correction=args.anatomy_correction,
+        anatomy_correction_strength=args.anatomy_strength,
         enable_tracking=not args.no_tracking,
         output_video=not args.no_video,
         output_csv=not args.no_csv,
@@ -132,6 +136,14 @@ def main() -> int:
     p_analyze.add_argument("--max-frames", type=int, default=None, help="Max frames to process")
     p_analyze.add_argument("--px-per-meter", type=float, default=None, help="Pixels per meter for calibration")
     p_analyze.add_argument("--smooth-window", type=int, default=7, help="Smoothing window size")
+    p_analyze.add_argument("--sam", action="store_true",
+                           help="Use Grounding DINO + SAM 2 for horse detection/segmentation")
+    p_analyze.add_argument("--sam-size", default="tiny", choices=["tiny", "small", "base", "large"],
+                           help="SAM 2 model size (default: tiny)")
+    p_analyze.add_argument("--anatomy-correction", action="store_true",
+                           help="Apply equine anatomy corrections to keypoints")
+    p_analyze.add_argument("--anatomy-strength", type=float, default=0.7,
+                           help="Anatomy correction strength 0-1 (default: 0.7)")
 
     # info
     p_info = sub.add_parser("info", help="Print video metadata")
