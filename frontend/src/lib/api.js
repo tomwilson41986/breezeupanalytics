@@ -1,13 +1,16 @@
 /**
  * BreezeVision API layer
  *
- * Primary data source: S3 (pre-processed JSON uploaded by scripts/sync_to_s3.py)
- * Fallback: OBS REST API via Netlify proxy (for live data or when S3 is empty)
+ * Data sources (in priority order):
+ *   1. S3 — pre-processed JSON (via sale-data Netlify function)
+ *   2. Static JSON — bundled in /data/ at build time (GitHub)
+ *
+ * No live OBS API calls.
  */
 
 const API_BASE = "/.netlify/functions";
 
-// Known OBS catalog sale IDs — s3Key matches the S3 folder name
+// Known sale catalog — s3Key matches S3 folder and static /data/ folder
 export const SALE_CATALOG = {
   obs_march_2025: {
     id: 142,
@@ -60,15 +63,32 @@ export async function fetchStatsFromS3(s3Key) {
   return res.json();
 }
 
-/* ── OBS API (fallback) ─────────────────────────────────────── */
+/* ── Static data fallback (bundled in repo) ───────────────── */
 
 /**
- * Fetch all hip data for a sale from OBS API
+ * Fetch sale data from static JSON bundled at build time
  */
-export async function fetchSale(catalogId) {
-  const res = await fetch(`${API_BASE}/obs-proxy?saleId=${catalogId}`);
-  if (!res.ok) throw new Error(`Failed to fetch sale: ${res.status}`);
-  return res.json();
+export async function fetchSaleStatic(s3Key) {
+  try {
+    const res = await fetch(`/data/${s3Key}/sale.json`);
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fetch stats from static JSON bundled at build time
+ */
+export async function fetchStatsStatic(s3Key) {
+  try {
+    const res = await fetch(`/data/${s3Key}/stats.json`);
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
 }
 
 /* ── S3 Asset functions ─────────────────────────────────────── */
@@ -99,56 +119,10 @@ export async function fetchSaleAssetIndex(s3Key) {
   return data.assets || {};
 }
 
-/* ── Parsing (used when falling back to OBS API) ────────────── */
+/* ── Parsing (S3 / static JSON format) ───────────────────────── */
 
 /**
- * Parse raw OBS API hip data into our standardised shape
- */
-export function parseHip(raw) {
-  const dp = raw.display_props || {};
-  let status = "pending";
-  if (dp.is_hip_out) status = "out";
-  else if (dp.is_rna) status = "rna";
-  else if (dp.is_hip_sold) status = "sold";
-
-  const price = parseFloat(raw.hammer_price);
-
-  return {
-    hipNumber: parseInt(raw.hip_number, 10),
-    horseName: raw.horse_name || null,
-    sex: raw.sex || "—",
-    color: raw.color || "—",
-    yearOfBirth: raw.foaling_year ? parseInt(raw.foaling_year, 10) : null,
-    sire: raw.sire_name || "Unknown",
-    dam: raw.dam_name || "Unknown",
-    damSire: raw.dam_sire || "Unknown",
-    consignor: raw.consignor_name || "—",
-    stateBred: raw.foaling_area || null,
-
-    // Under-tack
-    breezeTime: raw.ut_time ? parseFloat(raw.ut_time) : null,
-    breezeDistance: raw.ut_distance ? raw.ut_distance.trim() : null,
-    breezeDate: raw.ut_actual_date || null,
-
-    // Sale result
-    status,
-    price: !isNaN(price) && price > 0 ? price : null,
-    buyer: raw.buyer_name || null,
-    displayPrice: dp.hammer_price || null,
-
-    // Media URLs
-    photoUrl: raw.photo_link || null,
-    videoUrl: raw.video_link || null,
-    walkVideoUrl: raw.walk_video_link || null,
-    pedigreeUrl: raw.pedigree_pdf_link || null,
-
-    // Raw for debugging
-    _raw: raw,
-  };
-}
-
-/**
- * Convert S3 hip format (from sync_to_s3.py) to frontend format
+ * Convert S3/static hip format to frontend format
  */
 export function parseS3Hip(h) {
   return {
@@ -174,7 +148,7 @@ export function parseS3Hip(h) {
     buyer: h.buyer || null,
     displayPrice: h.sale_price ? `$${h.sale_price.toLocaleString()}` : null,
 
-    // Media URLs (from OBS, S3 assets overlay these)
+    // Media URLs (S3 assets overlay these via assetIndex)
     photoUrl: h.photo_url || null,
     videoUrl: h.video_url || null,
     walkVideoUrl: h.walk_video_url || null,
@@ -183,23 +157,7 @@ export function parseS3Hip(h) {
 }
 
 /**
- * Parse a full sale response from OBS API
- */
-export function parseSaleResponse(data) {
-  const hips = (data.sale_hip || []).map(parseHip);
-  return {
-    saleId: data.sale_id,
-    saleCode: data.sale_code,
-    saleName: data.sale_name,
-    year: data.year,
-    startDate: data.sale_starts,
-    endDate: data.sale_ends,
-    hips,
-  };
-}
-
-/**
- * Parse an S3 sale response (from sync_to_s3.py)
+ * Parse an S3/static sale response
  */
 export function parseS3SaleResponse(data) {
   const hips = (data.hips || []).map(parseS3Hip);
@@ -216,7 +174,7 @@ export function parseS3SaleResponse(data) {
 }
 
 /**
- * Compute aggregate stats for a sale
+ * Compute aggregate stats for a sale (used when pre-computed stats unavailable)
  */
 export function computeSaleStats(hips) {
   const sold = hips.filter((h) => h.status === "sold" && h.price);

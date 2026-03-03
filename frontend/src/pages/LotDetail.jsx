@@ -31,7 +31,7 @@ export default function LotDetail() {
   const hip = sale?.hips.find((h) => String(h.hipNumber) === String(hipNumber));
   if (!hip) return <ErrorBanner message={`Hip #${hipNumber} not found`} />;
 
-  // Merge S3 assets with OBS assets — S3 takes priority
+  // Merge S3 assets with sale data assets — S3 takes priority
   const videoUrl = s3Assets?.video || hip.videoUrl;
   const walkVideoUrl = s3Assets?.walkVideo || hip.walkVideoUrl;
   const photoUrl = s3Assets?.photo || hip.photoUrl;

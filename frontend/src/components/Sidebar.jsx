@@ -57,7 +57,7 @@ export default function Sidebar() {
       {/* Footer */}
       <div className="px-6 py-4 border-t border-gray-100">
         <p className="text-[11px] text-gray-400">
-          Data sourced from OBS
+          BreezeVision Analytics
         </p>
       </div>
     </aside>

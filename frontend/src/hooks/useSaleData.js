@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import {
   fetchSaleFromS3,
   fetchStatsFromS3,
+  fetchSaleStatic,
+  fetchStatsStatic,
   parseS3SaleResponse,
-  fetchSale,
-  parseSaleResponse,
   computeSaleStats,
   fetchSaleAssetIndex,
   SALE_CATALOG,
@@ -21,33 +21,40 @@ function getS3Key(catalogId) {
 }
 
 /**
- * Try S3 first (pre-processed data), fall back to live OBS API.
+ * Try S3 first, then static JSON bundled in the repo. No live API calls.
  */
-async function loadSaleData(catalogId, s3Key) {
-  // Try S3 first — fastest and has pre-computed stats
-  if (s3Key) {
-    const [s3Sale, s3Stats] = await Promise.all([
-      fetchSaleFromS3(s3Key),
-      fetchStatsFromS3(s3Key),
-    ]);
+async function loadSaleData(s3Key) {
+  if (!s3Key) throw new Error("Unknown sale");
 
-    if (s3Sale && s3Sale.hips) {
-      const parsed = parseS3SaleResponse(s3Sale);
-      // Use pre-computed stats from S3, or compute from parsed hips
-      const stats = s3Stats || computeSaleStats(parsed.hips);
-      return { sale: parsed, stats, source: "s3" };
-    }
+  // Try S3 first (Netlify function → S3 bucket)
+  const [s3Sale, s3Stats] = await Promise.all([
+    fetchSaleFromS3(s3Key),
+    fetchStatsFromS3(s3Key),
+  ]);
+
+  if (s3Sale && s3Sale.hips) {
+    const parsed = parseS3SaleResponse(s3Sale);
+    const stats = s3Stats || computeSaleStats(parsed.hips);
+    return { sale: parsed, stats, source: "s3" };
   }
 
-  // Fallback: fetch live from OBS API
-  const raw = await fetchSale(catalogId);
-  const parsed = parseSaleResponse(raw);
-  const stats = computeSaleStats(parsed.hips);
-  return { sale: parsed, stats, source: "obs" };
+  // Fallback: static JSON from /data/ (bundled in repo at build time)
+  const [staticSale, staticStats] = await Promise.all([
+    fetchSaleStatic(s3Key),
+    fetchStatsStatic(s3Key),
+  ]);
+
+  if (staticSale && staticSale.hips) {
+    const parsed = parseS3SaleResponse(staticSale);
+    const stats = staticStats || computeSaleStats(parsed.hips);
+    return { sale: parsed, stats, source: "static" };
+  }
+
+  throw new Error("Sale data not available. Check S3 bucket or static data.");
 }
 
 /**
- * Hook to fetch + parse sale data from S3 (primary) or OBS API (fallback),
+ * Hook to fetch + parse sale data from S3 (primary) or static JSON (fallback),
  * and also load the S3 asset index for the sale.
  */
 export function useSaleData(catalogId) {
@@ -67,7 +74,7 @@ export function useSaleData(catalogId) {
     const s3Key = getS3Key(catalogId);
 
     // Fetch sale data and S3 asset index in parallel
-    const dataPromise = loadSaleData(catalogId, s3Key);
+    const dataPromise = loadSaleData(s3Key);
     const assetsPromise = s3Key
       ? fetchSaleAssetIndex(s3Key)
       : Promise.resolve({});
