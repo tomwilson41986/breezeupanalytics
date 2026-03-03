@@ -15,6 +15,12 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Serve static data files directly (don't rewrite to SPA)
+[[redirects]]
+  from = "/data/*"
+  to = "/data/:splat"
+  status = 200
+
 # SPA fallback — all other routes to index.html
 [[redirects]]
   from = "/*"
