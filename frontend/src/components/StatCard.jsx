@@ -1,23 +1,17 @@
 export default function StatCard({ label, value, sub, accent = false }) {
   return (
-    <div
-      className={`rounded-xl border p-4 ${
-        accent
-          ? "border-brand-500/30 bg-brand-950/40 stat-glow"
-          : "border-slate-800 bg-slate-900/50"
-      }`}
-    >
-      <p className="text-xs font-medium uppercase tracking-wider text-slate-400 mb-1">
+    <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <p className="text-[11px] font-medium uppercase tracking-wider text-gray-400 mb-1.5">
         {label}
       </p>
       <p
-        className={`text-2xl font-bold tracking-tight ${
-          accent ? "text-brand-400" : "text-white"
+        className={`text-2xl font-semibold tracking-tight ${
+          accent ? "text-brand-600" : "text-gray-900"
         }`}
       >
         {value}
       </p>
-      {sub && <p className="text-xs text-slate-500 mt-0.5">{sub}</p>}
+      {sub && <p className="text-[12px] text-gray-400 mt-1">{sub}</p>}
     </div>
   );
 }

@@ -42,17 +42,17 @@ export default function Analytics() {
       {/* Header + selector */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">
+          <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
             Analytics
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-gray-500 mt-1">
             Deep-dive analysis tools and visualizations
           </p>
         </div>
         <select
           value={selectedSaleId}
           onChange={(e) => setSelectedSaleId(e.target.value)}
-          className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500/50"
+          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
         >
           {saleEntries.map(([key, meta]) => (
             <option key={key} value={String(meta.id)}>
@@ -134,20 +134,20 @@ export default function Analytics() {
 
 function SaleStatusPie({ stats }) {
   const data = [
-    { name: "Sold", value: stats.soldCount, color: "#22c55e" },
+    { name: "Sold", value: stats.soldCount, color: "#16a34a" },
     { name: "RNA", value: stats.rnaCount, color: "#f97316" },
     { name: "Out", value: stats.outCount, color: "#ef4444" },
     {
       name: "Pending",
       value:
         stats.totalHips - stats.soldCount - stats.rnaCount - stats.outCount,
-      color: "#475569",
+      color: "#d1d5db",
     },
   ].filter((d) => d.value > 0);
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">
+    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <h3 className="text-sm font-semibold text-gray-900 mb-4">
         Sale Status Breakdown
       </h3>
       <ResponsiveContainer width="100%" height={220}>
@@ -167,15 +167,16 @@ function SaleStatusPie({ stats }) {
           </Pie>
           <Tooltip
             contentStyle={{
-              backgroundColor: "#0f172a",
-              border: "1px solid #334155",
+              backgroundColor: "#ffffff",
+              border: "1px solid #e5e7eb",
               borderRadius: 8,
               fontSize: 12,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
             }}
           />
           <Legend
             iconSize={8}
-            wrapperStyle={{ fontSize: 11, color: "#94a3b8" }}
+            wrapperStyle={{ fontSize: 11, color: "#6b7280" }}
           />
         </PieChart>
       </ResponsiveContainer>
@@ -210,33 +211,34 @@ function SexBreakdown({ hips }) {
     }))
     .sort((a, b) => b.count - a.count);
 
-  const colors = ["#3391ff", "#a78bfa", "#22c55e", "#f97316"];
+  const colors = ["#3b82f6", "#8b5cf6", "#16a34a", "#f97316"];
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">
+    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <h3 className="text-sm font-semibold text-gray-900 mb-4">
         By Sex
       </h3>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
           <XAxis
             dataKey="name"
-            tick={{ fill: "#94a3b8", fontSize: 11 }}
-            axisLine={{ stroke: "#334155" }}
+            tick={{ fill: "#6b7280", fontSize: 11 }}
+            axisLine={{ stroke: "#e5e7eb" }}
             tickLine={false}
           />
           <YAxis
-            tick={{ fill: "#94a3b8", fontSize: 11 }}
-            axisLine={{ stroke: "#334155" }}
+            tick={{ fill: "#6b7280", fontSize: 11 }}
+            axisLine={{ stroke: "#e5e7eb" }}
             tickLine={false}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: "#0f172a",
-              border: "1px solid #334155",
+              backgroundColor: "#ffffff",
+              border: "1px solid #e5e7eb",
               borderRadius: 8,
               fontSize: 12,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
             }}
           />
           <Bar dataKey="count" name="Count" radius={[4, 4, 0, 0]}>
@@ -259,55 +261,55 @@ function TopSellers({ hips }) {
   if (sold.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">
+    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <h3 className="text-sm font-semibold text-gray-900 mb-4">
         Top 10 Highest Prices
       </h3>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-800">
-              <th className="text-left py-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <tr className="border-b border-gray-100">
+              <th className="text-left py-2 px-3 text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Rank
               </th>
-              <th className="text-left py-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <th className="text-left py-2 px-3 text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Hip
               </th>
-              <th className="text-left py-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <th className="text-left py-2 px-3 text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Sire
               </th>
-              <th className="text-left py-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <th className="text-left py-2 px-3 text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Dam
               </th>
-              <th className="text-left py-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <th className="text-left py-2 px-3 text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Consignor
               </th>
-              <th className="text-left py-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <th className="text-left py-2 px-3 text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Buyer
               </th>
-              <th className="text-right py-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <th className="text-right py-2 px-3 text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Price
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/50">
+          <tbody className="divide-y divide-gray-50">
             {sold.map((h, i) => (
               <tr key={h.hipNumber} className="table-row-hover">
-                <td className="py-2 px-3 font-mono text-slate-500">
+                <td className="py-2 px-3 font-mono text-gray-400">
                   {i + 1}
                 </td>
-                <td className="py-2 px-3 font-mono font-semibold text-brand-400">
+                <td className="py-2 px-3 font-mono font-semibold text-brand-600">
                   #{h.hipNumber}
                 </td>
-                <td className="py-2 px-3 text-slate-200">{h.sire}</td>
-                <td className="py-2 px-3 text-slate-400">{h.dam}</td>
-                <td className="py-2 px-3 text-slate-400 text-xs max-w-[180px] truncate">
+                <td className="py-2 px-3 text-gray-700">{h.sire}</td>
+                <td className="py-2 px-3 text-gray-500">{h.dam}</td>
+                <td className="py-2 px-3 text-gray-500 text-xs max-w-[180px] truncate">
                   {h.consignor}
                 </td>
-                <td className="py-2 px-3 text-slate-300 text-xs max-w-[180px] truncate">
+                <td className="py-2 px-3 text-gray-600 text-xs max-w-[180px] truncate">
                   {h.buyer || "—"}
                 </td>
-                <td className="py-2 px-3 text-right font-mono font-bold text-white">
+                <td className="py-2 px-3 text-right font-mono font-bold text-gray-900">
                   {formatCurrency(h.price)}
                 </td>
               </tr>

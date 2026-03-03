@@ -26,50 +26,50 @@ export default function LotDetail() {
       <div className="flex items-center gap-2 text-sm">
         <Link
           to="/"
-          className="text-slate-400 hover:text-brand-400 transition-colors"
+          className="text-gray-400 hover:text-brand-600 transition-colors"
         >
           Dashboard
         </Link>
-        <span className="text-slate-600">/</span>
+        <span className="text-gray-300">/</span>
         <Link
           to={`/sale/${saleId}`}
-          className="text-slate-400 hover:text-brand-400 transition-colors"
+          className="text-gray-400 hover:text-brand-600 transition-colors"
         >
           {sale.saleName}
         </Link>
-        <span className="text-slate-600">/</span>
-        <span className="text-slate-200">Hip #{hipNumber}</span>
+        <span className="text-gray-300">/</span>
+        <span className="text-gray-700">Hip #{hipNumber}</span>
       </div>
 
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <span className="text-3xl font-bold font-mono text-brand-400">
+            <span className="text-3xl font-bold font-mono text-brand-600">
               #{hip.hipNumber}
             </span>
             <StatusBadge status={hip.status} />
           </div>
-          <h1 className="text-xl font-bold text-white">
+          <h1 className="text-xl font-semibold text-gray-900">
             {hip.horseName || (
-              <span className="text-slate-400 italic">Unnamed</span>
+              <span className="text-gray-400 italic">Unnamed</span>
             )}
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-gray-500 mt-1">
             {colorLabel(hip.color)} {sexLabel(hip.sex)} &middot;{" "}
             {hip.yearOfBirth || "—"} &middot; Consigned by {hip.consignor}
           </p>
         </div>
         {hip.price && (
           <div className="text-right">
-            <p className="text-xs uppercase tracking-wider text-slate-400">
+            <p className="text-[11px] uppercase tracking-wider text-gray-400">
               Hammer Price
             </p>
-            <p className="text-2xl font-bold text-white">
+            <p className="text-2xl font-semibold text-gray-900">
               {formatCurrency(hip.price)}
             </p>
             {hip.buyer && (
-              <p className="text-sm text-slate-400">to {hip.buyer}</p>
+              <p className="text-sm text-gray-500">to {hip.buyer}</p>
             )}
           </div>
         )}
@@ -78,9 +78,9 @@ export default function LotDetail() {
       {/* Info grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Pedigree */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
-          <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-            <PedigreeIcon className="w-4 h-4 text-brand-400" />
+        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <PedigreeIcon className="w-4 h-4 text-brand-500" />
             Pedigree
           </h3>
           <div className="space-y-3">
@@ -94,42 +94,41 @@ export default function LotDetail() {
         </div>
 
         {/* Under-tack */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
-          <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-            <TimerIcon className="w-4 h-4 text-accent-400" />
+        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <TimerIcon className="w-4 h-4 text-emerald-500" />
             Under-Tack (Breeze)
           </h3>
           {hip.breezeTime ? (
             <div className="space-y-3">
               <div className="flex items-baseline gap-3">
-                <span className="text-4xl font-bold font-mono text-white">
+                <span className="text-4xl font-bold font-mono text-gray-900">
                   {formatBreezeTime(hip.breezeTime)}
                 </span>
-                <span className="text-sm text-slate-400">
+                <span className="text-sm text-gray-500">
                   {hip.breezeDistance} mile
                 </span>
               </div>
               {hip.breezeDate && (
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-gray-400">
                   Breezed on {hip.breezeDate}
                 </p>
               )}
             </div>
           ) : (
-            <p className="text-slate-500 text-sm">No breeze data recorded</p>
+            <p className="text-gray-400 text-sm">No breeze data recorded</p>
           )}
         </div>
       </div>
 
       {/* Assets */}
       <div>
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <MediaIcon className="w-5 h-5 text-brand-400" />
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <MediaIcon className="w-5 h-5 text-brand-500" />
           Assets
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Breeze video */}
           {hip.videoUrl && (
             <AssetCard
               label="Breeze Video"
@@ -138,8 +137,6 @@ export default function LotDetail() {
               accentColor="emerald"
             />
           )}
-
-          {/* Walk video */}
           {hip.walkVideoUrl && (
             <AssetCard
               label="Walking Video"
@@ -148,8 +145,6 @@ export default function LotDetail() {
               accentColor="sky"
             />
           )}
-
-          {/* Photo */}
           {hip.photoUrl && (
             <AssetCard
               label="Conformation Photo"
@@ -158,8 +153,6 @@ export default function LotDetail() {
               accentColor="violet"
             />
           )}
-
-          {/* Pedigree PDF */}
           {hip.pedigreeUrl && (
             <AssetCard
               label="Pedigree PDF"
@@ -174,8 +167,8 @@ export default function LotDetail() {
           !hip.walkVideoUrl &&
           !hip.photoUrl &&
           !hip.pedigreeUrl && (
-            <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-8 text-center">
-              <p className="text-slate-500">
+            <div className="rounded-xl border border-gray-100 bg-white p-8 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+              <p className="text-gray-400">
                 No assets available for this hip
               </p>
             </div>
@@ -183,11 +176,11 @@ export default function LotDetail() {
       </div>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between pt-4 border-t border-slate-800">
+      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
         {hip.hipNumber > 1 ? (
           <Link
             to={`/sale/${saleId}/hip/${hip.hipNumber - 1}`}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-700 text-sm text-slate-300 hover:border-brand-500/40 hover:text-brand-400 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 hover:border-brand-300 hover:text-brand-600 transition-colors"
           >
             <span>&larr;</span> Hip #{hip.hipNumber - 1}
           </Link>
@@ -196,7 +189,7 @@ export default function LotDetail() {
         )}
         <Link
           to={`/sale/${saleId}/hip/${hip.hipNumber + 1}`}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-700 text-sm text-slate-300 hover:border-brand-500/40 hover:text-brand-400 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 hover:border-brand-300 hover:text-brand-600 transition-colors"
         >
           Hip #{hip.hipNumber + 1} <span>&rarr;</span>
         </Link>
@@ -210,12 +203,12 @@ export default function LotDetail() {
 function PedigreeRow({ label, value, highlight }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-xs uppercase tracking-wider text-slate-500">
+      <span className="text-[11px] uppercase tracking-wider text-gray-400">
         {label}
       </span>
       <span
         className={`text-sm font-medium ${
-          highlight ? "text-brand-400" : "text-slate-200"
+          highlight ? "text-brand-600" : "text-gray-700"
         }`}
       >
         {value}
@@ -226,39 +219,39 @@ function PedigreeRow({ label, value, highlight }) {
 
 function AssetCard({ label, type, url, accentColor }) {
   const accentMap = {
-    emerald: "border-emerald-500/30 hover:border-emerald-500/60",
-    sky: "border-sky-500/30 hover:border-sky-500/60",
-    violet: "border-violet-500/30 hover:border-violet-500/60",
-    amber: "border-amber-500/30 hover:border-amber-500/60",
+    emerald: "border-gray-100 hover:border-emerald-200",
+    sky: "border-gray-100 hover:border-sky-200",
+    violet: "border-gray-100 hover:border-violet-200",
+    amber: "border-gray-100 hover:border-amber-200",
   };
 
   return (
     <div
-      className={`rounded-xl border bg-slate-900/50 overflow-hidden transition-colors ${accentMap[accentColor]}`}
+      className={`rounded-xl border bg-white overflow-hidden transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.04)] ${accentMap[accentColor]}`}
     >
       {type === "video" && (
         <video
           src={url}
           controls
           preload="metadata"
-          className="w-full aspect-video bg-black"
+          className="w-full aspect-video bg-gray-50"
         />
       )}
       {type === "image" && (
         <img
           src={url}
           alt={label}
-          className="w-full aspect-video object-cover bg-slate-800"
+          className="w-full aspect-video object-cover bg-gray-50"
           loading="lazy"
         />
       )}
       {type === "pdf" && (
-        <div className="aspect-video bg-slate-800/50 flex items-center justify-center">
+        <div className="aspect-video bg-gray-50 flex items-center justify-center">
           <a
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center gap-2 text-slate-400 hover:text-brand-400 transition-colors"
+            className="flex flex-col items-center gap-2 text-gray-400 hover:text-brand-600 transition-colors"
           >
             <svg
               className="w-10 h-10"
@@ -279,12 +272,12 @@ function AssetCard({ label, type, url, accentColor }) {
       )}
       <div className="p-3">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-slate-300">{label}</span>
+          <span className="text-xs font-medium text-gray-600">{label}</span>
           <a
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-slate-500 hover:text-brand-400 transition-colors"
+            className="text-xs text-gray-400 hover:text-brand-600 transition-colors"
           >
             Open &rarr;
           </a>
@@ -302,7 +295,7 @@ function PedigreeIcon({ className }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="1.75"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -321,7 +314,7 @@ function TimerIcon({ className }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="1.75"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -338,7 +331,7 @@ function MediaIcon({ className }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="1.75"
       strokeLinecap="round"
       strokeLinejoin="round"
     >

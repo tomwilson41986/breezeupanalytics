@@ -18,7 +18,6 @@ export default function SaleDetail() {
   const { saleId } = useParams();
   const { sale, stats, loading, error } = useSaleData(saleId);
 
-  // Find meta
   const meta = Object.values(SALE_CATALOG).find(
     (m) => String(m.id) === String(saleId)
   );
@@ -33,20 +32,20 @@ export default function SaleDetail() {
       <div className="flex items-center gap-2 text-sm">
         <Link
           to="/"
-          className="text-slate-400 hover:text-brand-400 transition-colors"
+          className="text-gray-400 hover:text-brand-600 transition-colors"
         >
           Dashboard
         </Link>
-        <span className="text-slate-600">/</span>
-        <span className="text-slate-200">{sale.saleName}</span>
+        <span className="text-gray-300">/</span>
+        <span className="text-gray-700">{sale.saleName}</span>
       </div>
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">
+        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
           {sale.saleName}
         </h1>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-gray-500 mt-1">
           {meta?.company || "OBS"} &middot; {meta?.location || "Ocala, FL"}{" "}
           &middot; Sale ID {saleId}
         </p>
@@ -91,7 +90,7 @@ export default function SaleDetail() {
 
       {/* Hip table */}
       <div>
-        <h2 className="text-lg font-semibold text-white mb-4">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">
           Full Catalog
         </h2>
         <HipTable hips={sale.hips} saleId={saleId} />

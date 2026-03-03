@@ -26,10 +26,10 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">
+        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
           Dashboard
         </h1>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-gray-500 mt-1">
           Breeze-up sale analytics across all OBS 2YO training sales
         </p>
       </div>
@@ -62,7 +62,7 @@ export default function Dashboard() {
 
       {/* Sale cards */}
       <div>
-        <h2 className="text-lg font-semibold text-white mb-4">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">
           2025 Sales Season
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
