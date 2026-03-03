@@ -153,6 +153,30 @@ export default function Sidebar() {
           >
             Time Analysis
           </NavLink>
+          <NavLink
+            to="/analytics/performance"
+            className={({ isActive }) =>
+              `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
+                isActive
+                  ? "bg-brand-50 text-brand-700 font-medium"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+              }`
+            }
+          >
+            Performance Tracker
+          </NavLink>
+          <NavLink
+            to="/analytics/breeze-performance"
+            className={({ isActive }) =>
+              `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
+                isActive
+                  ? "bg-brand-50 text-brand-700 font-medium"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+              }`
+            }
+          >
+            Breeze Performance
+          </NavLink>
         </Section>
 
         {/* ── Vendors ───────────────────────────────────── */}
