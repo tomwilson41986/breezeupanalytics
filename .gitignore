@@ -42,3 +42,6 @@ data/training/*/review/
 
 # Pipeline output artifacts (videos, metrics, QA frames)
 output/
+
+# Training runs (model weights, logs, plots)
+runs/
