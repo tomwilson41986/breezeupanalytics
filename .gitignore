@@ -35,5 +35,10 @@ data/videos/
 # YOLO model weights (auto-downloaded)
 *.pt
 
+# Training data (images/videos are large; labels are small text, tracked)
+data/training/*/images/
+data/training/*/videos/
+data/training/*/review/
+
 # Pipeline output artifacts (videos, metrics, QA frames)
 output/
