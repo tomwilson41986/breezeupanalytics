@@ -114,6 +114,7 @@ export default function Sidebar() {
         <Section label="Vendors" icon={<VendorsIcon />}>
           <NavLink
             to="/vendors"
+            end
             className={({ isActive }) =>
               `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
                 isActive
@@ -122,7 +123,31 @@ export default function Sidebar() {
               }`
             }
           >
-            Vendor Performance
+            Overall Performance
+          </NavLink>
+          <NavLink
+            to="/vendors/by-sale"
+            className={({ isActive }) =>
+              `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
+                isActive
+                  ? "bg-brand-50 text-brand-700 font-medium"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+              }`
+            }
+          >
+            Stats by Sale
+          </NavLink>
+          <NavLink
+            to="/vendors/records"
+            className={({ isActive }) =>
+              `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
+                isActive
+                  ? "bg-brand-50 text-brand-700 font-medium"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+              }`
+            }
+          >
+            Sale Records
           </NavLink>
         </Section>
 

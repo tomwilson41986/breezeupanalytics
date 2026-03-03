@@ -1,5 +1,5 @@
 [build]
-  command = "cd frontend && npm install && npm run build"
+  command = "npm install xlsx && node scripts/convert-historic-data.mjs && cd frontend && npm install && npm run build"
   publish = "frontend/dist"
   functions = "frontend/netlify/functions"
 
