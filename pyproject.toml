@@ -25,6 +25,7 @@ cv = [
     "opencv-python-headless>=4.8",
     "supervision>=0.18",
     "scipy>=1.11",
+    "transformers>=4.45",
 ]
 dev = [
     "pytest>=7.4",

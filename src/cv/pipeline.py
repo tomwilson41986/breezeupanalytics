@@ -41,6 +41,8 @@ class PipelineConfig:
     # Keypoints
     keypoint_model: str = "yolo11n-pose.pt"
     keypoint_confidence: float = 0.3
+    use_vitpose: bool = False
+    vitpose_size: str = "base"       # small | base | large | huge
 
     # Tracking
     enable_tracking: bool = True
@@ -100,10 +102,18 @@ class GaitAnalysisPipeline:
                 confidence_threshold=self.config.detection_confidence,
             )
         if self._estimator is None:
-            self._estimator = EquineKeypointEstimator(
-                model_path=self.config.keypoint_model,
-                confidence_threshold=self.config.keypoint_confidence,
-            )
+            if self.config.use_vitpose:
+                from src.cv.vitpose import ViTPoseKeypointEstimator
+
+                self._estimator = ViTPoseKeypointEstimator(
+                    model_size=self.config.vitpose_size,
+                    confidence_threshold=self.config.keypoint_confidence,
+                )
+            else:
+                self._estimator = EquineKeypointEstimator(
+                    model_path=self.config.keypoint_model,
+                    confidence_threshold=self.config.keypoint_confidence,
+                )
 
     def process_video(
         self,

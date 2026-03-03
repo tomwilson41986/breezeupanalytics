@@ -37,6 +37,8 @@ def cmd_analyze(args: argparse.Namespace) -> int:
         detection_confidence=args.det_conf,
         keypoint_model=args.keypoint_model,
         keypoint_confidence=args.kpt_conf,
+        use_vitpose=args.vitpose,
+        vitpose_size=args.vitpose_size,
         enable_tracking=not args.no_tracking,
         output_video=not args.no_video,
         output_csv=not args.no_csv,
@@ -116,6 +118,10 @@ def main() -> int:
     p_analyze.add_argument("-o", "--output", help="Output directory")
     p_analyze.add_argument("--detection-model", default="yolo11n.pt", help="YOLO detection model")
     p_analyze.add_argument("--keypoint-model", default="yolo11n-pose.pt", help="YOLO pose model")
+    p_analyze.add_argument("--vitpose", action="store_true",
+                           help="Use ViTPose++ (AP-10K animal head) instead of YOLO-Pose for keypoints")
+    p_analyze.add_argument("--vitpose-size", default="base", choices=["small", "base", "large", "huge"],
+                           help="ViTPose++ model size (default: base)")
     p_analyze.add_argument("--det-conf", type=float, default=0.5, help="Detection confidence threshold")
     p_analyze.add_argument("--kpt-conf", type=float, default=0.3, help="Keypoint confidence threshold")
     p_analyze.add_argument("--no-tracking", action="store_true", help="Disable multi-object tracking")
