@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BreezeVision - Breeze Up Sales Analytics</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --border: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent2: #818cf8;
+      --green: #4ade80;
+      --amber: #fbbf24;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .logo span { color: var(--text); }
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .hero {
+      text-align: center;
+      padding: 3rem 0;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 1.15rem;
+      max-width: 650px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .stat-card .label {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .sales-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .sale-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .sale-card .company {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent2);
+      margin-bottom: 0.5rem;
+    }
+    .sale-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .sale-card .meta {
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    .sale-card .meta strong { color: var(--text); }
+    .agents-section {
+      margin-bottom: 2.5rem;
+    }
+    .agent-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 0.75rem;
+    }
+    .agent-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .agent-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .agent-item .name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .agent-item .desc {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 0.15rem;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 0.4rem;
+    }
+    .status-indicator.ready { background: var(--green); }
+    .status-indicator.pending { background: var(--amber); }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Breeze<span>Vision</span></div>
+    <div class="badge">Analytics Platform</div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <h1>Breeze Up Sales Analytics</h1>
+      <p>Ingest, store, and analyse US 2-year-old breeze-up sale data &mdash; linking sale-day assets to downstream racing performance outcomes.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="value">~3,800</div>
+        <div class="label">Annual Lots Tracked</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">5</div>
+        <div class="label">Major Sales Covered</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">6</div>
+        <div class="label">Automated Agents</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">2</div>
+        <div class="label">Sale Companies</div>
+      </div>
+    </div>
+
+    <h2>Target Sales</h2>
+    <div class="sales-grid">
+      <div class="sale-card">
+        <div class="company">OBS &mdash; Ocala Breeders' Sales</div>
+        <h3>March 2YO in Training</h3>
+        <div class="meta">Schedule: <strong>March</strong> &bull; ~850 hips</div>
+      </div>
+      <div class="sale-card">
+        <div class="company">OBS &mdash; Ocala Breeders' Sales</div>
+        <h3>Spring 2YO in Training</h3>
+        <div class="meta">Schedule: <strong>April</strong> &bull; ~1,200 hips</div>
+      </div>
+      <div class="sale-card">
+        <div class="company">OBS &mdash; Ocala Breeders' Sales</div>
+        <h3>June 2YO &amp; HRA</h3>
+        <div class="meta">Schedule: <strong>June</strong> &bull; ~1,000 hips</div>
+      </div>
+      <div class="sale-card">
+        <div class="company">Fasig-Tipton</div>
+        <h3>Gulfstream Selected 2YO</h3>
+        <div class="meta">Schedule: <strong>March/April</strong> &bull; ~200 hips</div>
+      </div>
+      <div class="sale-card">
+        <div class="company">Fasig-Tipton</div>
+        <h3>Midlantic May 2YO</h3>
+        <div class="meta">Schedule: <strong>May</strong> &bull; ~550 hips</div>
+      </div>
+    </div>
+
+    <div class="agents-section">
+      <h2>Platform Agents</h2>
+      <div class="agent-list">
+        <div class="agent-item">
+          <div class="agent-num">1</div>
+          <div>
+            <div class="name"><span class="status-indicator pending"></span>Catalog Discovery</div>
+            <div class="desc">Discover sales and enumerate all hips</div>
+          </div>
+        </div>
+        <div class="agent-item">
+          <div class="agent-num">2</div>
+          <div>
+            <div class="name"><span class="status-indicator pending"></span>Pedigree &amp; Sale Data</div>
+            <div class="desc">Scrape structured data for each lot</div>
+          </div>
+        </div>
+        <div class="agent-item">
+          <div class="agent-num">3</div>
+          <div>
+            <div class="name"><span class="status-indicator pending"></span>Video &amp; Media</div>
+            <div class="desc">Download video and image assets</div>
+          </div>
+        </div>
+        <div class="agent-item">
+          <div class="agent-num">4</div>
+          <div>
+            <div class="name"><span class="status-indicator pending"></span>Performance Tracking</div>
+            <div class="desc">Link sale graduates to racing outcomes</div>
+          </div>
+        </div>
+        <div class="agent-item">
+          <div class="agent-num">5</div>
+          <div>
+            <div class="name"><span class="status-indicator pending"></span>Data Quality</div>
+            <div class="desc">Ensure data completeness and correctness</div>
+          </div>
+        </div>
+        <div class="agent-item">
+          <div class="agent-num">6</div>
+          <div>
+            <div class="name"><span class="status-indicator pending"></span>Export &amp; Analytics</div>
+            <div class="desc">Generate analysis-ready datasets and reports</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    BreezeVision &mdash; Breeze Up Sales Analytics Platform
+  </footer>
+</body>
+</html>
