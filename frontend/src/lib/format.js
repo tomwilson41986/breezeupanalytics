@@ -36,28 +36,28 @@ export function formatBreezeTime(seconds) {
 export function statusColor(status) {
   switch (status) {
     case "sold":
-      return "text-accent-400";
+      return "text-emerald-600";
     case "rna":
-      return "text-warm-400";
+      return "text-amber-600";
     case "out":
     case "withdrawn":
-      return "text-danger-400";
+      return "text-red-500";
     default:
-      return "text-slate-400";
+      return "text-gray-400";
   }
 }
 
 export function statusBgColor(status) {
   switch (status) {
     case "sold":
-      return "bg-accent-500/15 text-accent-400 border-accent-500/30";
+      return "bg-emerald-50 text-emerald-700 border-emerald-200";
     case "rna":
-      return "bg-warm-500/15 text-warm-400 border-warm-500/30";
+      return "bg-amber-50 text-amber-700 border-amber-200";
     case "out":
     case "withdrawn":
-      return "bg-danger-500/15 text-danger-400 border-danger-500/30";
+      return "bg-red-50 text-red-600 border-red-200";
     default:
-      return "bg-slate-500/15 text-slate-400 border-slate-500/30";
+      return "bg-gray-50 text-gray-500 border-gray-200";
   }
 }
 

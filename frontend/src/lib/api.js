@@ -1,11 +1,13 @@
 /**
  * BreezeVision API layer
- * Fetches sale data from OBS via Netlify serverless function proxy
+ *
+ * Primary data source: S3 (pre-processed JSON uploaded by scripts/sync_to_s3.py)
+ * Fallback: OBS REST API via Netlify proxy (for live data or when S3 is empty)
  */
 
 const API_BASE = "/.netlify/functions";
 
-// Known OBS catalog sale IDs
+// Known OBS catalog sale IDs — s3Key matches the S3 folder name
 export const SALE_CATALOG = {
   obs_march_2025: {
     id: 142,
@@ -14,6 +16,7 @@ export const SALE_CATALOG = {
     month: 3,
     year: 2025,
     location: "Ocala, FL",
+    s3Key: "obs_march_2025",
   },
   obs_spring_2025: {
     id: 144,
@@ -22,6 +25,7 @@ export const SALE_CATALOG = {
     month: 4,
     year: 2025,
     location: "Ocala, FL",
+    s3Key: "obs_spring_2025",
   },
   obs_june_2025: {
     id: 145,
@@ -30,17 +34,72 @@ export const SALE_CATALOG = {
     month: 6,
     year: 2025,
     location: "Ocala, FL",
+    s3Key: "obs_june_2025",
   },
 };
 
+/* ── S3-backed data (primary) ───────────────────────────────── */
+
 /**
- * Fetch all hip data for a sale
+ * Fetch pre-processed sale data from S3 via sale-data function
+ */
+export async function fetchSaleFromS3(s3Key) {
+  const res = await fetch(`${API_BASE}/sale-data?sale=${encodeURIComponent(s3Key)}`);
+  if (!res.ok) return null;
+  return res.json();
+}
+
+/**
+ * Fetch pre-computed stats from S3
+ */
+export async function fetchStatsFromS3(s3Key) {
+  const res = await fetch(
+    `${API_BASE}/sale-data?sale=${encodeURIComponent(s3Key)}&type=stats`
+  );
+  if (!res.ok) return null;
+  return res.json();
+}
+
+/* ── OBS API (fallback) ─────────────────────────────────────── */
+
+/**
+ * Fetch all hip data for a sale from OBS API
  */
 export async function fetchSale(catalogId) {
   const res = await fetch(`${API_BASE}/obs-proxy?saleId=${catalogId}`);
   if (!res.ok) throw new Error(`Failed to fetch sale: ${res.status}`);
   return res.json();
 }
+
+/* ── S3 Asset functions ─────────────────────────────────────── */
+
+/**
+ * Fetch S3 asset URLs for a single hip
+ * Returns { video?, walkVideo?, photo?, pedigree? }
+ */
+export async function fetchHipAssets(s3Key, hipNumber) {
+  const res = await fetch(
+    `${API_BASE}/s3-assets?sale=${encodeURIComponent(s3Key)}&hip=${encodeURIComponent(hipNumber)}`
+  );
+  if (!res.ok) return {};
+  const data = await res.json();
+  return data.assets || {};
+}
+
+/**
+ * Fetch the list of all hips that have S3 assets for a sale
+ * Returns { [hipNumber]: { video?, walkVideo?, photo?, pedigree? } }
+ */
+export async function fetchSaleAssetIndex(s3Key) {
+  const res = await fetch(
+    `${API_BASE}/s3-assets?sale=${encodeURIComponent(s3Key)}&list=true`
+  );
+  if (!res.ok) return {};
+  const data = await res.json();
+  return data.assets || {};
+}
+
+/* ── Parsing (used when falling back to OBS API) ────────────── */
 
 /**
  * Parse raw OBS API hip data into our standardised shape
@@ -89,7 +148,42 @@ export function parseHip(raw) {
 }
 
 /**
- * Parse a full sale response
+ * Convert S3 hip format (from sync_to_s3.py) to frontend format
+ */
+export function parseS3Hip(h) {
+  return {
+    hipNumber: h.hip_number,
+    horseName: h.horse_name || null,
+    sex: h.sex || "—",
+    color: h.colour || "—",
+    yearOfBirth: h.year_of_birth || null,
+    sire: h.sire || "Unknown",
+    dam: h.dam || "Unknown",
+    damSire: h.dam_sire || "Unknown",
+    consignor: h.consignor || "—",
+    stateBred: h.state_bred || null,
+
+    // Under-tack
+    breezeTime: h.under_tack_time || null,
+    breezeDistance: h.under_tack_distance || null,
+    breezeDate: h.under_tack_date || null,
+
+    // Sale result
+    status: (h.sale_status || "pending").toLowerCase(),
+    price: h.sale_price || null,
+    buyer: h.buyer || null,
+    displayPrice: h.sale_price ? `$${h.sale_price.toLocaleString()}` : null,
+
+    // Media URLs (from OBS, S3 assets overlay these)
+    photoUrl: h.photo_url || null,
+    videoUrl: h.video_url || null,
+    walkVideoUrl: h.walk_video_url || null,
+    pedigreeUrl: h.pedigree_pdf_url || null,
+  };
+}
+
+/**
+ * Parse a full sale response from OBS API
  */
 export function parseSaleResponse(data) {
   const hips = (data.sale_hip || []).map(parseHip);
@@ -100,6 +194,23 @@ export function parseSaleResponse(data) {
     year: data.year,
     startDate: data.sale_starts,
     endDate: data.sale_ends,
+    hips,
+  };
+}
+
+/**
+ * Parse an S3 sale response (from sync_to_s3.py)
+ */
+export function parseS3SaleResponse(data) {
+  const hips = (data.hips || []).map(parseS3Hip);
+  return {
+    saleId: data.sale_id,
+    saleCode: data.sale_code,
+    saleName: data.sale_name,
+    year: data.year,
+    startDate: data.start_date,
+    endDate: data.end_date,
+    syncedAt: data.synced_at,
     hips,
   };
 }

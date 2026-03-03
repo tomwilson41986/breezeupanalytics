@@ -13,33 +13,34 @@ export default function PriceDistributionChart({ data }) {
   if (!data || data.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">
+    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <h3 className="text-sm font-semibold text-gray-900 mb-4">
         Price Distribution
       </h3>
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
           <XAxis
             dataKey="label"
-            tick={{ fill: "#94a3b8", fontSize: 11 }}
-            axisLine={{ stroke: "#334155" }}
+            tick={{ fill: "#6b7280", fontSize: 11 }}
+            axisLine={{ stroke: "#e5e7eb" }}
             tickLine={false}
           />
           <YAxis
-            tick={{ fill: "#94a3b8", fontSize: 11 }}
-            axisLine={{ stroke: "#334155" }}
+            tick={{ fill: "#6b7280", fontSize: 11 }}
+            axisLine={{ stroke: "#e5e7eb" }}
             tickLine={false}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: "#0f172a",
-              border: "1px solid #334155",
+              backgroundColor: "#ffffff",
+              border: "1px solid #e5e7eb",
               borderRadius: 8,
               fontSize: 12,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
             }}
-            labelStyle={{ color: "#e2e8f0" }}
-            itemStyle={{ color: "#3391ff" }}
+            labelStyle={{ color: "#111827" }}
+            itemStyle={{ color: "#2563eb" }}
           />
           <Bar dataKey="count" radius={[4, 4, 0, 0]}>
             {data.map((entry, i) => (
@@ -47,8 +48,8 @@ export default function PriceDistributionChart({ data }) {
                 key={i}
                 fill={
                   entry.count > 0
-                    ? `rgba(51, 145, 255, ${0.4 + (entry.count / Math.max(...data.map((d) => d.count))) * 0.6})`
-                    : "rgba(51, 145, 255, 0.15)"
+                    ? `rgba(37, 99, 235, ${0.3 + (entry.count / Math.max(...data.map((d) => d.count))) * 0.7})`
+                    : "rgba(37, 99, 235, 0.1)"
                 }
               />
             ))}
