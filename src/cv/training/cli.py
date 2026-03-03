@@ -332,6 +332,7 @@ def cmd_label(args: argparse.Namespace) -> int:
         host=args.host,
         port=args.port,
         debug=args.debug,
+        data_root=args.data_root,
     )
     return 0
 
@@ -433,8 +434,10 @@ def main() -> int:
 
     # label (interactive GUI)
     p = sub.add_parser("label", help="Launch web-based keypoint labeling GUI")
-    p.add_argument("--images", required=True, help="Directory containing images to label")
-    p.add_argument("--labels", required=True, help="Directory for YOLO-Pose label output")
+    p.add_argument("--images", help="Directory containing images (opens directly)")
+    p.add_argument("--labels", help="Directory for YOLO-Pose label output")
+    p.add_argument("--data-root", default="data/training",
+                   help="Base directory for training projects (default: data/training)")
     p.add_argument("--host", default="0.0.0.0", help="Server host (default: 0.0.0.0)")
     p.add_argument("--port", type=int, default=5000, help="Server port (default: 5000)")
     p.add_argument("--debug", action="store_true", help="Enable debug mode")

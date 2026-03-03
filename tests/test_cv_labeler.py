@@ -11,6 +11,8 @@ from src.cv.training.labeler import (
     _list_images,
     _load_yolo_label,
     _save_yolo_label,
+    _get_project_stats,
+    _set_project,
     app,
 )
 
@@ -141,6 +143,52 @@ class TestYOLOLabelIO:
             assert abs(loaded[0]["bbox"][i] - ann["bbox"][i]) < 2
 
 
+# ---------- Project helpers ----------
+
+class TestProjectHelpers:
+    def test_get_project_stats(self, tmp_path):
+        project_dir = tmp_path / "my_project"
+        images_dir = project_dir / "images"
+        labels_dir = project_dir / "labels"
+        _make_test_images(images_dir, 5)
+        labels_dir.mkdir(parents=True)
+
+        # Create 2 non-empty label files
+        ann = _make_full_annotation()
+        _save_yolo_label(labels_dir / "frame_0000.txt", [ann], 640, 480)
+        _save_yolo_label(labels_dir / "frame_0001.txt", [ann], 640, 480)
+        # One empty label
+        (labels_dir / "frame_0002.txt").write_text("")
+
+        stats = _get_project_stats(project_dir)
+        assert stats["name"] == "my_project"
+        assert stats["total_frames"] == 5
+        assert stats["labeled_frames"] == 2
+
+    def test_get_project_stats_no_images(self, tmp_path):
+        project_dir = tmp_path / "empty_project"
+        (project_dir / "images").mkdir(parents=True)
+        (project_dir / "labels").mkdir(parents=True)
+
+        stats = _get_project_stats(project_dir)
+        assert stats["total_frames"] == 0
+        assert stats["labeled_frames"] == 0
+
+    def test_set_project(self, tmp_path):
+        from src.cv.training.labeler import _STATE
+        _STATE["data_root"] = str(tmp_path)
+
+        # Create project with images
+        images_dir = tmp_path / "test_proj" / "images"
+        _make_test_images(images_dir, 4)
+
+        _set_project("test_proj")
+
+        assert _STATE["project"] == "test_proj"
+        assert _STATE["images_dir"] == str(images_dir)
+        assert len(_STATE["image_files"]) == 4
+
+
 # ---------- Flask API tests ----------
 
 class TestFlaskAPI:
@@ -155,6 +203,8 @@ class TestFlaskAPI:
         _STATE["images_dir"] = str(images_dir)
         _STATE["labels_dir"] = str(labels_dir)
         _STATE["image_files"] = _list_images(images_dir)
+        _STATE["project"] = "test"
+        _STATE["data_root"] = str(tmp_path)
 
         app.config["TESTING"] = True
         with app.test_client() as c:
@@ -170,6 +220,7 @@ class TestFlaskAPI:
         data = resp.get_json()
         assert data["total"] == 3
         assert len(data["images"]) == 3
+        assert data["project"] == "test"
 
     def test_api_schema(self, client):
         resp = client.get("/api/schema")
@@ -200,3 +251,34 @@ class TestFlaskAPI:
         data = load_resp.get_json()
         assert len(data["annotations"]) == 1
         assert data["annotations"][0]["keypoints"][0]["visibility"] == 2
+
+    def test_api_projects(self, client, tmp_path):
+        from src.cv.training.labeler import _STATE
+        # Create a project structure in data_root
+        project_dir = tmp_path / "my_project" / "images"
+        _make_test_images(project_dir, 2)
+
+        resp = client.get("/api/projects")
+        data = resp.get_json()
+        assert "projects" in data
+        assert "data_root" in data
+        # Should find our created project
+        names = [p["name"] for p in data["projects"]]
+        assert "my_project" in names
+
+    def test_api_open_project(self, client, tmp_path):
+        # Create a project
+        project_dir = tmp_path / "open_test" / "images"
+        _make_test_images(project_dir, 4)
+
+        resp = client.get("/api/open_project/open_test")
+        data = resp.get_json()
+        assert data["status"] == "opened"
+        assert data["project"] == "open_test"
+        assert data["total_frames"] == 4
+
+    def test_api_open_nonexistent_project(self, client):
+        resp = client.get("/api/open_project/nonexistent_xyz")
+        assert resp.status_code == 404
+        data = resp.get_json()
+        assert "error" in data
