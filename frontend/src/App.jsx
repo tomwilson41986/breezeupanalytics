@@ -7,6 +7,8 @@ import LotDetail from "./pages/LotDetail";
 import Analytics from "./pages/Analytics";
 import SalesAnalysis from "./pages/SalesAnalysis";
 import TimeAnalysis from "./pages/TimeAnalysis";
+import PerformanceTracker from "./pages/PerformanceTracker";
+import BreezePerformance from "./pages/BreezePerformance";
 import Vendors from "./pages/Vendors";
 
 export default function App() {
@@ -22,6 +24,8 @@ export default function App() {
           <Route path="analytics" element={<Analytics />} />
           <Route path="analytics/sales" element={<SalesAnalysis />} />
           <Route path="analytics/time" element={<TimeAnalysis />} />
+          <Route path="analytics/performance" element={<PerformanceTracker />} />
+          <Route path="analytics/breeze-performance" element={<BreezePerformance />} />
           <Route path="vendors" element={<Vendors />} />
           <Route path="vendors/:tab" element={<Vendors />} />
         </Route>
