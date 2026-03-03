@@ -13,7 +13,7 @@ const API_BASE = "/.netlify/functions";
  */
 function buildCatalog() {
   const catalog = {};
-  const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+  const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027];
   const seasons = [
     { key: "march", label: "March", month: 3, fullName: (y) => `OBS March 2YO in Training ${y}` },
     { key: "spring", label: "Spring", month: 4, fullName: (y) => `OBS Spring 2YO in Training ${y}` },

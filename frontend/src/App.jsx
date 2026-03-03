@@ -4,7 +4,6 @@ import LiveSales from "./pages/LiveSales";
 import HistoricSales from "./pages/HistoricSales";
 import SaleDetail from "./pages/SaleDetail";
 import LotDetail from "./pages/LotDetail";
-import Analytics from "./pages/Analytics";
 import SalesAnalysis from "./pages/SalesAnalysis";
 import TimeAnalysis from "./pages/TimeAnalysis";
 import PerformanceTracker from "./pages/PerformanceTracker";
@@ -21,7 +20,6 @@ export default function App() {
           <Route path="historic" element={<HistoricSales />} />
           <Route path="sale/:saleKey" element={<SaleDetail />} />
           <Route path="sale/:saleKey/hip/:hipNumber" element={<LotDetail />} />
-          <Route path="analytics" element={<Analytics />} />
           <Route path="analytics/sales" element={<SalesAnalysis />} />
           <Route path="analytics/time" element={<TimeAnalysis />} />
           <Route path="analytics/performance" element={<PerformanceTracker />} />

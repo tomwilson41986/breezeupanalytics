@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { SALE_CATALOG } from "../lib/api";
 import { useSaleData } from "../hooks/useSaleData";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -280,6 +281,7 @@ export default function TimeAnalysis() {
                 hips={eighthHips}
                 title="1/8 Mile: Time vs Sale Price"
                 color="#3b82f6"
+                minDomain={9}
               />
             )}
             {quarterHips.length > 0 && (
@@ -287,6 +289,7 @@ export default function TimeAnalysis() {
                 hips={quarterHips}
                 title="1/4 Mile: Time vs Sale Price"
                 color="#8b5cf6"
+                minDomain={19}
               />
             )}
           </div>
@@ -326,14 +329,14 @@ export default function TimeAnalysis() {
 
 function TimeDistribution({ hips, title, color }) {
   const times = hips.map((h) => h.time);
-  const min = Math.floor(Math.min(...times) * 10) / 10;
-  const max = Math.ceil(Math.max(...times) * 10) / 10;
+  const min = Math.floor(Math.min(...times) * 5) / 5;
+  const max = Math.ceil(Math.max(...times) * 5) / 5;
+  const step = 0.2;
 
   const buckets = [];
-  for (let t = min; t <= max; t = +(t + 0.1).toFixed(1)) {
-    const low = t;
-    const high = +(t + 0.1).toFixed(1);
-    const count = times.filter((v) => v >= low && v < high).length;
+  for (let t = min; t < max; t = +(t + step).toFixed(1)) {
+    const high = +(t + step).toFixed(1);
+    const count = times.filter((v) => v >= t && v < high).length;
     buckets.push({ label: `${t.toFixed(1)}s`, count });
   }
 
@@ -351,7 +354,10 @@ function TimeDistribution({ hips, title, color }) {
             tick={{ fill: "#6b7280", fontSize: 10 }}
             axisLine={{ stroke: "#e5e7eb" }}
             tickLine={false}
-            interval={1}
+            interval={0}
+            angle={-45}
+            textAnchor="end"
+            height={50}
           />
           <YAxis
             tick={{ fill: "#6b7280", fontSize: 11 }}
@@ -374,7 +380,7 @@ function TimeDistribution({ hips, title, color }) {
   );
 }
 
-function TimeVsPrice({ hips, title, color }) {
+function TimeVsPrice({ hips, title, color, minDomain }) {
   const data = hips
     .filter((h) => h.price && h.price > 0)
     .map((h) => ({
@@ -384,6 +390,8 @@ function TimeVsPrice({ hips, title, color }) {
     }));
 
   if (data.length === 0) return null;
+
+  const xDomain = minDomain != null ? [minDomain, 'auto'] : ['auto', 'auto'];
 
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
@@ -396,6 +404,7 @@ function TimeVsPrice({ hips, title, color }) {
             name="Time"
             unit="s"
             type="number"
+            domain={xDomain}
             tick={{ fill: "#6b7280", fontSize: 11 }}
             axisLine={{ stroke: "#e5e7eb" }}
             tickLine={false}
@@ -568,7 +577,12 @@ function DiffToMedianTable({ hips }) {
             {pageHips.map((h, i) => (
               <tr key={`${h.saleKey}-${h.hip}-${i}`} className="table-row-hover">
                 <td className="py-2 px-3 font-mono font-semibold text-brand-600">
-                  #{h.hip}
+                  <Link
+                    to={`/sale/${h.saleKey}/hip/${h.hip}`}
+                    className="hover:underline"
+                  >
+                    #{h.hip}
+                  </Link>
                 </td>
                 <td className="py-2 px-3 text-gray-600 text-xs">
                   {saleName(h.saleKey)}
