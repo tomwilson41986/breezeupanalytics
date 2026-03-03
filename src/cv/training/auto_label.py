@@ -3,15 +3,20 @@
 Uses pretrained models to automatically generate pseudo-labels for training
 data, dramatically reducing manual annotation effort. The workflow:
 
-1. Run multiple pretrained models (YOLO-Pose, optionally DLC SuperAnimal)
+1. Run pretrained models (YOLO-Pose COCO, ViTPose++ AP-10K, or ensemble)
 2. Ensemble predictions with confidence-weighted averaging
 3. Map detected keypoints to the 24-point equine schema
 4. Score each annotation by quality (confidence, completeness, consistency)
 5. Write YOLO-Pose format labels
 6. Flag low-quality annotations for human review
 
+Supports three source model modes:
+- "coco": YOLO-Pose with COCO human-pose weights (baseline)
+- "vitpose": ViTPose++ with AP-10K animal keypoints (best for horses)
+- "ensemble": Run both models and confidence-weight average (highest quality)
+
 Typical usage:
-    agent = AutoLabelAgent()
+    agent = AutoLabelAgent(source="vitpose")
     result = agent.label_directory("data/images", "data/labels")
     print(f"Auto-labeled {result.num_labeled}, flagged {result.num_flagged} for review")
 """
@@ -133,9 +138,13 @@ class AutoLabelAgent:
     Runs YOLO detection + pose estimation on unlabeled images, maps predictions
     to the 24-keypoint equine schema, and writes YOLO-Pose format labels.
 
-    Optionally ensembles multiple models and uses geometric heuristics to
-    infer keypoints that pretrained models don't directly predict (e.g. withers,
-    mid-back, fetlocks).
+    Supports three source modes:
+    - "coco": YOLO-Pose with COCO weights (maps human skeleton to equine)
+    - "vitpose": ViTPose++ AP-10K animal keypoints (17→24 with interpolation)
+    - "ensemble": Runs both and confidence-weights the results per keypoint
+
+    Uses geometric heuristics to infer keypoints that pretrained models don't
+    directly predict (e.g. withers, mid-back, fetlocks).
     """
 
     def __init__(
@@ -146,25 +155,35 @@ class AutoLabelAgent:
         keypoint_confidence: float = 0.2,
         quality_threshold: float = 0.4,
         min_confident_kpts: int = 8,
+        source: str = "vitpose",
+        vitpose_size: str = "base",
     ):
         """
         Args:
             detection_model: YOLO model for horse detection.
-            pose_model: YOLO-Pose model for keypoint estimation.
+            pose_model: YOLO-Pose model for keypoint estimation (used in coco/ensemble).
             detection_confidence: Minimum detection confidence.
             keypoint_confidence: Minimum per-keypoint confidence for "confident".
             quality_threshold: Labels below this quality score get flagged.
             min_confident_kpts: Minimum confident keypoints to accept a label.
+            source: Model source — "coco", "vitpose", or "ensemble".
+            vitpose_size: ViTPose++ model size — "small", "base", "large", "huge".
         """
+        if source not in ("coco", "vitpose", "ensemble"):
+            raise ValueError(f"Unknown source '{source}'. Use 'coco', 'vitpose', or 'ensemble'.")
+
         self.detection_model_path = detection_model
         self.pose_model_path = pose_model
         self.detection_confidence = detection_confidence
         self.keypoint_confidence = keypoint_confidence
         self.quality_threshold = quality_threshold
         self.min_confident_kpts = min_confident_kpts
+        self.source = source
+        self.vitpose_size = vitpose_size
 
         self._detector = None
         self._pose_model = None
+        self._vitpose = None
 
     def _init_models(self):
         """Lazy-load models on first use."""
@@ -174,9 +193,17 @@ class AutoLabelAgent:
                 model_path=self.detection_model_path,
                 confidence_threshold=self.detection_confidence,
             )
-        if self._pose_model is None:
+        if self.source in ("coco", "ensemble") and self._pose_model is None:
             from ultralytics import YOLO
             self._pose_model = YOLO(self.pose_model_path)
+        if self.source in ("vitpose", "ensemble") and self._vitpose is None:
+            from src.cv.vitpose import ViTPoseKeypointEstimator
+            self._vitpose = ViTPoseKeypointEstimator(
+                model_size=self.vitpose_size,
+                confidence_threshold=self.keypoint_confidence,
+            )
+            logger.info("AutoLabelAgent: ViTPose++ (%s) loaded for '%s' mode",
+                         self.vitpose_size, self.source)
 
     def label_image(self, image_path: str | Path) -> list[PseudoLabel]:
         """Generate pseudo-labels for all horses in a single image.
@@ -189,7 +216,6 @@ class AutoLabelAgent:
         """
         self._init_models()
         assert self._detector is not None
-        assert self._pose_model is not None
 
         frame = cv2.imread(str(image_path))
         if frame is None:
@@ -206,8 +232,14 @@ class AutoLabelAgent:
         labels = []
 
         for det in detections:
-            # Step 2: Crop and run pose estimation
-            pseudo = self._estimate_and_map(frame, det, h, w)
+            # Step 2: Estimate keypoints via selected source
+            if self.source == "vitpose":
+                pseudo = self._estimate_vitpose(frame, det)
+            elif self.source == "ensemble":
+                pseudo = self._estimate_ensemble(frame, det, h, w)
+            else:
+                pseudo = self._estimate_coco(frame, det, h, w)
+
             if pseudo is not None:
                 # Step 3: Infer missing keypoints via geometry
                 self._infer_missing_keypoints(pseudo)
@@ -363,15 +395,43 @@ class AutoLabelAgent:
         # Auto-label extracted frames
         return self.label_directory(images_dir, labels_dir, review_dir=review_dir)
 
-    def _estimate_and_map(
+    def _estimate_vitpose(
+        self,
+        frame: np.ndarray,
+        det,
+    ) -> PseudoLabel | None:
+        """Estimate keypoints using ViTPose++ AP-10K with hybrid quality gate.
+
+        Uses our ViTPoseKeypointEstimator which runs ViTPose++ on the detection,
+        applies a quality gate (min in-bbox keypoints), and falls back to
+        BBoxKeypointEstimator heuristic if ViTPose output is poor. The AP-10K
+        17→24 equine mapping with interpolation produces richer keypoints than
+        the simple COCO mapping.
+        """
+        assert self._vitpose is not None
+
+        results = self._vitpose.estimate(frame, [det])
+        if not results:
+            return None
+
+        kr = results[0]
+        return PseudoLabel(
+            bbox=det.bbox.copy(),
+            keypoints=kr.keypoints.copy(),
+            confidence=kr.confidence.copy(),
+        )
+
+    def _estimate_coco(
         self,
         frame: np.ndarray,
         det,
         img_h: int,
         img_w: int,
     ) -> PseudoLabel | None:
-        """Run pose estimation on a detected horse and map to equine schema."""
+        """Estimate keypoints using YOLO-Pose with COCO human-pose weights."""
         from src.cv.detection import crop_detection
+
+        assert self._pose_model is not None
 
         crop = crop_detection(frame, det, padding=0.15)
         if crop.size == 0:
@@ -408,11 +468,8 @@ class AutoLabelAgent:
             equine_kpts = np.zeros((NUM_KEYPOINTS, 2), dtype=np.float32)
             equine_conf = np.zeros(NUM_KEYPOINTS, dtype=np.float32)
 
-            src_count = raw_kpts.shape[0]
-            mapping = COCO_TO_EQUINE_MAP if src_count <= 17 else COCO_TO_EQUINE_MAP
-
-            for src_id, dst_id in mapping.items():
-                if src_id < src_count:
+            for src_id, dst_id in COCO_TO_EQUINE_MAP.items():
+                if src_id < raw_kpts.shape[0]:
                     equine_kpts[dst_id] = raw_kpts[src_id]
                     equine_conf[dst_id] = raw_conf[src_id]
 
@@ -423,6 +480,69 @@ class AutoLabelAgent:
             )
 
         return None
+
+    def _estimate_ensemble(
+        self,
+        frame: np.ndarray,
+        det,
+        img_h: int,
+        img_w: int,
+    ) -> PseudoLabel | None:
+        """Ensemble ViTPose + COCO predictions with confidence-weighted averaging.
+
+        For each of the 24 equine keypoints, takes the prediction from whichever
+        model is more confident. When both models predict a keypoint with
+        confidence > threshold, uses a confidence-weighted average of their
+        coordinates for sub-pixel accuracy.
+        """
+        vitpose_label = self._estimate_vitpose(frame, det)
+        coco_label = self._estimate_coco(frame, det, img_h, img_w)
+
+        if vitpose_label is None and coco_label is None:
+            return None
+        if vitpose_label is None:
+            return coco_label
+        if coco_label is None:
+            return vitpose_label
+
+        # Confidence-weighted merge per keypoint
+        merged_kpts = np.zeros((NUM_KEYPOINTS, 2), dtype=np.float32)
+        merged_conf = np.zeros(NUM_KEYPOINTS, dtype=np.float32)
+
+        vk, vc = vitpose_label.keypoints, vitpose_label.confidence
+        ck, cc = coco_label.keypoints, coco_label.confidence
+
+        threshold = self.keypoint_confidence
+
+        for i in range(NUM_KEYPOINTS):
+            v_has = vc[i] >= threshold
+            c_has = cc[i] >= threshold
+
+            if v_has and c_has:
+                # Both models predict — confidence-weighted average
+                total = vc[i] + cc[i]
+                merged_kpts[i] = (vc[i] * vk[i] + cc[i] * ck[i]) / total
+                merged_conf[i] = max(vc[i], cc[i])
+            elif v_has:
+                merged_kpts[i] = vk[i]
+                merged_conf[i] = vc[i]
+            elif c_has:
+                merged_kpts[i] = ck[i]
+                merged_conf[i] = cc[i]
+            else:
+                # Neither model confident — take whichever has higher score
+                if vc[i] >= cc[i]:
+                    merged_kpts[i] = vk[i]
+                    merged_conf[i] = vc[i]
+                else:
+                    merged_kpts[i] = ck[i]
+                    merged_conf[i] = cc[i]
+
+        return PseudoLabel(
+            bbox=det.bbox.copy(),
+            keypoints=merged_kpts,
+            confidence=merged_conf,
+        )
 
     def _infer_missing_keypoints(self, label: PseudoLabel) -> None:
         """Use geometric heuristics to infer keypoints not directly predicted.

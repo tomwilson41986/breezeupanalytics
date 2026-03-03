@@ -122,6 +122,8 @@ class SaleVideoLabelPipeline:
         min_confident_kpts: int = 8,
         max_hips: int | None = None,
         skip_downloaded: bool = True,
+        source: str = "vitpose",
+        vitpose_size: str = "base",
     ):
         """
         Args:
@@ -134,6 +136,8 @@ class SaleVideoLabelPipeline:
             min_confident_kpts: Minimum confident keypoints per label.
             max_hips: Cap on number of hips to process (None = all).
             skip_downloaded: Skip videos already downloaded locally.
+            source: Keypoint source — "coco", "vitpose", or "ensemble".
+            vitpose_size: ViTPose++ model size.
         """
         self.sale_id = str(sale_id)
         self.frames_per_video = frames_per_video
@@ -144,6 +148,8 @@ class SaleVideoLabelPipeline:
         self.min_confident_kpts = min_confident_kpts
         self.max_hips = max_hips
         self.skip_downloaded = skip_downloaded
+        self.source = source
+        self.vitpose_size = vitpose_size
 
     def run(self, output_dir: str | Path) -> SaleLabelResult:
         """Execute the full pipeline: fetch -> download -> label.
@@ -263,6 +269,8 @@ class SaleVideoLabelPipeline:
             keypoint_confidence=self.keypoint_confidence,
             quality_threshold=self.quality_threshold,
             min_confident_kpts=self.min_confident_kpts,
+            source=self.source,
+            vitpose_size=self.vitpose_size,
         )
 
         label_result = agent.label_directory(images_dir, labels_dir, review_dir=review_dir)

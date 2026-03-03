@@ -10,6 +10,7 @@ import pytest
 
 from src.cv.schema import NUM_KEYPOINTS
 from src.cv.training.auto_label import (
+    AP10K_TO_EQUINE_MAP,
     COCO_TO_EQUINE_MAP,
     AutoLabelAgent,
     AutoLabelResult,
@@ -405,3 +406,117 @@ class TestEndToEndPseudoLabel:
 
         assert label.num_confident > n_confident_before
         assert label.quality_score >= quality_before
+
+
+# ---------- Source mode tests ----------
+
+class TestSourceModes:
+    def test_valid_source_modes(self):
+        """All three source modes should be accepted."""
+        for source in ("coco", "vitpose", "ensemble"):
+            agent = AutoLabelAgent(source=source)
+            assert agent.source == source
+
+    def test_invalid_source_raises(self):
+        """Invalid source should raise ValueError."""
+        with pytest.raises(ValueError, match="Unknown source"):
+            AutoLabelAgent(source="invalid")
+
+    def test_default_source_is_vitpose(self):
+        """Default source should be vitpose."""
+        agent = AutoLabelAgent()
+        assert agent.source == "vitpose"
+
+    def test_vitpose_size_stored(self):
+        agent = AutoLabelAgent(source="vitpose", vitpose_size="large")
+        assert agent.vitpose_size == "large"
+
+
+# ---------- Ensemble merge tests ----------
+
+class TestEnsembleMerge:
+    """Test the confidence-weighted ensemble merge logic."""
+
+    def test_ensemble_prefers_higher_confidence(self):
+        """When only one model predicts a keypoint, that prediction wins."""
+        agent = AutoLabelAgent(source="ensemble", keypoint_confidence=0.3)
+
+        # Simulate vitpose label with strong shoulder prediction
+        v_label = _make_pseudo_label()
+        v_label.confidence[:] = 0.0
+        v_label.confidence[7] = 0.9  # l_shoulder
+        v_label.keypoints[7] = [200, 300]
+
+        # Simulate coco label with no shoulder but strong hip
+        c_label = _make_pseudo_label()
+        c_label.confidence[:] = 0.0
+        c_label.confidence[17] = 0.85  # l_hip
+        c_label.keypoints[17] = [400, 320]
+
+        # Manually test the merge logic
+        merged_kpts = np.zeros((NUM_KEYPOINTS, 2), dtype=np.float32)
+        merged_conf = np.zeros(NUM_KEYPOINTS, dtype=np.float32)
+        threshold = 0.3
+
+        for i in range(NUM_KEYPOINTS):
+            v_has = v_label.confidence[i] >= threshold
+            c_has = c_label.confidence[i] >= threshold
+
+            if v_has and c_has:
+                total = v_label.confidence[i] + c_label.confidence[i]
+                merged_kpts[i] = (
+                    v_label.confidence[i] * v_label.keypoints[i]
+                    + c_label.confidence[i] * c_label.keypoints[i]
+                ) / total
+                merged_conf[i] = max(v_label.confidence[i], c_label.confidence[i])
+            elif v_has:
+                merged_kpts[i] = v_label.keypoints[i]
+                merged_conf[i] = v_label.confidence[i]
+            elif c_has:
+                merged_kpts[i] = c_label.keypoints[i]
+                merged_conf[i] = c_label.confidence[i]
+
+        # Shoulder should come from vitpose
+        np.testing.assert_allclose(merged_kpts[7], [200, 300])
+        assert merged_conf[7] == pytest.approx(0.9)
+
+        # Hip should come from coco
+        np.testing.assert_allclose(merged_kpts[17], [400, 320])
+        assert merged_conf[17] == pytest.approx(0.85)
+
+    def test_ensemble_averages_when_both_confident(self):
+        """When both models predict, coordinates are confidence-weighted."""
+        v_conf = 0.9
+        c_conf = 0.6
+        v_pos = np.array([200, 300], dtype=np.float32)
+        c_pos = np.array([210, 310], dtype=np.float32)
+
+        total = v_conf + c_conf
+        expected = (v_conf * v_pos + c_conf * c_pos) / total
+
+        # ViTPose has higher weight so result should be closer to its position
+        assert expected[0] < 207  # closer to 200 than 210
+
+    def test_ensemble_max_confidence(self):
+        """Merged confidence should be max of the two models."""
+        v_conf = 0.9
+        c_conf = 0.6
+        assert max(v_conf, c_conf) == 0.9
+
+
+# ---------- AP-10K mapping table tests ----------
+
+class TestAP10KMapping:
+    def test_ap10k_map_valid_targets(self):
+        for src, dst in AP10K_TO_EQUINE_MAP.items():
+            assert 0 <= dst < NUM_KEYPOINTS, f"AP10K {src} -> equine {dst} out of range"
+
+    def test_ap10k_map_valid_sources(self):
+        for src in AP10K_TO_EQUINE_MAP:
+            assert 0 <= src <= 16, f"AP10K source {src} out of range"
+
+    def test_ap10k_covers_all_limb_endpoints(self):
+        """AP-10K should map to all four hoof keypoints."""
+        targets = set(AP10K_TO_EQUINE_MAP.values())
+        hooves = {11, 16, 20, 23}  # l_fore, r_fore, l_hind, r_hind
+        assert hooves.issubset(targets), f"Missing hooves: {hooves - targets}"

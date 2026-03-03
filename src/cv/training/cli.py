@@ -223,6 +223,8 @@ def cmd_auto_label_dir(args: argparse.Namespace) -> int:
         keypoint_confidence=args.kpt_conf,
         quality_threshold=args.quality_threshold,
         min_confident_kpts=args.min_kpts,
+        source=args.source,
+        vitpose_size=args.vitpose_size,
     )
 
     review_dir = Path(args.output) / "review" if not args.no_review else None
@@ -251,6 +253,8 @@ def cmd_auto_label_video(args: argparse.Namespace) -> int:
         keypoint_confidence=args.kpt_conf,
         quality_threshold=args.quality_threshold,
         min_confident_kpts=args.min_kpts,
+        source=args.source,
+        vitpose_size=args.vitpose_size,
     )
 
     result = agent.label_video(
@@ -388,6 +392,11 @@ def main() -> int:
     p = sub.add_parser("auto-label", help="Auto-label images using pretrained models")
     p.add_argument("image_dir", help="Directory of images to label")
     p.add_argument("-o", "--output", required=True, help="Output labels directory")
+    p.add_argument("--source", default="vitpose", choices=["coco", "vitpose", "ensemble"],
+                   help="Keypoint source: coco (YOLO human-pose), vitpose (AP-10K animal), "
+                        "ensemble (both, confidence-weighted)")
+    p.add_argument("--vitpose-size", default="base", choices=["small", "base", "large", "huge"],
+                   help="ViTPose++ model size (default: base)")
     p.add_argument("--det-conf", type=float, default=0.4, help="Detection confidence")
     p.add_argument("--kpt-conf", type=float, default=0.2, help="Keypoint confidence")
     p.add_argument("--quality-threshold", type=float, default=0.4, help="Min quality to accept")
@@ -400,6 +409,9 @@ def main() -> int:
     p.add_argument("-o", "--output", required=True, help="Output directory")
     p.add_argument("-n", "--num-frames", type=int, default=100, help="Frames to extract")
     p.add_argument("--strategy", default="uniform", choices=["uniform", "random", "motion"])
+    p.add_argument("--source", default="vitpose", choices=["coco", "vitpose", "ensemble"],
+                   help="Keypoint source model")
+    p.add_argument("--vitpose-size", default="base", choices=["small", "base", "large", "huge"])
     p.add_argument("--det-conf", type=float, default=0.4)
     p.add_argument("--kpt-conf", type=float, default=0.2)
     p.add_argument("--quality-threshold", type=float, default=0.4)
