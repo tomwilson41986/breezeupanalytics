@@ -1,15 +1,54 @@
-import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import { SALE_CATALOG } from "../lib/api";
 
-const navLinks = [
-  { to: "/", label: "Dashboard", icon: DashboardIcon },
-  { to: "/analytics", label: "Analytics", icon: AnalyticsIcon },
-];
+/* ── Organize sales by category ─────────────────────────── */
+
+const historicByYear = Object.entries(SALE_CATALOG)
+  .filter(([, m]) => !m.isLive)
+  .sort(([, a], [, b]) => b.year - a.year || a.month - b.month)
+  .reduce((acc, [key, meta]) => {
+    if (!acc[meta.year]) acc[meta.year] = [];
+    acc[meta.year].push({ key, meta });
+    return acc;
+  }, {});
+
+const historicYears = Object.keys(historicByYear).sort((a, b) => b - a);
+
+const liveSales = Object.entries(SALE_CATALOG)
+  .filter(([, m]) => m.isLive)
+  .sort(([, a], [, b]) => a.month - b.month);
+
+function shortName(meta) {
+  if (meta.month === 3) return "March 2YO";
+  if (meta.month === 4) return "Spring 2YO";
+  if (meta.month === 6) return "June 2YO & HRA";
+  return meta.name;
+}
+
+/* ── Sidebar ────────────────────────────────────────────── */
 
 export default function Sidebar() {
+  const location = useLocation();
+  const [expandedYears, setExpandedYears] = useState({});
+
+  // Auto-expand the year group that contains the currently active sale
+  useEffect(() => {
+    const match = location.pathname.match(/^\/sale\/(obs_\w+_(\d{4}))/);
+    if (match) {
+      const year = match[2];
+      setExpandedYears((prev) => (prev[year] ? prev : { ...prev, [year]: true }));
+    }
+  }, [location.pathname]);
+
+  function toggleYear(year) {
+    setExpandedYears((prev) => ({ ...prev, [year]: !prev[year] }));
+  }
+
   return (
     <aside className="fixed top-0 left-0 bottom-0 w-[240px] bg-white border-r border-gray-200/80 flex flex-col z-40">
       {/* Logo */}
-      <div className="h-16 flex items-center px-6 border-b border-gray-100">
+      <div className="h-16 flex items-center px-6 border-b border-gray-100 shrink-0">
         <NavLink to="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center">
             <svg
@@ -31,31 +70,103 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 pt-6 space-y-1">
-        <p className="px-3 mb-2 text-[11px] font-medium uppercase tracking-wider text-gray-400">
-          Menu
-        </p>
-        {navLinks.map((link) => (
+      <nav className="flex-1 px-3 pt-4 pb-4 space-y-5 overflow-y-auto sidebar-scroll">
+        {/* ── Historic Sales ────────────────────────────── */}
+        <Section label="Historic Sales" icon={<ArchiveIcon />}>
+          {historicYears.map((year) => (
+            <div key={year}>
+              <button
+                onClick={() => toggleYear(year)}
+                className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
+                  expandedYears[year]
+                    ? "text-gray-900 font-medium"
+                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+              >
+                <ChevronIcon expanded={expandedYears[year]} />
+                <span>{year} Season</span>
+              </button>
+              {expandedYears[year] && (
+                <div className="ml-6 mt-0.5 space-y-0.5 border-l border-gray-100 pl-2">
+                  {historicByYear[year].map((s) => (
+                    <NavLink
+                      key={s.key}
+                      to={`/sale/${s.key}`}
+                      className={({ isActive }) =>
+                        `block px-2.5 py-1 rounded text-[12px] transition-colors ${
+                          isActive
+                            ? "bg-brand-50 text-brand-700 font-medium"
+                            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                        }`
+                      }
+                    >
+                      {shortName(s.meta)}
+                    </NavLink>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </Section>
+
+        {/* ── Live Sales ────────────────────────────────── */}
+        <Section label="Live Sales" icon={<LiveIcon />}>
+          {liveSales.map(([key, meta]) => (
+            <NavLink
+              key={key}
+              to={`/sale/${key}`}
+              className={({ isActive }) =>
+                `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
+                  isActive
+                    ? "bg-brand-50 text-brand-700 font-medium"
+                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                }`
+              }
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              {shortName(meta)}
+            </NavLink>
+          ))}
+        </Section>
+
+        {/* ── Analytics Tools ───────────────────────────── */}
+        <Section label="Analytics Tools" icon={<AnalyticsIcon />}>
           <NavLink
-            key={link.to}
-            to={link.to}
-            end={link.to === "/"}
+            to="/analytics"
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-colors ${
+              `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
                 isActive
                   ? "bg-brand-50 text-brand-700 font-medium"
                   : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
               }`
             }
           >
-            <link.icon className="w-[18px] h-[18px]" />
-            {link.label}
+            Sale Analytics
           </NavLink>
-        ))}
+        </Section>
+
+        {/* ── Vendors ───────────────────────────────────── */}
+        <Section label="Vendors" icon={<VendorsIcon />}>
+          <NavLink
+            to="/vendors"
+            className={({ isActive }) =>
+              `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
+                isActive
+                  ? "bg-brand-50 text-brand-700 font-medium"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+              }`
+            }
+          >
+            Vendor Performance
+          </NavLink>
+        </Section>
       </nav>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-gray-100">
+      <div className="px-6 py-4 border-t border-gray-100 shrink-0">
         <p className="text-[11px] text-gray-400">
           Data sourced from OBS &amp; S3
         </p>
@@ -64,11 +175,46 @@ export default function Sidebar() {
   );
 }
 
-/* Icons — thin, clean stroke style */
-function DashboardIcon({ className }) {
+/* ── Sub-components ──────────────────────────────────────── */
+
+function Section({ label, icon, children }) {
+  return (
+    <div>
+      <div className="flex items-center gap-2 px-3 mb-1.5">
+        <span className="text-gray-400">{icon}</span>
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+          {label}
+        </p>
+      </div>
+      <div className="space-y-0.5">{children}</div>
+    </div>
+  );
+}
+
+function ChevronIcon({ expanded }) {
   return (
     <svg
-      className={className}
+      className={`w-3.5 h-3.5 text-gray-400 transition-transform ${
+        expanded ? "rotate-90" : ""
+      }`}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  );
+}
+
+/* ── Icons ───────────────────────────────────────────────── */
+
+function ArchiveIcon() {
+  return (
+    <svg
+      className="w-3.5 h-3.5"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -76,18 +222,33 @@ function DashboardIcon({ className }) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <rect x="3" y="3" width="7" height="7" rx="1" />
-      <rect x="14" y="3" width="7" height="7" rx="1" />
-      <rect x="3" y="14" width="7" height="7" rx="1" />
-      <rect x="14" y="14" width="7" height="7" rx="1" />
+      <rect x="2" y="3" width="20" height="5" rx="1" />
+      <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+      <line x1="10" y1="12" x2="14" y2="12" />
     </svg>
   );
 }
 
-function AnalyticsIcon({ className }) {
+function LiveIcon() {
   return (
     <svg
-      className={className}
+      className="w-3.5 h-3.5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    </svg>
+  );
+}
+
+function AnalyticsIcon() {
+  return (
+    <svg
+      className="w-3.5 h-3.5"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -98,6 +259,25 @@ function AnalyticsIcon({ className }) {
       <line x1="18" y1="20" x2="18" y2="10" />
       <line x1="12" y1="20" x2="12" y2="4" />
       <line x1="6" y1="20" x2="6" y2="14" />
+    </svg>
+  );
+}
+
+function VendorsIcon() {
+  return (
+    <svg
+      className="w-3.5 h-3.5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
   );
 }
