@@ -35,7 +35,7 @@ SUFFIX_MAP = {
     "pedigree_page": ".pdf",
 }
 
-ASSET_TYPES = ["breeze_video", "walk_video", "pedigree_page"]
+ASSET_TYPES = ["breeze_video", "walk_video", "pedigree_page", "photo"]
 
 
 def download_and_upload(asset, sale_id, hip_number, http_session, s3_client):
