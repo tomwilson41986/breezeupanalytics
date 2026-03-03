@@ -28,14 +28,17 @@ import {
   Legend,
 } from "recharts";
 
-const saleEntries = Object.entries(SALE_CATALOG);
+// Only sales with full data can be analyzed
+const analyticsSales = Object.entries(SALE_CATALOG)
+  .filter(([, meta]) => meta.hasData)
+  .sort(([, a], [, b]) => b.year - a.year || b.month - a.month);
 
 export default function Analytics() {
-  const [selectedSaleId, setSelectedSaleId] = useState(
-    String(saleEntries[0][1].id)
+  const [selectedSaleKey, setSelectedSaleKey] = useState(
+    analyticsSales[0]?.[0] || ""
   );
 
-  const { sale, stats, loading, error } = useSaleData(selectedSaleId);
+  const { sale, stats, loading, error } = useSaleData(selectedSaleKey);
 
   return (
     <div className="space-y-6">
@@ -50,12 +53,12 @@ export default function Analytics() {
           </p>
         </div>
         <select
-          value={selectedSaleId}
-          onChange={(e) => setSelectedSaleId(e.target.value)}
+          value={selectedSaleKey}
+          onChange={(e) => setSelectedSaleKey(e.target.value)}
           className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
         >
-          {saleEntries.map(([key, meta]) => (
-            <option key={key} value={String(meta.id)}>
+          {analyticsSales.map(([key, meta]) => (
+            <option key={key} value={key}>
               {meta.name}
             </option>
           ))}

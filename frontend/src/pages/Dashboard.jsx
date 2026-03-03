@@ -1,27 +1,20 @@
 import { SALE_CATALOG } from "../lib/api";
 import { useSaleData } from "../hooks/useSaleData";
 import SaleCard from "../components/SaleCard";
-import StatCard from "../components/StatCard";
 import { formatCompact, formatNumber, formatPercent } from "../lib/format";
 
+// Group sales by year, sorted descending
+const salesByYear = Object.entries(SALE_CATALOG)
+  .sort(([, a], [, b]) => b.year - a.year || b.month - a.month)
+  .reduce((acc, [key, meta]) => {
+    if (!acc[meta.year]) acc[meta.year] = [];
+    acc[meta.year].push({ key, meta });
+    return acc;
+  }, {});
+
+const years = Object.keys(salesByYear).sort((a, b) => b - a);
+
 export default function Dashboard() {
-  const sales = Object.entries(SALE_CATALOG).map(([key, meta]) => ({
-    key,
-    meta,
-    ...useSaleData(meta.id),
-  }));
-
-  // Aggregate stats across all loaded sales
-  const allStats = sales.filter((s) => s.stats);
-  const totalHips = allStats.reduce((s, x) => s + x.stats.totalHips, 0);
-  const totalSold = allStats.reduce((s, x) => s + x.stats.soldCount, 0);
-  const totalRevenue = allStats.reduce((s, x) => s + x.stats.totalRevenue, 0);
-  const avgBuyback =
-    allStats.length > 0
-      ? allStats.reduce((s, x) => s + x.stats.buybackRate, 0) /
-        allStats.length
-      : 0;
-
   return (
     <div className="space-y-8">
       {/* Page header */}
@@ -30,53 +23,54 @@ export default function Dashboard() {
           Dashboard
         </h1>
         <p className="text-sm text-gray-500 mt-1">
-          Breeze-up sale analytics across all OBS 2YO training sales
+          Breeze-up sale analytics across all OBS 2YO training sales (2018–2025)
         </p>
       </div>
 
-      {/* Aggregate metrics */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatCard
-          label="Total Cataloged"
-          value={formatNumber(totalHips)}
-          sub={`across ${allStats.length} sales`}
-        />
-        <StatCard
-          label="Total Sold"
-          value={formatNumber(totalSold)}
-          sub={`${formatPercent(
-            totalHips ? (totalSold / totalHips) * 100 : 0
-          )} clearance`}
-        />
-        <StatCard
-          label="Combined Revenue"
-          value={formatCompact(totalRevenue)}
-          accent
-        />
-        <StatCard
-          label="Avg Buyback Rate"
-          value={formatPercent(avgBuyback)}
-          sub="RNA / (Sold + RNA)"
-        />
-      </div>
-
-      {/* Sale cards */}
-      <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          2025 Sales Season
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {sales.map((s) => (
-            <SaleCard
-              key={s.key}
-              saleKey={s.key}
-              meta={s.meta}
-              stats={s.stats}
-              loading={s.loading}
-            />
-          ))}
+      {/* Sale cards by year */}
+      {years.map((year) => (
+        <div key={year}>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            {year} Sales Season
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {salesByYear[year].map((s) =>
+              s.meta.hasData ? (
+                <DataSaleCard key={s.key} saleKey={s.key} meta={s.meta} />
+              ) : (
+                <SaleCard
+                  key={s.key}
+                  saleKey={s.key}
+                  meta={s.meta}
+                  stats={null}
+                  assetCount={0}
+                  dataSource="assets-only"
+                  loading={false}
+                />
+              )
+            )}
+          </div>
         </div>
-      </div>
+      ))}
     </div>
+  );
+}
+
+/**
+ * Only loads data for sales that have pre-processed JSON (2025).
+ */
+function DataSaleCard({ saleKey, meta }) {
+  const { stats, assetIndex, dataSource, loading } = useSaleData(saleKey);
+  const assetCount = assetIndex ? Object.keys(assetIndex).length : 0;
+
+  return (
+    <SaleCard
+      saleKey={saleKey}
+      meta={meta}
+      stats={stats}
+      assetCount={assetCount}
+      dataSource={dataSource}
+      loading={loading}
+    />
   );
 }

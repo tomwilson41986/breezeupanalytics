@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { formatCompact, formatNumber, formatPercent } from "../lib/format";
 
-export default function SaleCard({ saleKey, meta, stats, loading }) {
+export default function SaleCard({ saleKey, meta, stats, assetCount, dataSource, loading }) {
   if (loading) {
     return (
       <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] animate-pulse-brand">
@@ -18,7 +18,7 @@ export default function SaleCard({ saleKey, meta, stats, loading }) {
 
   return (
     <Link
-      to={`/sale/${meta.id}`}
+      to={`/sale/${saleKey}`}
       className="block rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:border-gray-200 transition-all group"
     >
       {/* Header */}
@@ -31,12 +31,18 @@ export default function SaleCard({ saleKey, meta, stats, loading }) {
             {meta.company} &middot; {meta.location}
           </p>
         </div>
-        <span className="text-[11px] font-mono text-gray-400 bg-gray-50 px-2 py-0.5 rounded">
-          ID {meta.id}
-        </span>
+        {dataSource === "assets-only" ? (
+          <span className="text-[11px] font-mono text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+            Assets
+          </span>
+        ) : (
+          <span className="text-[11px] font-mono text-gray-400 bg-gray-50 px-2 py-0.5 rounded">
+            {meta.year}
+          </span>
+        )}
       </div>
 
-      {/* Stats grid */}
+      {/* Stats grid — full data available */}
       {stats && (
         <div className="grid grid-cols-3 gap-3 mt-4">
           <MiniStat label="Hips" value={formatNumber(stats.totalHips)} />
@@ -56,6 +62,20 @@ export default function SaleCard({ saleKey, meta, stats, loading }) {
             value={formatPercent(stats.buybackRate)}
           />
         </div>
+      )}
+
+      {/* Asset-only mode — show asset count or browse prompt */}
+      {!stats && assetCount > 0 && (
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          <MiniStat label="Hips with Assets" value={formatNumber(assetCount)} accent />
+          <MiniStat label="Data Source" value="S3 Media" />
+        </div>
+      )}
+
+      {!stats && !assetCount && (
+        <p className="text-xs text-gray-400 mt-4">
+          Videos, photos &amp; pedigree PDFs &rarr;
+        </p>
       )}
     </Link>
   );

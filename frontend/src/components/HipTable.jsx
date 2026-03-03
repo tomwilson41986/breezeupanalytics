@@ -15,7 +15,7 @@ const SORT_FIELDS = [
   { key: "sire", label: "Sire" },
 ];
 
-export default function HipTable({ hips, saleId, assetIndex }) {
+export default function HipTable({ hips, saleKey, assetIndex }) {
   const [sortBy, setSortBy] = useState("hipNumber");
   const [sortDir, setSortDir] = useState("asc");
   const [filter, setFilter] = useState("");
@@ -150,7 +150,7 @@ export default function HipTable({ hips, saleId, assetIndex }) {
               <tr key={hip.hipNumber} className="table-row-hover">
                 <td className="px-3 py-2.5 font-mono font-semibold text-brand-600">
                   <Link
-                    to={`/sale/${saleId}/hip/${hip.hipNumber}`}
+                    to={`/sale/${saleKey}/hip/${hip.hipNumber}`}
                     className="hover:underline"
                   >
                     {hip.hipNumber}
