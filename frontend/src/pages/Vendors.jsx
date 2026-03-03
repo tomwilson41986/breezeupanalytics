@@ -233,6 +233,9 @@ function BySaleTab() {
   const totalCataloged = vendors.reduce((s, v) => s + v.cataloged, 0);
   const totalRunners = vendors.reduce((s, v) => s + v.runners, 0);
   const totalWinners = vendors.reduce((s, v) => s + v.winners, 0);
+  const totalSW = vendors.reduce((s, v) => s + v.stakesWinners, 0);
+  const totalGSW = vendors.reduce((s, v) => s + v.gradedStakesWinners, 0);
+  const totalG1 = vendors.reduce((s, v) => s + v.g1Winners, 0);
 
   return (
     <div className="space-y-4">
@@ -251,13 +254,16 @@ function BySaleTab() {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-3">
         <StatCard label="Vendors" value={formatNumber(vendors.length)} />
         <StatCard label="Cataloged" value={formatNumber(totalCataloged)} />
         <StatCard label="Sold" value={formatNumber(totalSold)} />
         <StatCard label="Revenue" value={formatCompact(totalRevenue)} accent />
         <StatCard label="Runners" value={formatNumber(totalRunners)} />
         <StatCard label="Winners" value={formatNumber(totalWinners)} />
+        <StatCard label="Stakes Winners" value={formatNumber(totalSW)} />
+        <StatCard label="Graded SW" value={formatNumber(totalGSW)} />
+        <StatCard label="G1 Winners" value={formatNumber(totalG1)} accent />
       </div>
 
       {/* Filter */}
@@ -288,6 +294,7 @@ function BySaleTab() {
               <SortHeader field="runners" current={sortBy} dir={sortDir} onSort={handleSort} className="text-center">Runners</SortHeader>
               <SortHeader field="winners" current={sortBy} dir={sortDir} onSort={handleSort} className="text-center">Winners</SortHeader>
               <SortHeader field="stakesWinners" current={sortBy} dir={sortDir} onSort={handleSort} className="text-center">SW</SortHeader>
+              <SortHeader field="gradedStakesWinners" current={sortBy} dir={sortDir} onSort={handleSort} className="text-center">GSW</SortHeader>
               <SortHeader field="g1Winners" current={sortBy} dir={sortDir} onSort={handleSort} className="text-center">G1</SortHeader>
             </tr>
           </thead>
@@ -315,6 +322,7 @@ function BySaleTab() {
                 <td className="px-3 py-2.5 text-center font-mono text-gray-600">{v.runners}</td>
                 <td className="px-3 py-2.5 text-center font-mono text-gray-600">{v.winners}</td>
                 <td className="px-3 py-2.5 text-center font-mono text-gray-600">{v.stakesWinners}</td>
+                <td className="px-3 py-2.5 text-center font-mono text-gray-600">{v.gradedStakesWinners}</td>
                 <td className="px-3 py-2.5 text-center font-mono font-medium text-gray-900">{v.g1Winners}</td>
               </tr>
             ))}
