@@ -394,6 +394,7 @@ export default function BreezePerformance() {
                   hips={eighthHips}
                   title="1/8 Mile: Breeze Time vs Price by Performance"
                   distance="1/8"
+                  minDomain={9}
                 />
               )}
             {(distanceFilter === "all" || distanceFilter === "1/4") &&
@@ -402,6 +403,7 @@ export default function BreezePerformance() {
                   hips={quarterHips}
                   title="1/4 Mile: Breeze Time vs Price by Performance"
                   distance="1/4"
+                  minDomain={19}
                 />
               )}
           </div>
@@ -412,12 +414,14 @@ export default function BreezePerformance() {
               <TimeByPerformance
                 hips={eighthHips}
                 title="1/8 Mile: Avg Time by Performance Level"
+                distance="1/8"
               />
             )}
             {quarterHips.length > 0 && (
               <TimeByPerformance
                 hips={quarterHips}
                 title="1/4 Mile: Avg Time by Performance Level"
+                distance="1/4"
               />
             )}
           </div>
@@ -432,7 +436,7 @@ export default function BreezePerformance() {
 
 /* ── Scatter chart colored by performance ──────────────────── */
 
-function BreezeScatterByPerformance({ hips, title }) {
+function BreezeScatterByPerformance({ hips, title, minDomain }) {
   // Group by performance level for legend
   const groups = {};
   for (const h of hips) {
@@ -463,6 +467,7 @@ function BreezeScatterByPerformance({ hips, title }) {
             name="Time"
             unit="s"
             type="number"
+            domain={minDomain != null ? [minDomain, 'auto'] : ['auto', 'auto']}
             tick={{ fill: "#6b7280", fontSize: 11 }}
             axisLine={{ stroke: "#e5e7eb" }}
             tickLine={false}
@@ -560,7 +565,7 @@ function CustomTooltip({ active, payload }) {
 
 /* ── Average time by performance level ─────────────────────── */
 
-function TimeByPerformance({ hips, title }) {
+function TimeByPerformance({ hips, title, distance }) {
   const levelStats = {};
   for (const h of hips) {
     if (!levelStats[h.level]) levelStats[h.level] = { times: [], prices: [] };
@@ -587,6 +592,8 @@ function TimeByPerformance({ hips, title }) {
       };
     });
 
+  const xMin = distance === "1/4" ? 19 : 9;
+
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
       <h3 className="text-sm font-semibold text-gray-900 mb-4">{title}</h3>
@@ -599,6 +606,7 @@ function TimeByPerformance({ hips, title }) {
           <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
           <XAxis
             type="number"
+            domain={[xMin, 'auto']}
             tick={{ fill: "#6b7280", fontSize: 11 }}
             axisLine={{ stroke: "#e5e7eb" }}
             tickLine={false}

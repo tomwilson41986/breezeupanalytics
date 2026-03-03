@@ -118,18 +118,6 @@ export default function Sidebar() {
         {/* ── Analytics Tools ───────────────────────────── */}
         <Section label="Analytics Tools" icon={<AnalyticsIcon />}>
           <NavLink
-            to="/analytics"
-            className={({ isActive }) =>
-              `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
-                isActive
-                  ? "bg-brand-50 text-brand-700 font-medium"
-                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-              }`
-            }
-          >
-            Sale Analytics
-          </NavLink>
-          <NavLink
             to="/analytics/sales"
             className={({ isActive }) =>
               `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
