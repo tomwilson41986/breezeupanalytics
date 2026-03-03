@@ -35,9 +35,5 @@ data/videos/
 # YOLO model weights (auto-downloaded)
 *.pt
 
-# Video files (too large for git)
-output/**/*.mp4
-
-# Temporary QA frame extractions
-output/qa_frames*/
-output/qa_detail/
+# Pipeline output artifacts (videos, metrics, QA frames)
+output/
