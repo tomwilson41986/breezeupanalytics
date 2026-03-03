@@ -1,0 +1,39 @@
+name: Sync Sale Data to S3
+
+on:
+  # Run daily at 6 AM UTC (1 AM EST)
+  schedule:
+    - cron: "0 6 * * *"
+
+  # Allow manual trigger from Actions tab
+  workflow_dispatch:
+    inputs:
+      sale_key:
+        description: "Sale key to sync (blank = all)"
+        required: false
+        type: string
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Sync sale data to S3
+        env:
+          BREEZEUP_AWS_ACCESS_KEY_ID: ${{ secrets.BREEZEUP_AWS_ACCESS_KEY_ID }}
+          BREEZEUP_AWS_SECRET_ACCESS_KEY: ${{ secrets.BREEZEUP_AWS_SECRET_ACCESS_KEY }}
+        run: |
+          if [ -n "${{ inputs.sale_key }}" ]; then
+            python scripts/sync_to_s3.py "${{ inputs.sale_key }}"
+          else
+            python scripts/sync_to_s3.py
+          fi
