@@ -3,7 +3,7 @@ import { useSaleData } from "../hooks/useSaleData";
 import SaleCard from "../components/SaleCard";
 
 const liveSales = Object.entries(SALE_CATALOG)
-  .filter(([, m]) => m.isLive)
+  .filter(([, m]) => m.isLive && m.month === 3)
   .sort(([, a], [, b]) => a.month - b.month);
 
 export default function LiveSales() {

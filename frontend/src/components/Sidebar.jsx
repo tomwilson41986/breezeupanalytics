@@ -16,7 +16,7 @@ const historicByYear = Object.entries(SALE_CATALOG)
 const historicYears = Object.keys(historicByYear).sort((a, b) => b - a);
 
 const liveSales = Object.entries(SALE_CATALOG)
-  .filter(([, m]) => m.isLive)
+  .filter(([, m]) => m.isLive && m.month === 3)
   .sort(([, a], [, b]) => a.month - b.month);
 
 function shortName(meta) {
@@ -71,44 +71,6 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 pt-4 pb-4 space-y-5 overflow-y-auto sidebar-scroll">
-        {/* ── Historic Sales ────────────────────────────── */}
-        <Section label="Historic Sales" icon={<ArchiveIcon />}>
-          {historicYears.map((year) => (
-            <div key={year}>
-              <button
-                onClick={() => toggleYear(year)}
-                className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
-                  expandedYears[year]
-                    ? "text-gray-900 font-medium"
-                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                <ChevronIcon expanded={expandedYears[year]} />
-                <span>{year} Season</span>
-              </button>
-              {expandedYears[year] && (
-                <div className="ml-6 mt-0.5 space-y-0.5 border-l border-gray-100 pl-2">
-                  {historicByYear[year].map((s) => (
-                    <NavLink
-                      key={s.key}
-                      to={`/sale/${s.key}`}
-                      className={({ isActive }) =>
-                        `block px-2.5 py-1 rounded text-[12px] transition-colors ${
-                          isActive
-                            ? "bg-brand-50 text-brand-700 font-medium"
-                            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                        }`
-                      }
-                    >
-                      {shortName(s.meta)}
-                    </NavLink>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </Section>
-
         {/* ── Live Sales ────────────────────────────────── */}
         <Section label="Live Sales" icon={<LiveIcon />}>
           {liveSales.map(([key, meta]) => (
@@ -162,6 +124,44 @@ export default function Sidebar() {
           >
             Vendor Performance
           </NavLink>
+        </Section>
+
+        {/* ── Historic Sales ────────────────────────────── */}
+        <Section label="Historic Sales" icon={<ArchiveIcon />}>
+          {historicYears.map((year) => (
+            <div key={year}>
+              <button
+                onClick={() => toggleYear(year)}
+                className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
+                  expandedYears[year]
+                    ? "text-gray-900 font-medium"
+                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+              >
+                <ChevronIcon expanded={expandedYears[year]} />
+                <span>{year} Season</span>
+              </button>
+              {expandedYears[year] && (
+                <div className="ml-6 mt-0.5 space-y-0.5 border-l border-gray-100 pl-2">
+                  {historicByYear[year].map((s) => (
+                    <NavLink
+                      key={s.key}
+                      to={`/sale/${s.key}`}
+                      className={({ isActive }) =>
+                        `block px-2.5 py-1 rounded text-[12px] transition-colors ${
+                          isActive
+                            ? "bg-brand-50 text-brand-700 font-medium"
+                            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                        }`
+                      }
+                    >
+                      {shortName(s.meta)}
+                    </NavLink>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </Section>
       </nav>
 
