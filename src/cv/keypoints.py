@@ -1,12 +1,12 @@
 """Equine keypoint estimation.
 
-Provides keypoint detection for horses using YOLO-Pose. Supports both
-pretrained COCO-pose models (17 human keypoints as baseline) and custom
-fine-tuned equine keypoint models (24-keypoint schema).
+Provides keypoint detection for horses using either:
+- A custom fine-tuned equine YOLO-Pose model (24-keypoint schema) — Phase 2+
+- Bounding-box anatomical heuristics (Phase 1 fallback when no equine model)
 
 The pipeline uses a top-down approach:
 1. Detect horse bounding boxes (via detection.py)
-2. Run keypoint estimation on each cropped detection
+2. Estimate equine keypoints on each detected horse
 """
 
 from __future__ import annotations
@@ -15,12 +15,13 @@ import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import cv2
 import numpy as np
 import torch
 from ultralytics import YOLO
 
 from src.cv.detection import Detection, crop_detection
-from src.cv.schema import NUM_KEYPOINTS, EquineKeypointSchema
+from src.cv.schema import KEYPOINT_NAME_TO_ID, NUM_KEYPOINTS, EquineKeypointSchema
 
 logger = logging.getLogger(__name__)
 
@@ -64,13 +65,148 @@ class FrameKeypoints:
         return len(self.horses)
 
 
+class BBoxKeypointEstimator:
+    """Estimates equine keypoints from bounding box anatomy — Phase 1 fallback.
+
+    When no custom equine pose model is available, the COCO YOLO-Pose model
+    detects the jockey (human) rather than the horse.  This estimator bypasses
+    the pose model entirely and places 24 equine keypoints on the horse body
+    using the detected bounding box and anatomical proportions for a
+    side-on galloping Thoroughbred.
+
+    The proportions are approximate but put keypoints on the *horse*, not the
+    jockey.  Phase 2 will replace this with a fine-tuned YOLO-Pose equine model.
+    """
+
+    # Relative (rx, ry) proportions inside the bounding box for a horse
+    # facing RIGHT.  rx: 0 = left edge (rear), 1 = right edge (front).
+    # ry: 0 = top edge, 1 = bottom edge.
+    # When the horse faces LEFT, rx is mirrored (1 - rx).
+    _PROPORTIONS_FACING_RIGHT: dict[str, tuple[float, float]] = {
+        # Head / topline
+        "poll":           (0.95, 0.02),
+        "nose":           (1.00, 0.20),
+        "throat":         (0.90, 0.22),
+        "withers":        (0.75, 0.00),
+        "mid_back":       (0.55, 0.03),
+        "croup":          (0.32, 0.00),
+        "tail_base":      (0.15, 0.08),
+        # Left forelimb (visible / near-side when facing right, camera on left)
+        "l_shoulder":     (0.72, 0.30),
+        "l_elbow":        (0.68, 0.48),
+        "l_knee_fore":    (0.65, 0.65),
+        "l_fetlock_fore": (0.62, 0.82),
+        "l_fore_hoof":    (0.60, 0.97),
+        # Right forelimb (far-side — slightly offset)
+        "r_shoulder":     (0.74, 0.28),
+        "r_elbow":        (0.70, 0.46),
+        "r_knee_fore":    (0.67, 0.63),
+        "r_fetlock_fore": (0.64, 0.80),
+        "r_fore_hoof":    (0.62, 0.95),
+        # Left hindlimb
+        "l_hip":          (0.35, 0.28),
+        "l_hock":         (0.30, 0.55),
+        "l_hind_fetlock": (0.27, 0.78),
+        "l_hind_hoof":    (0.25, 0.97),
+        # Right hindlimb
+        "r_hip":          (0.37, 0.26),
+        "r_hock":         (0.32, 0.53),
+        "r_hind_hoof":    (0.27, 0.95),
+    }
+
+    # Confidence assigned to heuristic keypoints (topline is more reliable
+    # because the bbox captures the body outline; limbs are less certain).
+    _CONF_TOPLINE = 0.6
+    _CONF_LIMB = 0.45
+
+    def __init__(self, confidence_threshold: float = 0.3):
+        self.confidence_threshold = confidence_threshold
+
+    def estimate(
+        self,
+        frame: np.ndarray,
+        detections: list[Detection] | None = None,
+    ) -> list[KeypointResult]:
+        if not detections:
+            return []
+
+        results = []
+        for det in detections:
+            facing_right = self._detect_direction(frame, det)
+            kpts, conf = self._place_keypoints(det.bbox, facing_right)
+            results.append(KeypointResult(
+                keypoints=kpts,
+                confidence=conf,
+                bbox=det.bbox,
+                track_id=det.track_id,
+            ))
+        return results
+
+    # ------------------------------------------------------------------
+    def _detect_direction(self, frame: np.ndarray, det: Detection) -> bool:
+        """Heuristic: detect whether the horse faces right or left.
+
+        Uses the upper portion of the bounding box.  The head/neck area has
+        more visual detail (mane, ears, bridle) than the tail end, so the
+        half with higher edge density is the front.
+        """
+        x1, y1, x2, y2 = det.bbox.astype(int)
+        h, w = frame.shape[:2]
+        x1, y1 = max(0, x1), max(0, y1)
+        x2, y2 = min(w, x2), min(h, y2)
+
+        # Upper 40% of the bbox (body, not legs)
+        y_upper = y1 + int((y2 - y1) * 0.40)
+        upper = frame[y1:y_upper, x1:x2]
+
+        if upper.size == 0:
+            return True
+
+        gray = cv2.cvtColor(upper, cv2.COLOR_BGR2GRAY)
+        edges = cv2.Canny(gray, 50, 150)
+
+        mid_x = edges.shape[1] // 2
+        left_energy = float(edges[:, :mid_x].sum())
+        right_energy = float(edges[:, mid_x:].sum())
+
+        return right_energy > left_energy  # more detail on right → facing right
+
+    # ------------------------------------------------------------------
+    def _place_keypoints(
+        self, bbox: np.ndarray, facing_right: bool,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        x1, y1, x2, y2 = bbox
+        bw = x2 - x1
+        bh = y2 - y1
+
+        kpts = np.zeros((NUM_KEYPOINTS, 2), dtype=np.float32)
+        conf = np.zeros(NUM_KEYPOINTS, dtype=np.float32)
+
+        for name, (rx, ry) in self._PROPORTIONS_FACING_RIGHT.items():
+            kp_id = KEYPOINT_NAME_TO_ID.get(name)
+            if kp_id is None:
+                continue
+
+            if not facing_right:
+                rx = 1.0 - rx
+
+            kpts[kp_id, 0] = x1 + rx * bw
+            kpts[kp_id, 1] = y1 + ry * bh
+
+            # Topline keypoints get higher confidence
+            is_topline = kp_id <= 6
+            conf[kp_id] = self._CONF_TOPLINE if is_topline else self._CONF_LIMB
+
+        return kpts, conf
+
+
 class EquineKeypointEstimator:
     """Estimates equine keypoints using YOLO-Pose.
 
-    For Phase 1 (zero-shot), this uses a pretrained YOLO-Pose model.
-    The COCO-pose model detects 17 human keypoints — we use it as a
-    structural baseline and will replace it with a fine-tuned equine
-    model in Phase 2.
+    Automatically detects whether the loaded model is a custom equine
+    model (24 keypoints) or a COCO human pose model (17 keypoints).
+    When using a human model, falls back to BBoxKeypointEstimator so
+    that keypoints are placed on the horse rather than the jockey.
 
     For production use, set `model_path` to a custom-trained YOLO-Pose
     model with 24 equine keypoints.
@@ -92,6 +228,7 @@ class EquineKeypointEstimator:
 
         # Detect if this is a custom equine model or COCO-pose
         self._is_custom_equine = False
+        self._bbox_fallback: BBoxKeypointEstimator | None = None
         try:
             model_kpt_shape = self.model.model.yaml.get("kpt_shape", [17, 3])
             if model_kpt_shape[0] == NUM_KEYPOINTS:
@@ -99,11 +236,13 @@ class EquineKeypointEstimator:
                 logger.info("Custom equine keypoint model detected (%d keypoints)", NUM_KEYPOINTS)
             else:
                 logger.info(
-                    "Using pretrained model with %d keypoints (will adapt to %d equine keypoints in Phase 2)",
-                    model_kpt_shape[0], NUM_KEYPOINTS,
+                    "Model has %d keypoints (human pose). Using bbox-anatomy "
+                    "estimator for horse keypoints (Phase 1 fallback).",
+                    model_kpt_shape[0],
                 )
+                self._bbox_fallback = BBoxKeypointEstimator(confidence_threshold)
         except (AttributeError, TypeError):
-            pass
+            self._bbox_fallback = BBoxKeypointEstimator(confidence_threshold)
 
     def estimate(
         self,
@@ -112,9 +251,9 @@ class EquineKeypointEstimator:
     ) -> list[KeypointResult]:
         """Estimate keypoints for horses in a frame.
 
-        If detections are provided (top-down approach), runs pose estimation
-        on each cropped bounding box. Otherwise, runs the pose model directly
-        on the full frame.
+        If using a custom equine model: runs pose estimation on each crop.
+        If using a COCO human model: falls back to bbox-based horse anatomy
+        so keypoints land on the horse, not the jockey.
 
         Args:
             frame: BGR image (H, W, 3).
@@ -123,6 +262,11 @@ class EquineKeypointEstimator:
         Returns:
             List of KeypointResult, one per detected horse.
         """
+        # Phase 1 fallback: use bbox heuristics instead of human pose model
+        if self._bbox_fallback is not None:
+            return self._bbox_fallback.estimate(frame, detections)
+
+        # Custom equine model — use top-down YOLO-Pose
         if detections:
             return self._estimate_topdown(frame, detections)
         return self._estimate_bottomup(frame)
@@ -149,8 +293,8 @@ class EquineKeypointEstimator:
                 kpts_conf = kpts_data[i, :, 2]
 
                 kr = KeypointResult(
-                    keypoints=self._adapt_keypoints(kpts_xy),
-                    confidence=self._adapt_confidence(kpts_conf),
+                    keypoints=kpts_xy[:self.num_keypoints],
+                    confidence=kpts_conf[:self.num_keypoints],
                     bbox=boxes[i],
                 )
                 keypoint_results.append(kr)
@@ -160,7 +304,7 @@ class EquineKeypointEstimator:
     def _estimate_topdown(
         self, frame: np.ndarray, detections: list[Detection]
     ) -> list[KeypointResult]:
-        """Run pose model on each cropped detection (top-down approach)."""
+        """Run custom equine pose model on each cropped detection."""
         keypoint_results = []
 
         for det in detections:
@@ -183,7 +327,6 @@ class EquineKeypointEstimator:
                 if len(kpts_data) == 0:
                     continue
 
-                # Use the first (highest-confidence) pose in the crop
                 kpts_xy = kpts_data[0, :, :2]
                 kpts_conf = kpts_data[0, :, 2]
 
@@ -198,8 +341,8 @@ class EquineKeypointEstimator:
                 kpts_xy[:, 1] += offset_y
 
                 kr = KeypointResult(
-                    keypoints=self._adapt_keypoints(kpts_xy),
-                    confidence=self._adapt_confidence(kpts_conf),
+                    keypoints=kpts_xy[:self.num_keypoints],
+                    confidence=kpts_conf[:self.num_keypoints],
                     bbox=det.bbox,
                     track_id=det.track_id,
                 )
@@ -207,110 +350,3 @@ class EquineKeypointEstimator:
                 break  # one pose per detection
 
         return keypoint_results
-
-    def _adapt_keypoints(self, kpts: np.ndarray) -> np.ndarray:
-        """Adapt model keypoints to our 24-point equine schema.
-
-        If using a custom equine model, keypoints map directly.
-        If using COCO-pose (17 keypoints), we pad to 24 with zeros
-        and map the available points as best we can.
-        """
-        if self._is_custom_equine or kpts.shape[0] == self.num_keypoints:
-            return kpts[:self.num_keypoints]
-
-        # COCO-pose has 17 keypoints — create a zero-padded equine array.
-        # This is a placeholder mapping; real production uses a fine-tuned model.
-        equine_kpts = np.zeros((self.num_keypoints, 2), dtype=np.float32)
-
-        # Approximate mapping from COCO (human) to equine body regions:
-        # COCO: 0=nose, 5=l_shoulder, 6=r_shoulder, 7=l_elbow, 8=r_elbow,
-        #        9=l_wrist, 10=r_wrist, 11=l_hip, 12=r_hip, 13=l_knee, 14=r_knee,
-        #        15=l_ankle, 16=r_ankle
-        # These don't map well to horse anatomy, but provide structural anchors
-        # for visualization and pipeline testing.
-        if kpts.shape[0] >= 17:
-            equine_kpts[1] = kpts[0]     # nose -> nose
-            equine_kpts[7] = kpts[5]     # l_shoulder
-            equine_kpts[12] = kpts[6]    # r_shoulder
-            equine_kpts[8] = kpts[7]     # l_elbow
-            equine_kpts[13] = kpts[8]    # r_elbow
-            equine_kpts[11] = kpts[9]    # l_fore_hoof (wrist proxy)
-            equine_kpts[16] = kpts[10]   # r_fore_hoof (wrist proxy)
-            equine_kpts[17] = kpts[11]   # l_hip
-            equine_kpts[21] = kpts[12]   # r_hip
-            equine_kpts[18] = kpts[13]   # l_hock (knee proxy)
-            equine_kpts[22] = kpts[14]   # r_hock (knee proxy)
-            equine_kpts[20] = kpts[15]   # l_hind_hoof (ankle proxy)
-            equine_kpts[23] = kpts[16]   # r_hind_hoof (ankle proxy)
-
-            # Infer structural keypoints from COCO landmarks:
-            # Withers ≈ midpoint of shoulders, shifted up slightly
-            equine_kpts[3] = (kpts[5] + kpts[6]) / 2          # withers
-            equine_kpts[3, 1] -= 10  # shift slightly above shoulder line
-
-            # Croup ≈ midpoint of hips, shifted up slightly
-            equine_kpts[5] = (kpts[11] + kpts[12]) / 2        # croup
-            equine_kpts[5, 1] -= 10
-
-            # Mid-back ≈ midpoint of withers and croup
-            equine_kpts[4] = (equine_kpts[3] + equine_kpts[5]) / 2  # mid_back
-
-            # Poll ≈ above nose (nose + offset upward)
-            equine_kpts[0] = kpts[0].copy()
-            equine_kpts[0, 1] -= 30  # poll above nose
-
-            # Throat ≈ between nose and withers
-            equine_kpts[2] = (kpts[0] + equine_kpts[3]) / 2   # throat
-
-            # Tail base ≈ behind croup
-            equine_kpts[6] = equine_kpts[5].copy()
-            equine_kpts[6, 0] += 20  # slightly behind croup
-
-            # Fore knees ≈ between elbow and wrist
-            equine_kpts[9] = (kpts[7] + kpts[9]) / 2    # l_knee_fore
-            equine_kpts[14] = (kpts[8] + kpts[10]) / 2  # r_knee_fore
-
-            # Fore fetlocks ≈ between knee and hoof
-            equine_kpts[10] = (equine_kpts[9] + kpts[9]) / 2    # l_fetlock_fore
-            equine_kpts[15] = (equine_kpts[14] + kpts[10]) / 2  # r_fetlock_fore
-
-            # Hind fetlock ≈ between hock and hoof
-            equine_kpts[19] = (kpts[13] + kpts[15]) / 2  # l_hind_fetlock
-
-        return equine_kpts
-
-    def _adapt_confidence(self, conf: np.ndarray) -> np.ndarray:
-        """Adapt confidence scores to our 24-point schema."""
-        if self._is_custom_equine or conf.shape[0] == self.num_keypoints:
-            return conf[:self.num_keypoints]
-
-        equine_conf = np.zeros(self.num_keypoints, dtype=np.float32)
-        if conf.shape[0] >= 17:
-            equine_conf[1] = conf[0]       # nose
-            equine_conf[7] = conf[5]       # l_shoulder
-            equine_conf[12] = conf[6]      # r_shoulder
-            equine_conf[8] = conf[7]       # l_elbow
-            equine_conf[13] = conf[8]      # r_elbow
-            equine_conf[11] = conf[9]      # l_fore_hoof
-            equine_conf[16] = conf[10]     # r_fore_hoof
-            equine_conf[17] = conf[11]     # l_hip
-            equine_conf[21] = conf[12]     # r_hip
-            equine_conf[18] = conf[13]     # l_hock
-            equine_conf[22] = conf[14]     # r_hock
-            equine_conf[20] = conf[15]     # l_hind_hoof
-            equine_conf[23] = conf[16]     # r_hind_hoof
-
-            # Inferred keypoints get min confidence of their source keypoints
-            equine_conf[3] = min(conf[5], conf[6])        # withers from shoulders
-            equine_conf[5] = min(conf[11], conf[12])      # croup from hips
-            equine_conf[4] = min(equine_conf[3], equine_conf[5])  # mid_back
-            equine_conf[0] = conf[0] * 0.8                # poll (inferred from nose)
-            equine_conf[2] = min(conf[0], equine_conf[3]) * 0.8  # throat
-            equine_conf[6] = equine_conf[5] * 0.7         # tail_base (inferred)
-            equine_conf[9] = min(conf[7], conf[9])        # l_knee_fore
-            equine_conf[14] = min(conf[8], conf[10])      # r_knee_fore
-            equine_conf[10] = min(conf[7], conf[9]) * 0.7  # l_fetlock_fore
-            equine_conf[15] = min(conf[8], conf[10]) * 0.7 # r_fetlock_fore
-            equine_conf[19] = min(conf[13], conf[15]) * 0.7 # l_hind_fetlock
-
-        return equine_conf
