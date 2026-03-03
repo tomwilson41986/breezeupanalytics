@@ -266,6 +266,7 @@ SALE_MAP = {
     "obs_march_2025": 142,
     "obs_spring_2025": 144,
     "obs_june_2025": 145,
+    "obs_march_2026": 149,
 }
 
 

@@ -37,6 +37,14 @@ SEED_SALES = [
         location="Ocala, FL",
         catalog_sale_id="145",
     ),
+    Sale(
+        sale_id="obs_march_2026",
+        company="OBS",
+        sale_name="OBS March 2YO in Training 2026",
+        year=2026,
+        location="Ocala, FL",
+        catalog_sale_id="149",
+    ),
 ]
 
 
