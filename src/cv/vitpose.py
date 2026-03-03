@@ -231,8 +231,9 @@ class ViTPoseKeypointEstimator:
         inputs = self.processor(pil_image, boxes=[boxes], return_tensors="pt")
         inputs = {k: v.to(self.device) for k, v in inputs.items()}
 
+        dataset_idx = torch.tensor(_AP10K_DATASET_INDEX, device=self.device)
         with torch.no_grad():
-            outputs = self.model(**inputs, dataset_index=_AP10K_DATASET_INDEX)
+            outputs = self.model(**inputs, dataset_index=dataset_idx)
 
         # Post-process to get keypoints in original image space
         pose_results = self.processor.post_process_pose_estimation(
