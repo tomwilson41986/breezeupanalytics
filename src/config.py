@@ -56,6 +56,13 @@ OBS_VIDEO_PLAYER_TEMPLATE = (
 )
 
 # ---------------------------------------------------------------------------
+# S3 storage
+# ---------------------------------------------------------------------------
+S3_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME", "")
+S3_REGION = os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
+S3_KEYPOINT_PREFIX = "keypoint"  # Default prefix for pipeline output
+
+# ---------------------------------------------------------------------------
 # Scraping behaviour
 # ---------------------------------------------------------------------------
 REQUEST_DELAY_SECONDS = 2.5  # Polite delay between requests

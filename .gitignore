@@ -31,3 +31,9 @@ data/videos/
 # Database
 *.db
 *.sqlite3
+
+# YOLO model weights (auto-downloaded)
+*.pt
+
+# Pipeline output artifacts (videos, metrics, QA frames)
+output/

@@ -1,0 +1,113 @@
+{
+  "video": "output/hip654/hip654_raw.mp4",
+  "duration_s": 22.7227,
+  "fps": 59.94005994005994,
+  "frames_processed": 120,
+  "horses_detected": 2,
+  "processing_time_s": 0.0,
+  "horses": [
+    {
+      "track_id": 0,
+      "num_strides": 0,
+      "mean_stride_length_px": 0.0,
+      "mean_stride_frequency_hz": 0.0,
+      "mean_stride_duration_s": 0.0,
+      "stride_length_cv": 0.0,
+      "mean_withers_displacement_px": 0.0,
+      "mean_speed_px_s": 0.0,
+      "peak_speed_px_s": 0.0,
+      "per_stride": []
+    },
+    {
+      "track_id": 1,
+      "num_strides": 2,
+      "mean_stride_length_px": 33.83,
+      "mean_stride_frequency_hz": 2.626,
+      "mean_stride_duration_s": 0.3837,
+      "stride_length_cv": 0.8865,
+      "mean_withers_displacement_px": 104.21,
+      "mean_speed_px_s": 95.69,
+      "peak_speed_px_s": 182.17,
+      "mean_head_neck_angle_deg": 60.7,
+      "mean_forelimb_protraction_deg": 90.9,
+      "mean_hindlimb_engagement_deg": 124.4,
+      "mean_lateral_symmetry_pct": 60.3,
+      "mean_topline_angle_deg": 180.0,
+      "mean_knee_flexion_deg": 19.0,
+      "mean_fetlock_extension_deg": 33.5,
+      "mean_hock_flexion_deg": 124.1,
+      "mean_suspension_duration_s": 0.3337,
+      "suspension_ratio": 0.87,
+      "mean_overreach_px": -2.43,
+      "mean_ground_cover_px": 34.67,
+      "speed_efficiency_index": 36.44,
+      "mean_acceleration_px_s2": 493.68,
+      "movement_quality_score": 24.0,
+      "duty_factor_l_fore": 0.048,
+      "duty_factor_r_fore": 0.135,
+      "duty_factor_l_hind": 0.19,
+      "duty_factor_r_hind": 0.19,
+      "per_stride": [
+        {
+          "stride_index": 0,
+          "stride_length_px": 3.84,
+          "stride_duration_s": 0.4171,
+          "stride_frequency_hz": 2.398,
+          "estimated_speed_px_s": 9.21,
+          "withers_vertical_displacement_px": 101.27,
+          "head_neck_angle_deg": 48.8,
+          "forelimb_protraction_angle_deg": 87.6,
+          "hindlimb_engagement_angle_deg": 98.3,
+          "lateral_symmetry_index": 54.03,
+          "topline_angle_deg": 180.0,
+          "knee_flexion_deg": 19.3,
+          "fetlock_extension_deg": 62.4,
+          "hock_flexion_deg": 129.6,
+          "suspension_duration_s": 0.2336,
+          "speed_efficiency": 3.84,
+          "ground_cover_px": 1.31
+        },
+        {
+          "stride_index": 1,
+          "stride_length_px": 63.82,
+          "stride_duration_s": 0.3503,
+          "stride_frequency_hz": 2.854,
+          "estimated_speed_px_s": 182.17,
+          "withers_vertical_displacement_px": 107.15,
+          "head_neck_angle_deg": 72.5,
+          "forelimb_protraction_angle_deg": 94.1,
+          "hindlimb_engagement_angle_deg": 150.5,
+          "lateral_symmetry_index": 66.56,
+          "topline_angle_deg": 180.0,
+          "knee_flexion_deg": 18.7,
+          "fetlock_extension_deg": 4.7,
+          "hock_flexion_deg": 118.7,
+          "suspension_duration_s": 0.4338,
+          "overreach_px": 7.61,
+          "acceleration_px_s2": 493.68,
+          "speed_efficiency": 63.82,
+          "ground_cover_px": 68.03
+        }
+      ],
+      "speed_profile": {
+        "speeds_px_s": [
+          9.21,
+          182.17
+        ],
+        "accelerations_px_s2": [
+          493.68
+        ],
+        "peak_speed_px_s": 182.17,
+        "mean_acceleration_px_s2": 493.68
+      },
+      "movement_quality": {
+        "overall_score": 24.0,
+        "stride_regularity": 0.0,
+        "symmetry_score": 0.0,
+        "reach_score": 45.1,
+        "suspension_score": 100.0,
+        "engagement_score": 0.0
+      }
+    }
+  ]
+}

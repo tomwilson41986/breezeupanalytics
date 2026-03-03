@@ -1,0 +1,5 @@
+track_id,num_strides,mean_stride_length_px,mean_stride_frequency_hz,mean_stride_duration_s,stride_length_cv,mean_withers_displacement_px,mean_speed_px_s,peak_speed_px_s,mean_head_neck_angle_deg,mean_forelimb_protraction_deg,mean_hindlimb_engagement_deg,mean_lateral_symmetry_pct,mean_topline_angle_deg,mean_knee_flexion_deg,mean_fetlock_extension_deg,mean_hock_flexion_deg,mean_suspension_duration_s,suspension_ratio,mean_overreach_px,mean_ground_cover_px,speed_efficiency_index,mean_acceleration_px_s2,movement_quality_score,duty_factor_l_fore,duty_factor_r_fore,duty_factor_l_hind,duty_factor_r_hind
+0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,,,,,,,,,,,,,,,,,,,
+1,35,62.05,2.645,0.3966,1.1171,61.81,145.57,568.12,55.4,170.8,165.9,0.0,174.8,174.6,179.6,178.9,0.9134,2.303,-47.8,48.15,55.03,-18.44,35.0,0.269,0.269,0.269,0.269
+3,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,,,,,,,,,,,,,,,,,,,
+8,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,,,,,,,,,,,,,,,,,,,
