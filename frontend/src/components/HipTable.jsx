@@ -15,7 +15,7 @@ const SORT_FIELDS = [
   { key: "sire", label: "Sire" },
 ];
 
-export default function HipTable({ hips, saleId }) {
+export default function HipTable({ hips, saleId, assetIndex }) {
   const [sortBy, setSortBy] = useState("hipNumber");
   const [sortDir, setSortDir] = useState("asc");
   const [filter, setFilter] = useState("");
@@ -181,20 +181,7 @@ export default function HipTable({ hips, saleId }) {
                   {hip.price ? formatCurrency(hip.price) : "—"}
                 </td>
                 <td className="px-3 py-2.5">
-                  <div className="flex gap-1.5">
-                    {hip.videoUrl && (
-                      <AssetDot label="V" title="Breeze Video" />
-                    )}
-                    {hip.walkVideoUrl && (
-                      <AssetDot label="W" title="Walk Video" color="sky" />
-                    )}
-                    {hip.photoUrl && (
-                      <AssetDot label="P" title="Photo" color="violet" />
-                    )}
-                    {hip.pedigreeUrl && (
-                      <AssetDot label="D" title="Pedigree" color="amber" />
-                    )}
-                  </div>
+                  <AssetIndicators hip={hip} assetIndex={assetIndex} />
                 </td>
               </tr>
             ))}
@@ -206,6 +193,23 @@ export default function HipTable({ hips, saleId }) {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function AssetIndicators({ hip, assetIndex }) {
+  const s3 = assetIndex?.[String(hip.hipNumber)] || {};
+  const hasVideo = hip.videoUrl || s3.video;
+  const hasWalk = hip.walkVideoUrl || s3.walkVideo;
+  const hasPhoto = hip.photoUrl || s3.photo;
+  const hasPedigree = hip.pedigreeUrl || s3.pedigree;
+
+  return (
+    <div className="flex gap-1.5">
+      {hasVideo && <AssetDot label="V" title="Breeze Video" />}
+      {hasWalk && <AssetDot label="W" title="Walk Video" color="sky" />}
+      {hasPhoto && <AssetDot label="P" title="Photo" color="violet" />}
+      {hasPedigree && <AssetDot label="D" title="Pedigree" color="amber" />}
     </div>
   );
 }

@@ -5,7 +5,7 @@
 
 const API_BASE = "/.netlify/functions";
 
-// Known OBS catalog sale IDs
+// Known OBS catalog sale IDs — s3Key matches the S3 folder name
 export const SALE_CATALOG = {
   obs_march_2025: {
     id: 142,
@@ -14,6 +14,7 @@ export const SALE_CATALOG = {
     month: 3,
     year: 2025,
     location: "Ocala, FL",
+    s3Key: "obs_march_2025",
   },
   obs_spring_2025: {
     id: 144,
@@ -22,6 +23,7 @@ export const SALE_CATALOG = {
     month: 4,
     year: 2025,
     location: "Ocala, FL",
+    s3Key: "obs_spring_2025",
   },
   obs_june_2025: {
     id: 145,
@@ -30,6 +32,7 @@ export const SALE_CATALOG = {
     month: 6,
     year: 2025,
     location: "Ocala, FL",
+    s3Key: "obs_june_2025",
   },
 };
 
@@ -40,6 +43,32 @@ export async function fetchSale(catalogId) {
   const res = await fetch(`${API_BASE}/obs-proxy?saleId=${catalogId}`);
   if (!res.ok) throw new Error(`Failed to fetch sale: ${res.status}`);
   return res.json();
+}
+
+/**
+ * Fetch S3 asset URLs for a single hip
+ * Returns { video?, walkVideo?, photo?, pedigree? }
+ */
+export async function fetchHipAssets(s3Key, hipNumber) {
+  const res = await fetch(
+    `${API_BASE}/s3-assets?sale=${encodeURIComponent(s3Key)}&hip=${encodeURIComponent(hipNumber)}`
+  );
+  if (!res.ok) return {};
+  const data = await res.json();
+  return data.assets || {};
+}
+
+/**
+ * Fetch the list of all hips that have S3 assets for a sale
+ * Returns { [hipNumber]: { video?, walkVideo?, photo?, pedigree? } }
+ */
+export async function fetchSaleAssetIndex(s3Key) {
+  const res = await fetch(
+    `${API_BASE}/s3-assets?sale=${encodeURIComponent(s3Key)}&list=true`
+  );
+  if (!res.ok) return {};
+  const data = await res.json();
+  return data.assets || {};
 }
 
 /**

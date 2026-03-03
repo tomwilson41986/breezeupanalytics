@@ -16,7 +16,7 @@ import {
 
 export default function SaleDetail() {
   const { saleId } = useParams();
-  const { sale, stats, loading, error } = useSaleData(saleId);
+  const { sale, stats, assetIndex, loading, error } = useSaleData(saleId);
 
   const meta = Object.values(SALE_CATALOG).find(
     (m) => String(m.id) === String(saleId)
@@ -93,7 +93,7 @@ export default function SaleDetail() {
         <h2 className="text-lg font-semibold text-gray-900 mb-4">
           Full Catalog
         </h2>
-        <HipTable hips={sale.hips} saleId={saleId} />
+        <HipTable hips={sale.hips} saleId={saleId} assetIndex={assetIndex} />
       </div>
     </div>
   );

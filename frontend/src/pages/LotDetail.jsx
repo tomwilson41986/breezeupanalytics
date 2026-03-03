@@ -1,5 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useSaleData } from "../hooks/useSaleData";
+import { useHipAssets } from "../hooks/useHipAssets";
+import { SALE_CATALOG } from "../lib/api";
 import StatusBadge from "../components/StatusBadge";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorBanner from "../components/ErrorBanner";
@@ -14,11 +16,27 @@ export default function LotDetail() {
   const { saleId, hipNumber } = useParams();
   const { sale, loading, error } = useSaleData(saleId);
 
+  // Find the s3Key for this sale
+  const meta = Object.values(SALE_CATALOG).find(
+    (m) => String(m.id) === String(saleId)
+  );
+  const { assets: s3Assets, loading: assetsLoading } = useHipAssets(
+    meta?.s3Key,
+    hipNumber
+  );
+
   if (loading) return <LoadingSpinner message="Loading hip details..." />;
   if (error) return <ErrorBanner message={error} />;
 
   const hip = sale?.hips.find((h) => String(h.hipNumber) === String(hipNumber));
   if (!hip) return <ErrorBanner message={`Hip #${hipNumber} not found`} />;
+
+  // Merge S3 assets with OBS assets — S3 takes priority
+  const videoUrl = s3Assets?.video || hip.videoUrl;
+  const walkVideoUrl = s3Assets?.walkVideo || hip.walkVideoUrl;
+  const photoUrl = s3Assets?.photo || hip.photoUrl;
+  const pedigreeUrl = s3Assets?.pedigree || hip.pedigreeUrl;
+  const hasAnyAsset = videoUrl || walkVideoUrl || photoUrl || pedigreeUrl;
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -126,53 +144,57 @@ export default function LotDetail() {
         <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <MediaIcon className="w-5 h-5 text-brand-500" />
           Assets
+          {assetsLoading && (
+            <span className="text-xs font-normal text-gray-400 ml-2">Loading from S3...</span>
+          )}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {hip.videoUrl && (
+          {videoUrl && (
             <AssetCard
               label="Breeze Video"
               type="video"
-              url={hip.videoUrl}
+              url={videoUrl}
               accentColor="emerald"
+              fromS3={!!s3Assets?.video}
             />
           )}
-          {hip.walkVideoUrl && (
+          {walkVideoUrl && (
             <AssetCard
               label="Walking Video"
               type="video"
-              url={hip.walkVideoUrl}
+              url={walkVideoUrl}
               accentColor="sky"
+              fromS3={!!s3Assets?.walkVideo}
             />
           )}
-          {hip.photoUrl && (
+          {photoUrl && (
             <AssetCard
               label="Conformation Photo"
               type="image"
-              url={hip.photoUrl}
+              url={photoUrl}
               accentColor="violet"
+              fromS3={!!s3Assets?.photo}
             />
           )}
-          {hip.pedigreeUrl && (
+          {pedigreeUrl && (
             <AssetCard
               label="Pedigree PDF"
               type="pdf"
-              url={hip.pedigreeUrl}
+              url={pedigreeUrl}
               accentColor="amber"
+              fromS3={!!s3Assets?.pedigree}
             />
           )}
         </div>
 
-        {!hip.videoUrl &&
-          !hip.walkVideoUrl &&
-          !hip.photoUrl &&
-          !hip.pedigreeUrl && (
-            <div className="rounded-xl border border-gray-100 bg-white p-8 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-              <p className="text-gray-400">
-                No assets available for this hip
-              </p>
-            </div>
-          )}
+        {!assetsLoading && !hasAnyAsset && (
+          <div className="rounded-xl border border-gray-100 bg-white p-8 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+            <p className="text-gray-400">
+              No assets available for this hip
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
@@ -217,7 +239,7 @@ function PedigreeRow({ label, value, highlight }) {
   );
 }
 
-function AssetCard({ label, type, url, accentColor }) {
+function AssetCard({ label, type, url, accentColor, fromS3 }) {
   const accentMap = {
     emerald: "border-gray-100 hover:border-emerald-200",
     sky: "border-gray-100 hover:border-sky-200",
@@ -272,7 +294,12 @@ function AssetCard({ label, type, url, accentColor }) {
       )}
       <div className="p-3">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-gray-600">{label}</span>
+          <span className="text-xs font-medium text-gray-600">
+            {label}
+            {fromS3 && (
+              <span className="ml-1.5 text-[10px] text-brand-500 font-normal">S3</span>
+            )}
+          </span>
           <a
             href={url}
             target="_blank"
