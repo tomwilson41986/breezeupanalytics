@@ -11,46 +11,50 @@ import {
 } from "../lib/api";
 
 /**
- * Find the s3Key for a given catalog ID
+ * Try S3 first (pre-processed data), fall back to live OBS API,
+ * or return asset-only data for historical sales.
  */
-function getS3Key(catalogId) {
-  const entry = Object.values(SALE_CATALOG).find(
-    (m) => String(m.id) === String(catalogId)
-  );
-  return entry?.s3Key || null;
-}
+async function loadSaleData(s3Key) {
+  const meta = SALE_CATALOG[s3Key];
 
-/**
- * Try S3 first (pre-processed data), fall back to live OBS API.
- */
-async function loadSaleData(catalogId, s3Key) {
-  // Try S3 first — fastest and has pre-computed stats
-  if (s3Key) {
-    const [s3Sale, s3Stats] = await Promise.all([
-      fetchSaleFromS3(s3Key),
-      fetchStatsFromS3(s3Key),
-    ]);
+  // Try S3 pre-processed JSON first (only exists for 2025 sales)
+  const [s3Sale, s3Stats] = await Promise.allSettled([
+    fetchSaleFromS3(s3Key),
+    fetchStatsFromS3(s3Key),
+  ]);
 
-    if (s3Sale && s3Sale.hips) {
-      const parsed = parseS3SaleResponse(s3Sale);
-      // Use pre-computed stats from S3, or compute from parsed hips
-      const stats = s3Stats || computeSaleStats(parsed.hips);
-      return { sale: parsed, stats, source: "s3" };
+  const saleData = s3Sale.status === "fulfilled" ? s3Sale.value : null;
+  const statsData = s3Stats.status === "fulfilled" ? s3Stats.value : null;
+
+  if (saleData && saleData.hips) {
+    const parsed = parseS3SaleResponse(saleData);
+    const stats = statsData || computeSaleStats(parsed.hips);
+    return { sale: parsed, stats, source: "s3" };
+  }
+
+  // Fallback: try OBS API if we have a known numeric ID
+  if (meta?.id) {
+    try {
+      const raw = await fetchSale(meta.id);
+      const parsed = parseSaleResponse(raw);
+      const stats = computeSaleStats(parsed.hips);
+      return { sale: parsed, stats, source: "obs" };
+    } catch {
+      // OBS API failed, fall through to asset-only mode
     }
   }
 
-  // Fallback: fetch live from OBS API
-  const raw = await fetchSale(catalogId);
-  const parsed = parseSaleResponse(raw);
-  const stats = computeSaleStats(parsed.hips);
-  return { sale: parsed, stats, source: "obs" };
+  // Asset-only mode: no sale JSON available, will rely on S3 asset listing
+  return { sale: null, stats: null, source: "assets-only" };
 }
 
 /**
  * Hook to fetch + parse sale data from S3 (primary) or OBS API (fallback),
  * and also load the S3 asset index for the sale.
+ *
+ * @param {string} s3Key - The S3 key identifier (e.g. "obs_march_2025")
  */
-export function useSaleData(catalogId) {
+export function useSaleData(s3Key) {
   const [sale, setSale] = useState(null);
   const [stats, setStats] = useState(null);
   const [assetIndex, setAssetIndex] = useState(null);
@@ -59,18 +63,14 @@ export function useSaleData(catalogId) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!catalogId) return;
+    if (!s3Key) return;
     let cancelled = false;
     setLoading(true);
     setError(null);
 
-    const s3Key = getS3Key(catalogId);
-
     // Fetch sale data and S3 asset index in parallel
-    const dataPromise = loadSaleData(catalogId, s3Key);
-    const assetsPromise = s3Key
-      ? fetchSaleAssetIndex(s3Key)
-      : Promise.resolve({});
+    const dataPromise = loadSaleData(s3Key);
+    const assetsPromise = fetchSaleAssetIndex(s3Key);
 
     Promise.all([dataPromise, assetsPromise])
       .then(([{ sale: parsed, stats: computedStats, source }, s3Index]) => {
@@ -91,7 +91,7 @@ export function useSaleData(catalogId) {
     return () => {
       cancelled = true;
     };
-  }, [catalogId]);
+  }, [s3Key]);
 
   return { sale, stats, assetIndex, dataSource, loading, error };
 }

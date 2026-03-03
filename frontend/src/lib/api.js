@@ -7,36 +7,47 @@
 
 const API_BASE = "/.netlify/functions";
 
-// Known OBS catalog sale IDs — s3Key matches the S3 folder name
-export const SALE_CATALOG = {
-  obs_march_2025: {
-    id: 142,
-    name: "OBS March 2YO in Training 2025",
-    company: "OBS",
-    month: 3,
-    year: 2025,
-    location: "Ocala, FL",
-    s3Key: "obs_march_2025",
-  },
-  obs_spring_2025: {
-    id: 144,
-    name: "OBS Spring 2YO in Training 2025",
-    company: "OBS",
-    month: 4,
-    year: 2025,
-    location: "Ocala, FL",
-    s3Key: "obs_spring_2025",
-  },
-  obs_june_2025: {
-    id: 145,
-    name: "OBS June 2YO & HRA 2025",
-    company: "OBS",
-    month: 6,
-    year: 2025,
-    location: "Ocala, FL",
-    s3Key: "obs_june_2025",
-  },
-};
+/**
+ * Generate the full catalog of all OBS sales with S3 data.
+ * OBS numeric IDs are only known for 2025 sales.
+ */
+function buildCatalog() {
+  const catalog = {};
+  const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+  const seasons = [
+    { key: "march", label: "March", month: 3, fullName: (y) => `OBS March 2YO in Training ${y}` },
+    { key: "spring", label: "Spring", month: 4, fullName: (y) => `OBS Spring 2YO in Training ${y}` },
+    { key: "june", label: "June", month: 6, fullName: (y) => `OBS June 2YO & HRA ${y}` },
+  ];
+
+  // Known OBS API IDs (only 2025)
+  const obsIds = {
+    obs_march_2025: 142,
+    obs_spring_2025: 144,
+    obs_june_2025: 145,
+  };
+
+  for (const year of years) {
+    for (const season of seasons) {
+      const s3Key = `obs_${season.key}_${year}`;
+      catalog[s3Key] = {
+        id: obsIds[s3Key] || null,
+        name: season.fullName(year),
+        company: "OBS",
+        month: season.month,
+        year,
+        location: "Ocala, FL",
+        s3Key,
+        hasData: year === 2025, // Pre-processed JSON only available for 2025
+      };
+    }
+  }
+
+  return catalog;
+}
+
+// Known OBS catalog sales — s3Key is the primary identifier
+export const SALE_CATALOG = buildCatalog();
 
 /* ── S3-backed data (primary) ───────────────────────────────── */
 

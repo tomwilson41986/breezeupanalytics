@@ -82,37 +82,9 @@ async function s3Get(key, accessKeyId, secretAccessKey) {
   return res;
 }
 
-/* ── Known sales catalog ────────────────────────────────────── */
+/* ── Validate sale key format ──────────────────────────────── */
 
-const SALE_CATALOG = {
-  obs_march_2025: {
-    id: 142,
-    name: "OBS March 2YO in Training 2025",
-    company: "OBS",
-    month: 3,
-    year: 2025,
-    location: "Ocala, FL",
-    s3Key: "obs_march_2025",
-  },
-  obs_spring_2025: {
-    id: 144,
-    name: "OBS Spring 2YO in Training 2025",
-    company: "OBS",
-    month: 4,
-    year: 2025,
-    location: "Ocala, FL",
-    s3Key: "obs_spring_2025",
-  },
-  obs_june_2025: {
-    id: 145,
-    name: "OBS June 2YO & HRA 2025",
-    company: "OBS",
-    month: 6,
-    year: 2025,
-    location: "Ocala, FL",
-    s3Key: "obs_june_2025",
-  },
-};
+const SALE_KEY_PATTERN = /^obs_(march|spring|june)_20\d{2}$/;
 
 /* ── Response helpers ───────────────────────────────────────── */
 
@@ -142,11 +114,6 @@ export default async (req) => {
 
   const url = new URL(req.url);
 
-  // Return the catalog of available sales
-  if (url.searchParams.get("catalog") === "true") {
-    return jsonResponse({ catalog: SALE_CATALOG }, 200, 600);
-  }
-
   const saleKey = url.searchParams.get("sale");
   if (!saleKey) {
     return jsonResponse(
@@ -155,10 +122,10 @@ export default async (req) => {
     );
   }
 
-  if (!SALE_CATALOG[saleKey]) {
+  if (!SALE_KEY_PATTERN.test(saleKey)) {
     return jsonResponse(
-      { error: `Unknown sale: ${saleKey}`, available: Object.keys(SALE_CATALOG) },
-      404
+      { error: `Invalid sale key format: ${saleKey}` },
+      400
     );
   }
 

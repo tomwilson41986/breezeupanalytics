@@ -13,30 +13,35 @@ import {
 } from "../lib/format";
 
 export default function LotDetail() {
-  const { saleId, hipNumber } = useParams();
-  const { sale, loading, error } = useSaleData(saleId);
+  const { saleKey, hipNumber } = useParams();
+  const { sale, dataSource, loading, error } = useSaleData(saleKey);
 
-  // Find the s3Key for this sale
-  const meta = Object.values(SALE_CATALOG).find(
-    (m) => String(m.id) === String(saleId)
-  );
+  // Use s3Key directly for asset fetching
   const { assets: s3Assets, loading: assetsLoading } = useHipAssets(
-    meta?.s3Key,
+    saleKey,
     hipNumber
   );
+
+  const meta = SALE_CATALOG[saleKey];
 
   if (loading) return <LoadingSpinner message="Loading hip details..." />;
   if (error) return <ErrorBanner message={error} />;
 
+  // For asset-only sales, show assets directly without full hip data
   const hip = sale?.hips.find((h) => String(h.hipNumber) === String(hipNumber));
-  if (!hip) return <ErrorBanner message={`Hip #${hipNumber} not found`} />;
+
+  if (!hip && dataSource !== "assets-only") {
+    return <ErrorBanner message={`Hip #${hipNumber} not found`} />;
+  }
 
   // Merge S3 assets with OBS assets — S3 takes priority
-  const videoUrl = s3Assets?.video || hip.videoUrl;
-  const walkVideoUrl = s3Assets?.walkVideo || hip.walkVideoUrl;
-  const photoUrl = s3Assets?.photo || hip.photoUrl;
-  const pedigreeUrl = s3Assets?.pedigree || hip.pedigreeUrl;
+  const videoUrl = s3Assets?.video || hip?.videoUrl;
+  const walkVideoUrl = s3Assets?.walkVideo || hip?.walkVideoUrl;
+  const photoUrl = s3Assets?.photo || hip?.photoUrl;
+  const pedigreeUrl = s3Assets?.pedigree || hip?.pedigreeUrl;
   const hasAnyAsset = videoUrl || walkVideoUrl || photoUrl || pedigreeUrl;
+
+  const saleName = sale?.saleName || meta?.name || saleKey;
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -50,10 +55,10 @@ export default function LotDetail() {
         </Link>
         <span className="text-gray-300">/</span>
         <Link
-          to={`/sale/${saleId}`}
+          to={`/sale/${saleKey}`}
           className="text-gray-400 hover:text-brand-600 transition-colors"
         >
-          {sale.saleName}
+          {saleName}
         </Link>
         <span className="text-gray-300">/</span>
         <span className="text-gray-700">Hip #{hipNumber}</span>
@@ -64,21 +69,33 @@ export default function LotDetail() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <span className="text-3xl font-bold font-mono text-brand-600">
-              #{hip.hipNumber}
+              #{hipNumber}
             </span>
-            <StatusBadge status={hip.status} />
+            {hip && <StatusBadge status={hip.status} />}
           </div>
-          <h1 className="text-xl font-semibold text-gray-900">
-            {hip.horseName || (
-              <span className="text-gray-400 italic">Unnamed</span>
-            )}
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            {colorLabel(hip.color)} {sexLabel(hip.sex)} &middot;{" "}
-            {hip.yearOfBirth || "—"} &middot; Consigned by {hip.consignor}
-          </p>
+          {hip && (
+            <>
+              <h1 className="text-xl font-semibold text-gray-900">
+                {hip.horseName || (
+                  <span className="text-gray-400 italic">Unnamed</span>
+                )}
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">
+                {colorLabel(hip.color)} {sexLabel(hip.sex)} &middot;{" "}
+                {hip.yearOfBirth || "—"} &middot; Consigned by {hip.consignor}
+              </p>
+            </>
+          )}
+          {!hip && (
+            <h1 className="text-xl font-semibold text-gray-900">
+              Hip #{hipNumber}
+              <span className="text-sm text-gray-400 font-normal ml-2">
+                ({saleName})
+              </span>
+            </h1>
+          )}
         </div>
-        {hip.price && (
+        {hip?.price && (
           <div className="text-right">
             <p className="text-[11px] uppercase tracking-wider text-gray-400">
               Hammer Price
@@ -93,51 +110,53 @@ export default function LotDetail() {
         )}
       </div>
 
-      {/* Info grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Pedigree */}
-        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-            <PedigreeIcon className="w-4 h-4 text-brand-500" />
-            Pedigree
-          </h3>
-          <div className="space-y-3">
-            <PedigreeRow label="Sire" value={hip.sire} highlight />
-            <PedigreeRow label="Dam" value={hip.dam} />
-            <PedigreeRow label="Dam Sire" value={hip.damSire} />
-            {hip.stateBred && (
-              <PedigreeRow label="State Bred" value={hip.stateBred} />
+      {/* Info grid — only for sales with full data */}
+      {hip && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Pedigree */}
+          <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <PedigreeIcon className="w-4 h-4 text-brand-500" />
+              Pedigree
+            </h3>
+            <div className="space-y-3">
+              <PedigreeRow label="Sire" value={hip.sire} highlight />
+              <PedigreeRow label="Dam" value={hip.dam} />
+              <PedigreeRow label="Dam Sire" value={hip.damSire} />
+              {hip.stateBred && (
+                <PedigreeRow label="State Bred" value={hip.stateBred} />
+              )}
+            </div>
+          </div>
+
+          {/* Under-tack */}
+          <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <TimerIcon className="w-4 h-4 text-emerald-500" />
+              Under-Tack (Breeze)
+            </h3>
+            {hip.breezeTime ? (
+              <div className="space-y-3">
+                <div className="flex items-baseline gap-3">
+                  <span className="text-4xl font-bold font-mono text-gray-900">
+                    {formatBreezeTime(hip.breezeTime)}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    {hip.breezeDistance} mile
+                  </span>
+                </div>
+                {hip.breezeDate && (
+                  <p className="text-xs text-gray-400">
+                    Breezed on {hip.breezeDate}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p className="text-gray-400 text-sm">No breeze data recorded</p>
             )}
           </div>
         </div>
-
-        {/* Under-tack */}
-        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-            <TimerIcon className="w-4 h-4 text-emerald-500" />
-            Under-Tack (Breeze)
-          </h3>
-          {hip.breezeTime ? (
-            <div className="space-y-3">
-              <div className="flex items-baseline gap-3">
-                <span className="text-4xl font-bold font-mono text-gray-900">
-                  {formatBreezeTime(hip.breezeTime)}
-                </span>
-                <span className="text-sm text-gray-500">
-                  {hip.breezeDistance} mile
-                </span>
-              </div>
-              {hip.breezeDate && (
-                <p className="text-xs text-gray-400">
-                  Breezed on {hip.breezeDate}
-                </p>
-              )}
-            </div>
-          ) : (
-            <p className="text-gray-400 text-sm">No breeze data recorded</p>
-          )}
-        </div>
-      </div>
+      )}
 
       {/* Assets */}
       <div>
@@ -199,21 +218,21 @@ export default function LotDetail() {
 
       {/* Navigation */}
       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-        {hip.hipNumber > 1 ? (
+        {Number(hipNumber) > 1 ? (
           <Link
-            to={`/sale/${saleId}/hip/${hip.hipNumber - 1}`}
+            to={`/sale/${saleKey}/hip/${Number(hipNumber) - 1}`}
             className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 hover:border-brand-300 hover:text-brand-600 transition-colors"
           >
-            <span>&larr;</span> Hip #{hip.hipNumber - 1}
+            <span>&larr;</span> Hip #{Number(hipNumber) - 1}
           </Link>
         ) : (
           <div />
         )}
         <Link
-          to={`/sale/${saleId}/hip/${hip.hipNumber + 1}`}
+          to={`/sale/${saleKey}/hip/${Number(hipNumber) + 1}`}
           className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 text-sm text-gray-600 hover:border-brand-300 hover:text-brand-600 transition-colors"
         >
-          Hip #{hip.hipNumber + 1} <span>&rarr;</span>
+          Hip #{Number(hipNumber) + 1} <span>&rarr;</span>
         </Link>
       </div>
     </div>
