@@ -282,3 +282,133 @@ class TestFlaskAPI:
         assert resp.status_code == 404
         data = resp.get_json()
         assert "error" in data
+
+
+# ---------- Auto-label API tests ----------
+
+class TestAutoLabelAPI:
+    @pytest.fixture
+    def client(self, tmp_path):
+        from src.cv.training.labeler import _STATE, _AUTO_LABEL_STATE
+        images_dir = tmp_path / "images"
+        labels_dir = tmp_path / "labels"
+        _make_test_images(images_dir, 3)
+        labels_dir.mkdir()
+
+        _STATE["images_dir"] = str(images_dir)
+        _STATE["labels_dir"] = str(labels_dir)
+        _STATE["image_files"] = _list_images(images_dir)
+        _STATE["project"] = "test"
+        _STATE["data_root"] = str(tmp_path)
+
+        # Reset auto-label state
+        _AUTO_LABEL_STATE.update({
+            "running": False, "progress": 0, "total": 0, "current_file": "",
+            "labeled": 0, "skipped": 0, "errors": 0, "mean_quality": 0.0,
+            "done": False, "error_message": "",
+        })
+
+        app.config["TESTING"] = True
+        with app.test_client() as c:
+            yield c
+
+    def test_auto_label_status_endpoint(self, client):
+        resp = client.get("/api/auto_label_status")
+        data = resp.get_json()
+        assert "running" in data
+        assert "progress" in data
+        assert "total" in data
+        assert "labeled" in data
+        assert "done" in data
+
+    def test_auto_label_no_project(self, client):
+        from src.cv.training.labeler import _STATE
+        _STATE["images_dir"] = ""
+        _STATE["labels_dir"] = ""
+
+        resp = client.post("/api/auto_label", json={"source": "vitpose"})
+        assert resp.status_code == 400
+        assert "error" in resp.get_json()
+
+    def test_auto_label_frame_missing_image(self, client):
+        resp = client.post("/api/auto_label_frame/nonexistent.jpg", json={})
+        assert resp.status_code == 404
+
+    def test_auto_label_frame_no_project(self, client):
+        from src.cv.training.labeler import _STATE
+        _STATE["images_dir"] = ""
+        _STATE["labels_dir"] = ""
+
+        resp = client.post("/api/auto_label_frame/frame_0000.jpg", json={})
+        assert resp.status_code == 400
+
+    def test_auto_label_rejects_concurrent(self, client):
+        from src.cv.training.labeler import _AUTO_LABEL_STATE
+        _AUTO_LABEL_STATE["running"] = True
+
+        resp = client.post("/api/auto_label", json={})
+        assert resp.status_code == 409
+        assert "already running" in resp.get_json()["error"]
+
+        _AUTO_LABEL_STATE["running"] = False
+
+    def test_auto_label_worker_skips_existing(self, tmp_path):
+        """Test that the worker skips frames that already have labels."""
+        from src.cv.training.labeler import _AUTO_LABEL_STATE
+
+        images_dir = tmp_path / "images"
+        labels_dir = tmp_path / "labels"
+        _make_test_images(images_dir, 2)
+        labels_dir.mkdir()
+
+        # Pre-create a non-empty label
+        ann = _make_full_annotation()
+        _save_yolo_label(labels_dir / "frame_0000.txt", [ann], 640, 480)
+
+        # Import and run the worker directly (mocking the agent)
+        from unittest.mock import patch, MagicMock
+        from src.cv.training.labeler import _auto_label_worker
+
+        mock_agent = MagicMock()
+        mock_agent.label_image.return_value = []  # No detections
+
+        with patch("src.cv.training.auto_label.AutoLabelAgent", return_value=mock_agent):
+            _auto_label_worker(
+                images_dir=str(images_dir),
+                labels_dir=str(labels_dir),
+                source="vitpose", vitpose_size="base",
+                det_conf=0.4, kpt_conf=0.2,
+                quality_threshold=0.4, min_kpts=8,
+                overwrite=False,
+            )
+
+        assert _AUTO_LABEL_STATE["done"] is True
+        assert _AUTO_LABEL_STATE["skipped"] >= 1  # frame_0000 was skipped
+
+    def test_auto_label_worker_processes_all(self, tmp_path):
+        """Test the worker processes unlabeled frames."""
+        from unittest.mock import patch, MagicMock
+        from src.cv.training.labeler import _auto_label_worker, _AUTO_LABEL_STATE
+
+        images_dir = tmp_path / "images"
+        labels_dir = tmp_path / "labels"
+        _make_test_images(images_dir, 2)
+        labels_dir.mkdir()
+
+        mock_agent = MagicMock()
+        mock_agent.label_image.return_value = []  # No detections
+        mock_agent._label_to_yolo_line.return_value = ""
+
+        with patch("src.cv.training.auto_label.AutoLabelAgent", return_value=mock_agent):
+            _auto_label_worker(
+                images_dir=str(images_dir),
+                labels_dir=str(labels_dir),
+                source="coco", vitpose_size="base",
+                det_conf=0.4, kpt_conf=0.2,
+                quality_threshold=0.4, min_kpts=8,
+                overwrite=False,
+            )
+
+        assert _AUTO_LABEL_STATE["done"] is True
+        assert _AUTO_LABEL_STATE["running"] is False
+        assert _AUTO_LABEL_STATE["total"] == 2

@@ -58,6 +58,20 @@ _STATE: dict = {
     "data_root": str(_DATA_ROOT),
 }
 
+# Auto-label background task state
+_AUTO_LABEL_STATE: dict = {
+    "running": False,
+    "progress": 0,
+    "total": 0,
+    "current_file": "",
+    "labeled": 0,
+    "skipped": 0,
+    "errors": 0,
+    "mean_quality": 0.0,
+    "done": False,
+    "error_message": "",
+}
+
 
 def _list_images(directory: Path) -> list[Path]:
     """List image files sorted by name."""
@@ -390,6 +404,203 @@ def api_schema():
 
 
 # ---------------------------------------------------------------------------
+# Auto-label integration
+# ---------------------------------------------------------------------------
+
+def _auto_label_worker(
+    images_dir: str,
+    labels_dir: str,
+    source: str,
+    vitpose_size: str,
+    det_conf: float,
+    kpt_conf: float,
+    quality_threshold: float,
+    min_kpts: int,
+    overwrite: bool,
+) -> None:
+    """Background worker that auto-labels all frames in a project."""
+    from src.cv.training.auto_label import AutoLabelAgent
+
+    state = _AUTO_LABEL_STATE
+    state.update({
+        "running": True, "progress": 0, "total": 0, "current_file": "",
+        "labeled": 0, "skipped": 0, "errors": 0, "mean_quality": 0.0,
+        "done": False, "error_message": "",
+    })
+
+    try:
+        images_path = Path(images_dir)
+        labels_path = Path(labels_dir)
+        labels_path.mkdir(parents=True, exist_ok=True)
+
+        image_files = _list_images(images_path)
+        state["total"] = len(image_files)
+
+        if not image_files:
+            state["done"] = True
+            state["running"] = False
+            return
+
+        agent = AutoLabelAgent(
+            detection_confidence=det_conf,
+            keypoint_confidence=kpt_conf,
+            quality_threshold=quality_threshold,
+            min_confident_kpts=min_kpts,
+            source=source,
+            vitpose_size=vitpose_size,
+        )
+
+        qualities = []
+
+        for i, img_path in enumerate(image_files):
+            state["progress"] = i + 1
+            state["current_file"] = img_path.name
+
+            label_path = labels_path / f"{img_path.stem}.txt"
+
+            # Skip already-labeled frames unless overwrite requested
+            if not overwrite and label_path.exists():
+                text = label_path.read_text().strip()
+                if text:
+                    state["skipped"] += 1
+                    continue
+
+            try:
+                labels = agent.label_image(str(img_path))
+
+                if labels:
+                    img = cv2.imread(str(img_path))
+                    if img is None:
+                        state["errors"] += 1
+                        continue
+
+                    h, w = img.shape[:2]
+                    lines = []
+                    for lbl in labels:
+                        lines.append(agent._label_to_yolo_line(lbl, w, h))
+                    label_path.write_text("\n".join(lines))
+
+                    state["labeled"] += 1
+                    qualities.extend(lbl.quality_score for lbl in labels)
+                else:
+                    # No horses detected — write empty label
+                    label_path.write_text("")
+                    state["skipped"] += 1
+
+            except Exception as e:
+                logger.warning("Auto-label failed for %s: %s", img_path.name, e)
+                state["errors"] += 1
+
+        state["mean_quality"] = sum(qualities) / len(qualities) if qualities else 0.0
+
+    except Exception as e:
+        logger.error("Auto-label worker crashed: %s", e)
+        state["error_message"] = str(e)
+
+    finally:
+        state["running"] = False
+        state["done"] = True
+
+
+@app.route("/api/auto_label", methods=["POST"])
+def api_auto_label():
+    """Start auto-labeling all frames in the current project."""
+    if _AUTO_LABEL_STATE["running"]:
+        return jsonify({"error": "Auto-labeling is already running"}), 409
+
+    if not _STATE["images_dir"] or not _STATE["labels_dir"]:
+        return jsonify({"error": "No project open"}), 400
+
+    data = request.get_json() or {}
+    source = data.get("source", "vitpose")
+    vitpose_size = data.get("vitpose_size", "base")
+    det_conf = float(data.get("det_conf", 0.4))
+    kpt_conf = float(data.get("kpt_conf", 0.2))
+    quality_threshold = float(data.get("quality_threshold", 0.4))
+    min_kpts = int(data.get("min_kpts", 8))
+    overwrite = bool(data.get("overwrite", False))
+
+    thread = threading.Thread(
+        target=_auto_label_worker,
+        args=(
+            _STATE["images_dir"], _STATE["labels_dir"],
+            source, vitpose_size, det_conf, kpt_conf,
+            quality_threshold, min_kpts, overwrite,
+        ),
+        daemon=True,
+    )
+    thread.start()
+
+    return jsonify({"status": "started", "total": len(_STATE["image_files"])})
+
+
+@app.route("/api/auto_label_frame/<filename>", methods=["POST"])
+def api_auto_label_frame(filename: str):
+    """Auto-label a single frame and return the annotations."""
+    if not _STATE["images_dir"] or not _STATE["labels_dir"]:
+        return jsonify({"error": "No project open"}), 400
+
+    img_path = Path(_STATE["images_dir"]) / filename
+    if not img_path.exists():
+        return jsonify({"error": f"Image not found: {filename}"}), 404
+
+    data = request.get_json() or {}
+    source = data.get("source", "vitpose")
+    vitpose_size = data.get("vitpose_size", "base")
+
+    from src.cv.training.auto_label import AutoLabelAgent
+
+    agent = AutoLabelAgent(
+        source=source,
+        vitpose_size=vitpose_size,
+    )
+    labels = agent.label_image(str(img_path))
+
+    img = cv2.imread(str(img_path))
+    if img is None:
+        return jsonify({"error": "Could not read image"}), 500
+
+    h, w = img.shape[:2]
+
+    # Convert PseudoLabel → annotation dicts for the frontend
+    annotations = []
+    for lbl in labels:
+        kps = []
+        for k in range(NUM_KEYPOINTS):
+            x, y = float(lbl.keypoints[k, 0]), float(lbl.keypoints[k, 1])
+            conf = float(lbl.confidence[k])
+            vis = 2 if conf >= 0.3 else (1 if conf > 0.05 else 0)
+            kps.append({"x": x, "y": y, "visibility": vis})
+
+        x1, y1, x2, y2 = lbl.bbox.tolist()
+        annotations.append({
+            "bbox": [x1, y1, x2, y2],
+            "keypoints": kps,
+            "quality": lbl.quality_score,
+            "num_confident": lbl.num_confident,
+        })
+
+    # Save to label file as well
+    if annotations:
+        label_path = Path(_STATE["labels_dir"]) / f"{img_path.stem}.txt"
+        lines = [agent._label_to_yolo_line(lbl, w, h) for lbl in labels]
+        label_path.write_text("\n".join(lines))
+
+    return jsonify({
+        "annotations": annotations,
+        "img_w": w,
+        "img_h": h,
+        "num_horses": len(annotations),
+    })
+
+
+@app.route("/api/auto_label_status")
+def api_auto_label_status():
+    """Return the current auto-labeling progress."""
+    return jsonify(_AUTO_LABEL_STATE)
+
+
+# ---------------------------------------------------------------------------
 # HTML/CSS/JS frontend
 # ---------------------------------------------------------------------------
 
@@ -501,6 +712,26 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
 #save-path-info { font-size: 11px; color: #888; background: #0a0f1e; padding: 6px 8px;
                   border-radius: 4px; word-break: break-all; }
+
+/* ---- AUTO-LABEL ---- */
+.auto-label-card { background: #16213e; border-radius: 8px; padding: 16px;
+                   max-width: 900px; width: 100%; border: 1px solid #0f3460; }
+.auto-label-card h3 { color: #e94560; margin-bottom: 10px; font-size: 15px; }
+.al-settings { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.al-settings label { font-size: 12px; color: #aaa; display: flex; flex-direction: column; gap: 3px; }
+.al-settings select, .al-settings input { padding: 5px 8px; border-radius: 4px; border: 1px solid #333;
+                                           background: #0f3460; color: #eee; font-size: 12px; }
+.al-row { display: flex; gap: 8px; align-items: center; }
+.al-row .checkbox-label { font-size: 12px; color: #aaa; display: flex; align-items: center; gap: 4px; }
+
+#al-progress-wrap { display: none; margin-top: 10px; }
+#al-progress-bar { height: 6px; background: #0f3460; border-radius: 3px; overflow: hidden; }
+#al-progress-fill { height: 100%; background: #2ecc71; width: 0%; transition: width 0.3s; }
+#al-progress-text { font-size: 12px; color: #888; margin-top: 4px; }
+
+.al-btn-frame { padding: 3px 8px; font-size: 11px; font-weight: 600; border: 1px solid #e94560;
+                background: transparent; color: #e94560; border-radius: 3px; cursor: pointer; }
+.al-btn-frame:hover { background: #e94560; color: #fff; }
 </style>
 </head>
 <body>
@@ -537,6 +768,46 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     <div id="upload-status"></div>
   </div>
 
+  <div class="auto-label-card" id="auto-label-card">
+    <h3>Auto-Label Agent</h3>
+    <p style="font-size:12px;color:#888;margin-bottom:10px">
+      Automatically detect horses and estimate 24 keypoints on all frames using AI models.
+      Open a project first, then click Run to generate initial labels you can correct.
+    </p>
+    <div class="al-settings">
+      <label>Keypoint Source
+        <select id="al-source">
+          <option value="vitpose" selected>ViTPose++ (best for horses)</option>
+          <option value="ensemble">Ensemble (ViTPose + COCO)</option>
+          <option value="coco">COCO Pose (human skeleton)</option>
+        </select>
+      </label>
+      <label>ViTPose Model Size
+        <select id="al-vitpose-size">
+          <option value="small">Small (fastest)</option>
+          <option value="base" selected>Base (recommended)</option>
+          <option value="large">Large</option>
+          <option value="huge">Huge (most accurate)</option>
+        </select>
+      </label>
+      <label>Detection Confidence
+        <input type="number" id="al-det-conf" value="0.4" min="0.1" max="0.9" step="0.05" />
+      </label>
+      <label>Quality Threshold
+        <input type="number" id="al-quality" value="0.4" min="0.1" max="0.9" step="0.05" />
+      </label>
+    </div>
+    <div class="al-row">
+      <label class="checkbox-label"><input type="checkbox" id="al-overwrite"> Overwrite existing labels</label>
+      <span style="flex:1"></span>
+      <button class="btn btn-primary" id="al-run-btn" onclick="runAutoLabel()">Run Auto-Label</button>
+    </div>
+    <div id="al-progress-wrap">
+      <div id="al-progress-bar"><div id="al-progress-fill"></div></div>
+      <div id="al-progress-text"></div>
+    </div>
+  </div>
+
   <div class="import-section">
     <h3>Import from local video path</h3>
     <div class="import-row">
@@ -568,6 +839,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
       <div style="display:flex;gap:6px">
         <button class="nav-btn btn-success" onclick="saveAnnotation()" style="flex:1">Save (S)</button>
         <button class="nav-btn btn-primary btn-small" onclick="toggleHelp()">? Help</button>
+      </div>
+
+      <div style="display:flex;gap:6px">
+        <button class="al-btn-frame" onclick="autoLabelFrame()" style="flex:1" title="Auto-detect horses and keypoints on this frame">Auto-Label Frame</button>
       </div>
 
       <div style="display:flex;gap:6px">
@@ -1037,6 +1312,100 @@ document.addEventListener('keydown', (e) => {
     case '0': selectKp(9); break;
   }
 });
+
+// ============================================================
+// Auto-Label
+// ============================================================
+async function runAutoLabel() {
+  const btn = document.getElementById('al-run-btn');
+  const progressWrap = document.getElementById('al-progress-wrap');
+  const progressFill = document.getElementById('al-progress-fill');
+  const progressText = document.getElementById('al-progress-text');
+
+  btn.disabled = true;
+  progressWrap.style.display = 'block';
+  progressFill.style.width = '0%';
+  progressText.textContent = 'Starting auto-label agent...';
+
+  try {
+    const resp = await fetch('/api/auto_label', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        source: document.getElementById('al-source').value,
+        vitpose_size: document.getElementById('al-vitpose-size').value,
+        det_conf: parseFloat(document.getElementById('al-det-conf').value),
+        quality_threshold: parseFloat(document.getElementById('al-quality').value),
+        overwrite: document.getElementById('al-overwrite').checked,
+      }),
+    });
+    const data = await resp.json();
+    if (data.error) { progressText.textContent = 'Error: ' + data.error; btn.disabled = false; return; }
+
+    // Poll for progress
+    const poll = setInterval(async () => {
+      const sr = await fetch('/api/auto_label_status');
+      const st = await sr.json();
+
+      const pct = st.total > 0 ? Math.round((st.progress / st.total) * 100) : 0;
+      progressFill.style.width = pct + '%';
+      progressText.textContent =
+        `${st.progress}/${st.total} frames | ${st.labeled} labeled | ${st.skipped} skipped` +
+        (st.current_file ? ` | ${st.current_file}` : '') +
+        (st.errors > 0 ? ` | ${st.errors} errors` : '');
+
+      if (st.done) {
+        clearInterval(poll);
+        btn.disabled = false;
+        const qStr = st.mean_quality > 0 ? ` | Mean quality: ${st.mean_quality.toFixed(2)}` : '';
+        progressText.textContent =
+          `Done! ${st.labeled} frames labeled, ${st.skipped} skipped, ${st.errors} errors${qStr}`;
+        if (st.error_message) progressText.textContent += ' | Error: ' + st.error_message;
+        // Refresh project list to update stats
+        loadProjects();
+      }
+    }, 1000);
+
+  } catch (err) {
+    progressText.textContent = 'Failed: ' + err.message;
+    btn.disabled = false;
+  }
+}
+
+async function autoLabelFrame() {
+  if (currentView !== 'annotator' || imageList.length === 0) return;
+  const filename = imageList[currentIdx];
+  const el = document.getElementById('status-save');
+  el.textContent = 'Auto-labeling...'; el.className = '';
+
+  try {
+    const resp = await fetch('/api/auto_label_frame/' + encodeURIComponent(filename), {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        source: document.getElementById('al-source')?.value || 'vitpose',
+        vitpose_size: document.getElementById('al-vitpose-size')?.value || 'base',
+      }),
+    });
+    const data = await resp.json();
+    if (data.error) { el.textContent = 'Error: ' + data.error; return; }
+
+    if (data.annotations.length > 0) {
+      annotations = data.annotations;
+      imgW = data.img_w; imgH = data.img_h;
+      currentAnn = 0;
+      isDirty = false;
+      render(); updateUI();
+      el.textContent = `Auto-labeled: ${data.num_horses} horse(s) detected`;
+      el.className = 'saved';
+    } else {
+      el.textContent = 'No horses detected in this frame';
+    }
+    setTimeout(() => { el.textContent = ''; }, 3000);
+  } catch (err) {
+    el.textContent = 'Auto-label failed: ' + err.message;
+  }
+}
 
 // ---- Start ----
 loadProjects();
