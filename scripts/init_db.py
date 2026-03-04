@@ -11,8 +11,34 @@ from src.config import OBS_CATALOG_IDS, SQLITE_URL
 from src.db import create_tables, get_session_factory
 from src.models import Sale
 
-# Known 2025 OBS sales for seeding
+# Known OBS sales for seeding
 SEED_SALES = [
+    # 2024
+    Sale(
+        sale_id="obs_march_2024",
+        company="OBS",
+        sale_name="OBS March 2YO in Training 2024",
+        year=2024,
+        location="Ocala, FL",
+        catalog_sale_id="135",
+    ),
+    Sale(
+        sale_id="obs_spring_2024",
+        company="OBS",
+        sale_name="OBS Spring 2YO in Training 2024",
+        year=2024,
+        location="Ocala, FL",
+        catalog_sale_id="136",
+    ),
+    Sale(
+        sale_id="obs_june_2024",
+        company="OBS",
+        sale_name="OBS June 2YO & HRA 2024",
+        year=2024,
+        location="Ocala, FL",
+        catalog_sale_id="137",
+    ),
+    # 2025
     Sale(
         sale_id="obs_march_2025",
         company="OBS",

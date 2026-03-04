@@ -56,7 +56,7 @@ export const SALE_ASSET_MAP = [
   { saleEntity: "OBS March Sale", year: 2021, s3Key: "obs_march_2021", displayName: "OBS March 2YO in Training 2021", company: "OBS", month: 3, location: "Ocala, FL", hipRange: [1, 563], recordCount: 561, obsId: null },
   { saleEntity: "OBS March Sale", year: 2022, s3Key: "obs_march_2022", displayName: "OBS March 2YO in Training 2022", company: "OBS", month: 3, location: "Ocala, FL", hipRange: [1, 635], recordCount: 635, obsId: null },
   { saleEntity: "OBS March Sale", year: 2023, s3Key: "obs_march_2023", displayName: "OBS March 2YO in Training 2023", company: "OBS", month: 3, location: "Ocala, FL", hipRange: [1, 833], recordCount: 833, obsId: null },
-  { saleEntity: "OBS March Sale", year: 2024, s3Key: "obs_march_2024", displayName: "OBS March 2YO in Training 2024", company: "OBS", month: 3, location: "Ocala, FL", hipRange: [1, 853], recordCount: 853, obsId: null },
+  { saleEntity: "OBS March Sale", year: 2024, s3Key: "obs_march_2024", displayName: "OBS March 2YO in Training 2024", company: "OBS", month: 3, location: "Ocala, FL", hipRange: [1, 853], recordCount: 853, obsId: 135 },
   { saleEntity: "OBS March Sale", year: 2025, s3Key: "obs_march_2025", displayName: "OBS March 2YO in Training 2025", company: "OBS", month: 3, location: "Ocala, FL", hipRange: [1, 814], recordCount: 814, obsId: 142 },
 
   // ── OBS Spring Sales ─────────────────────────────────────────
@@ -67,7 +67,7 @@ export const SALE_ASSET_MAP = [
   { saleEntity: "OBS Spring Sale", year: 2021, s3Key: "obs_spring_2021", displayName: "OBS Spring 2YO in Training 2021", company: "OBS", month: 4, location: "Ocala, FL", hipRange: [1, 1217], recordCount: 1214, obsId: null },
   { saleEntity: "OBS Spring Sale", year: 2022, s3Key: "obs_spring_2022", displayName: "OBS Spring 2YO in Training 2022", company: "OBS", month: 4, location: "Ocala, FL", hipRange: [1, 1231], recordCount: 1230, obsId: null },
   { saleEntity: "OBS Spring Sale", year: 2023, s3Key: "obs_spring_2023", displayName: "OBS Spring 2YO in Training 2023", company: "OBS", month: 4, location: "Ocala, FL", hipRange: [1, 1222], recordCount: 1221, obsId: null },
-  { saleEntity: "OBS Spring Sale", year: 2024, s3Key: "obs_spring_2024", displayName: "OBS Spring 2YO in Training 2024", company: "OBS", month: 4, location: "Ocala, FL", hipRange: [1, 1208], recordCount: 1208, obsId: null },
+  { saleEntity: "OBS Spring Sale", year: 2024, s3Key: "obs_spring_2024", displayName: "OBS Spring 2YO in Training 2024", company: "OBS", month: 4, location: "Ocala, FL", hipRange: [1, 1208], recordCount: 1208, obsId: 136 },
   { saleEntity: "OBS Spring Sale", year: 2025, s3Key: "obs_spring_2025", displayName: "OBS Spring 2YO in Training 2025", company: "OBS", month: 4, location: "Ocala, FL", hipRange: [1, 1207], recordCount: 1207, obsId: 144 },
 
   // ── OBS June Sales ───────────────────────────────────────────
@@ -78,7 +78,7 @@ export const SALE_ASSET_MAP = [
   { saleEntity: "OBS June Sale", year: 2021, s3Key: "obs_june_2021", displayName: "OBS June 2YO & HRA 2021", company: "OBS", month: 6, location: "Ocala, FL", hipRange: [1, 927], recordCount: 926, obsId: null },
   { saleEntity: "OBS June Sale", year: 2022, s3Key: "obs_june_2022", displayName: "OBS June 2YO & HRA 2022", company: "OBS", month: 6, location: "Ocala, FL", hipRange: [1, 1167], recordCount: 1130, obsId: null },
   { saleEntity: "OBS June Sale", year: 2023, s3Key: "obs_june_2023", displayName: "OBS June 2YO & HRA 2023", company: "OBS", month: 6, location: "Ocala, FL", hipRange: [1, 1088], recordCount: 1186, obsId: null },
-  { saleEntity: "OBS June Sale", year: 2024, s3Key: "obs_june_2024", displayName: "OBS June 2YO & HRA 2024", company: "OBS", month: 6, location: "Ocala, FL", hipRange: [1, 1115], recordCount: 1121, obsId: null },
+  { saleEntity: "OBS June Sale", year: 2024, s3Key: "obs_june_2024", displayName: "OBS June 2YO & HRA 2024", company: "OBS", month: 6, location: "Ocala, FL", hipRange: [1, 1115], recordCount: 1042, obsId: 137 },
   { saleEntity: "OBS June Sale", year: 2025, s3Key: "obs_june_2025", displayName: "OBS June 2YO & HRA 2025", company: "OBS", month: 6, location: "Ocala, FL", hipRange: [1, 903], recordCount: 856, obsId: 145 },
 
   // ── Fasig-Tipton Midlantic Sales ─────────────────────────────
