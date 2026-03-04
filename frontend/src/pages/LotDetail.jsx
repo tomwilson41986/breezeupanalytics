@@ -258,6 +258,12 @@ function PedigreeRow({ label, value, highlight }) {
   );
 }
 
+function getYouTubeId(url) {
+  if (!url) return null;
+  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/);
+  return m ? m[1] : null;
+}
+
 function AssetCard({ label, type, url, accentColor, fromS3 }) {
   const accentMap = {
     emerald: "border-gray-100 hover:border-emerald-200",
@@ -266,11 +272,22 @@ function AssetCard({ label, type, url, accentColor, fromS3 }) {
     amber: "border-gray-100 hover:border-amber-200",
   };
 
+  const ytId = type === "video" ? getYouTubeId(url) : null;
+
   return (
     <div
       className={`rounded-xl border bg-white overflow-hidden transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.04)] ${accentMap[accentColor]}`}
     >
-      {type === "video" && (
+      {type === "video" && ytId && (
+        <iframe
+          src={`https://www.youtube.com/embed/${ytId}`}
+          title={label}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full aspect-video bg-gray-50"
+        />
+      )}
+      {type === "video" && !ytId && (
         <video
           src={url}
           controls
