@@ -15,6 +15,9 @@ const historicByYear = Object.entries(SALE_CATALOG)
 
 const years = Object.keys(historicByYear).sort((a, b) => b - a);
 
+// Count unique companies
+const companies = [...new Set(Object.values(SALE_CATALOG).filter(m => !m.isLive).map(m => m.company))];
+
 export default function HistoricSales() {
   return (
     <div className="space-y-8">
@@ -24,14 +27,14 @@ export default function HistoricSales() {
           Historic Sales
         </h1>
         <p className="text-sm text-gray-500 mt-1">
-          Browse all OBS 2YO training sales from 2018 to 2025 — including
-          videos, photos, pedigree PDFs, and sale data
+          Browse all 2YO training sales from 2015 to 2025 — OBS, Fasig-Tipton,
+          and more — including videos, photos, pedigree PDFs, and sale data
         </p>
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <SummaryCard label="Years Covered" value={years.length} />
+        <SummaryCard label="Years Covered" value={`${years[years.length - 1]}–${years[0]}`} />
         <SummaryCard
           label="Total Sales"
           value={Object.values(historicByYear).reduce(
@@ -39,8 +42,8 @@ export default function HistoricSales() {
             0
           )}
         />
-        <SummaryCard label="Sales with Data" value="2025" accent />
-        <SummaryCard label="Asset Archive" value="2018–2025" />
+        <SummaryCard label="Companies" value={companies.join(", ")} />
+        <SummaryCard label="Asset Archive" value={`${years[years.length - 1]}–${years[0]}`} accent />
       </div>
 
       {/* Sale cards by year */}

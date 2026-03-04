@@ -5,50 +5,35 @@
  * Fallback: OBS REST API via Netlify proxy (for live data or when S3 is empty)
  */
 
+import { SALE_ASSET_MAP } from "./sale-asset-map";
+
 const API_BASE = "/.netlify/functions";
 
 /**
- * Generate the full catalog of all OBS sales with S3 data.
- * OBS numeric IDs are only known for 2025 sales.
+ * Build the full sale catalog from the authoritative mapping table.
+ * Includes all sales companies (OBS, Fasig-Tipton, etc.) and all years.
  */
 function buildCatalog() {
   const catalog = {};
-  const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027];
-  const seasons = [
-    { key: "march", label: "March", month: 3, fullName: (y) => `OBS March 2YO in Training ${y}` },
-    { key: "spring", label: "Spring", month: 4, fullName: (y) => `OBS Spring 2YO in Training ${y}` },
-    { key: "june", label: "June", month: 6, fullName: (y) => `OBS June 2YO & HRA ${y}` },
-  ];
 
-  // Known OBS API IDs (only 2025)
-  const obsIds = {
-    obs_march_2025: 142,
-    obs_spring_2025: 144,
-    obs_june_2025: 145,
-    obs_march_2026: 149,
-  };
-
-  for (const year of years) {
-    for (const season of seasons) {
-      const s3Key = `obs_${season.key}_${year}`;
-      catalog[s3Key] = {
-        id: obsIds[s3Key] || null,
-        name: season.fullName(year),
-        company: "OBS",
-        month: season.month,
-        year,
-        location: "Ocala, FL",
-        s3Key,
-        hasData: year >= 2025, // Pre-processed JSON available for 2025+
-        isLive: year >= 2026, // Live/current year sales
-      };
-    }
+  for (const entry of SALE_ASSET_MAP) {
+    catalog[entry.s3Key] = {
+      id: entry.obsId || null,
+      name: entry.displayName,
+      company: entry.company,
+      month: entry.month,
+      year: entry.year,
+      location: entry.location,
+      s3Key: entry.s3Key,
+      hasData: entry.obsId != null, // Pre-processed JSON available via OBS API or S3 sync
+      isLive: entry.year >= 2026,
+    };
   }
 
   return catalog;
 }
 
-// Known OBS catalog sales — s3Key is the primary identifier
+// All known sales — s3Key is the primary identifier
 export const SALE_CATALOG = buildCatalog();
 
 /* ── S3-backed data (primary) ───────────────────────────────── */

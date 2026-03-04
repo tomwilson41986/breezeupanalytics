@@ -84,7 +84,7 @@ async function s3Get(key, accessKeyId, secretAccessKey) {
 
 /* ── Validate sale key format ──────────────────────────────── */
 
-const SALE_KEY_PATTERN = /^obs_(march|spring|june)_20\d{2}$/;
+const SALE_KEY_PATTERN = /^[a-z][a-z0-9_]*_20\d{2}$/;
 
 /* ── Response helpers ───────────────────────────────────────── */
 
