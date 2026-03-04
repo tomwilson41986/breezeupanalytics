@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { SALE_CATALOG } from "../lib/api";
+import { useHistoricRecords } from "../hooks/useHistoricData";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorBanner from "../components/ErrorBanner";
 import StatCard from "../components/StatCard";
-import { formatNumber, formatBreezeTime } from "../lib/format";
+import { formatNumber, formatBreezeTime, formatCurrency } from "../lib/format";
 
 /* ── Helpers ──────────────────────────────────────────────── */
 
@@ -31,17 +32,54 @@ function saleName(key) {
   return `${month} ${meta.year}`;
 }
 
+/** Map sale name + year to s3Key */
+function toSaleKey(saleNameStr, year) {
+  const map = {
+    "OBS March Sale": "march",
+    "OBS Spring Sale": "spring",
+    "OBS June Sale": "june",
+  };
+  const season = map[saleNameStr];
+  if (!season) return null;
+  return `obs_${season}_${year}`;
+}
+
+function performanceLevel(r) {
+  if (r.g1Winner) return "g1";
+  if (r.gradedStakesWinner) return "gsw";
+  if (r.stakesWinner) return "sw";
+  return "default";
+}
+
+const PERF_CONFIG = {
+  g1: { label: "G1 Winner", color: "#ef4444", badge: "bg-red-100 text-red-700" },
+  gsw: { label: "Graded SW", color: "#8b5cf6", badge: "bg-purple-100 text-purple-700" },
+  sw: { label: "Stakes Winner", color: "#3b82f6", badge: "bg-blue-100 text-blue-700" },
+  default: { label: "Other", color: "#94a3b8", badge: "" },
+};
+
 /* ── Main Page ────────────────────────────────────────────── */
 
 export default function VendorSireAnalytics() {
   const [activeTab, setActiveTab] = useState("vendor");
   const [selectedSaleKey, setSelectedSaleKey] = useState("all");
   const [allSaleData, setAllSaleData] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loadingSales, setLoadingSales] = useState(true);
+
+  // Load historic records for performance outcomes
+  const {
+    records: historicRecords,
+    loading: loadingRecords,
+    load: loadRecords,
+  } = useHistoricRecords();
+
+  useEffect(() => {
+    loadRecords();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
+    setLoadingSales(true);
 
     async function loadAll() {
       const results = {};
@@ -60,7 +98,7 @@ export default function VendorSireAnalytics() {
       }
       if (!cancelled) {
         setAllSaleData(results);
-        setLoading(false);
+        setLoadingSales(false);
       }
     }
 
@@ -68,7 +106,28 @@ export default function VendorSireAnalytics() {
     return () => { cancelled = true; };
   }, []);
 
-  // Normalize all hips with times
+  // Build performance lookup from historic records
+  const performanceLookup = useMemo(() => {
+    if (!historicRecords) return {};
+    const lookup = {};
+    for (const r of historicRecords) {
+      const saleKey = toSaleKey(r.sale, r.year);
+      if (!saleKey) continue;
+      const key = `${saleKey}:${r.hip}`;
+      lookup[key] = {
+        level: performanceLevel(r),
+        name: r.name,
+        stakesWinner: r.stakesWinner,
+        gradedStakesWinner: r.gradedStakesWinner,
+        g1Winner: r.g1Winner,
+      };
+    }
+    return lookup;
+  }, [historicRecords]);
+
+  const loading = loadingSales || loadingRecords;
+
+  // Normalize all hips with times, enriched with performance data
   const allHips = useMemo(() => {
     const hips = [];
     for (const [saleKey, rawHips] of Object.entries(allSaleData)) {
@@ -77,6 +136,9 @@ export default function VendorSireAnalytics() {
         const time = h.under_tack_time ? parseFloat(h.under_tack_time) : null;
         const distance = h.under_tack_distance ? h.under_tack_distance.trim() : null;
         if (!time || !distance) continue;
+
+        const lookupKey = `${saleKey}:${h.hip_number}`;
+        const perf = performanceLookup[lookupKey] || { level: "default" };
 
         hips.push({
           saleKey,
@@ -87,14 +149,15 @@ export default function VendorSireAnalytics() {
           consignor: h.consignor || "Unknown",
           price: h.sale_price || null,
           status: (h.sale_status || "pending").toLowerCase(),
-          horseName: h.horse_name || null,
+          horseName: h.horse_name || perf.name || null,
           year: meta?.year || null,
           saleName: saleName(saleKey),
+          level: perf.level,
         });
       }
     }
     return hips;
-  }, [allSaleData]);
+  }, [allSaleData, performanceLookup]);
 
   // Filter by sale
   const filtered = useMemo(() => {
@@ -126,6 +189,7 @@ export default function VendorSireAnalytics() {
     { key: "vendor", label: "Vendor Benchmarks" },
     { key: "sire", label: "Sire Benchmarks" },
     { key: "insights", label: "Faster Than Benchmark" },
+    { key: "elite", label: "Elite Flags" },
   ];
 
   return (
@@ -225,6 +289,14 @@ export default function VendorSireAnalytics() {
               sireStats={sireStats}
               benchmarks={benchmarks}
               hips={filtered}
+            />
+          )}
+          {activeTab === "elite" && (
+            <EliteFlagsPanel
+              hips={filtered}
+              benchmarks={benchmarks}
+              vendorStats={vendorStats}
+              sireStats={sireStats}
             />
           )}
         </>
@@ -537,6 +609,7 @@ function InsightsPanel({ vendorStats, sireStats, benchmarks, hips }) {
                 <th className="px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">#</th>
                 <th className="px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">Hip</th>
                 <th className="px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">Horse</th>
+                <th className="px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">Outcome</th>
                 <th className="px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">Sire</th>
                 <th className="px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">Vendor</th>
                 <th className="px-3 py-2 text-center text-[11px] font-medium uppercase tracking-wider text-gray-400">Dist</th>
@@ -550,6 +623,7 @@ function InsightsPanel({ vendorStats, sireStats, benchmarks, hips }) {
               {fastRunners.map((h, i) => {
                 const bm = h.distance === "1/8" ? benchmarks.eighth.median : benchmarks.quarter.median;
                 const diff = h.time - bm;
+                const cfg = PERF_CONFIG[h.level] || PERF_CONFIG.default;
                 return (
                   <tr key={`${h.saleKey}-${h.hip}-${i}`} className="table-row-hover">
                     <td className="px-3 py-2 font-mono text-gray-400 text-xs">{i + 1}</td>
@@ -560,6 +634,13 @@ function InsightsPanel({ vendorStats, sireStats, benchmarks, hips }) {
                     </td>
                     <td className="px-3 py-2 text-gray-900 text-xs max-w-[140px] truncate">
                       {h.horseName || "—"}
+                    </td>
+                    <td className="px-3 py-2">
+                      {h.level !== "default" && (
+                        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold ${cfg.badge}`}>
+                          {cfg.label}
+                        </span>
+                      )}
                     </td>
                     <td className="px-3 py-2 text-gray-700 text-xs max-w-[120px] truncate">{h.sire}</td>
                     <td className="px-3 py-2 text-gray-700 text-xs max-w-[140px] truncate">{h.consignor}</td>
@@ -634,6 +715,244 @@ function InsightCard({ title, subtitle, items, benchmarkAvg, distKey }) {
         </p>
       )}
     </div>
+  );
+}
+
+/* ── Elite Flags Panel ─────────────────────────────────────── */
+
+function EliteFlagsPanel({ hips, benchmarks, vendorStats, sireStats }) {
+  // Build vendor/sire benchmark lookups
+  const vendorBenchmarks = useMemo(() => {
+    const map = {};
+    for (const v of vendorStats) {
+      map[v.name] = { eighthAvg: v.eighthAvg, quarterAvg: v.quarterAvg, eighthCount: v.eighthCount, quarterCount: v.quarterCount };
+    }
+    return map;
+  }, [vendorStats]);
+
+  const sireBenchmarks = useMemo(() => {
+    const map = {};
+    for (const s of sireStats) {
+      map[s.name] = { eighthAvg: s.eighthAvg, quarterAvg: s.quarterAvg, eighthCount: s.eighthCount, quarterCount: s.quarterCount };
+    }
+    return map;
+  }, [sireStats]);
+
+  // Find elite performers (SW/GSW/G1) that beat benchmarks
+  const eliteBeaters = useMemo(() => {
+    return hips
+      .filter((h) => h.level === "sw" || h.level === "gsw" || h.level === "g1")
+      .map((h) => {
+        const overallBm = h.distance === "1/8" ? benchmarks.eighth : benchmarks.quarter;
+        const vendorBm = vendorBenchmarks[h.consignor];
+        const sireBm = sireBenchmarks[h.sire];
+
+        const vendorAvg = h.distance === "1/8" ? vendorBm?.eighthAvg : vendorBm?.quarterAvg;
+        const sireAvg = h.distance === "1/8" ? sireBm?.eighthAvg : sireBm?.quarterAvg;
+        const vendorCount = h.distance === "1/8" ? vendorBm?.eighthCount : vendorBm?.quarterCount;
+        const sireCount = h.distance === "1/8" ? sireBm?.eighthCount : sireBm?.quarterCount;
+
+        const beatOverall = overallBm.avg > 0 && h.time < overallBm.avg;
+        const beatVendor = vendorAvg > 0 && vendorCount >= 3 && h.time < vendorAvg;
+        const beatSire = sireAvg > 0 && sireCount >= 3 && h.time < sireAvg;
+
+        return {
+          ...h,
+          beatOverall,
+          beatVendor,
+          beatSire,
+          overallDiff: overallBm.avg > 0 ? h.time - overallBm.avg : null,
+          vendorDiff: vendorAvg > 0 ? h.time - vendorAvg : null,
+          sireDiff: sireAvg > 0 ? h.time - sireAvg : null,
+          vendorAvg,
+          sireAvg,
+          overallAvg: overallBm.avg,
+        };
+      })
+      .sort((a, b) => {
+        // Sort by level (G1 first) then by how much they beat overall
+        const order = { g1: 3, gsw: 2, sw: 1 };
+        const levelDiff = (order[b.level] || 0) - (order[a.level] || 0);
+        if (levelDiff !== 0) return levelDiff;
+        return (a.overallDiff || 0) - (b.overallDiff || 0);
+      });
+  }, [hips, benchmarks, vendorBenchmarks, sireBenchmarks]);
+
+  // Runners that beat BOTH vendor and sire benchmarks and are elite
+  const doubleBeatElite = eliteBeaters.filter((h) => h.beatVendor && h.beatSire);
+  // All elite that beat at least one benchmark
+  const anyBeatElite = eliteBeaters.filter((h) => h.beatOverall || h.beatVendor || h.beatSire);
+
+  // Summary stats
+  const totalElite = hips.filter((h) => h.level !== "default").length;
+  const g1Count = hips.filter((h) => h.level === "g1").length;
+  const gswCount = hips.filter((h) => h.level === "gsw").length;
+  const swCount = hips.filter((h) => h.level === "sw").length;
+  const eliteBeatOverall = eliteBeaters.filter((h) => h.beatOverall).length;
+  const totalEliteWithTimes = eliteBeaters.length;
+
+  return (
+    <div className="space-y-6">
+      {/* Summary */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <StatCard label="G1 Winners" value={formatNumber(g1Count)} accent />
+        <StatCard label="Graded SW" value={formatNumber(gswCount)} />
+        <StatCard label="Stakes Winners" value={formatNumber(swCount)} />
+        <StatCard label="Total Elite" value={formatNumber(totalEliteWithTimes)} sub="with breeze times" />
+        <StatCard
+          label="Beat Overall Avg"
+          value={formatNumber(eliteBeatOverall)}
+          sub={totalEliteWithTimes > 0 ? `${((eliteBeatOverall / totalEliteWithTimes) * 100).toFixed(0)}% of elite` : "—"}
+          accent
+        />
+        <StatCard
+          label="Beat Both V+S"
+          value={formatNumber(doubleBeatElite.length)}
+          sub="vendor & sire avg"
+        />
+      </div>
+
+      {/* Key insight banner */}
+      {totalEliteWithTimes > 0 && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50/60 px-4 py-3 text-sm text-amber-800">
+          <strong>Key insight:</strong>{" "}
+          {((eliteBeatOverall / totalEliteWithTimes) * 100).toFixed(0)}% of elite performers
+          (SW/GSW/G1) breezed faster than the overall average benchmark.
+          {doubleBeatElite.length > 0 && (
+            <> {formatNumber(doubleBeatElite.length)} beat both their vendor and sire benchmarks — a strong signal of elite potential.</>
+          )}
+        </div>
+      )}
+
+      {/* Elite that beat both vendor + sire benchmark */}
+      {doubleBeatElite.length > 0 && (
+        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">
+            Elite Performers Who Beat Both Vendor & Sire Benchmarks
+          </h3>
+          <p className="text-xs text-gray-500 mb-4">
+            Horses that became Stakes/Graded Stakes/G1 winners AND breezed faster than both their vendor's and sire's average
+          </p>
+          <EliteTable runners={doubleBeatElite} showBenchmarks />
+        </div>
+      )}
+
+      {/* All elite with benchmark comparison */}
+      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <h3 className="text-sm font-semibold text-gray-900 mb-1">
+          All Elite Performers — Benchmark Comparison
+        </h3>
+        <p className="text-xs text-gray-500 mb-4">
+          Every Stakes Winner, Graded Stakes Winner, and G1 Winner with breeze times, showing how they compared to overall, vendor, and sire benchmarks
+        </p>
+        <EliteTable runners={eliteBeaters} showBenchmarks />
+      </div>
+    </div>
+  );
+}
+
+function EliteTable({ runners, showBenchmarks }) {
+  const [page, setPage] = useState(0);
+  const PER_PAGE = 30;
+
+  const pageData = runners.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+  const totalPages = Math.ceil(runners.length / PER_PAGE);
+
+  return (
+    <>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-gray-100">
+              <th className="px-2 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">#</th>
+              <th className="px-2 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">Hip</th>
+              <th className="px-2 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">Horse</th>
+              <th className="px-2 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">Outcome</th>
+              <th className="px-2 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">Sire</th>
+              <th className="px-2 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">Vendor</th>
+              <th className="px-2 py-2 text-center text-[11px] font-medium uppercase tracking-wider text-gray-400">Dist</th>
+              <th className="px-2 py-2 text-right text-[11px] font-medium uppercase tracking-wider text-gray-400">Time</th>
+              <th className="px-2 py-2 text-right text-[11px] font-medium uppercase tracking-wider text-gray-400">Price</th>
+              {showBenchmarks && (
+                <>
+                  <th className="px-2 py-2 text-center text-[11px] font-medium uppercase tracking-wider text-gray-400">vs Overall</th>
+                  <th className="px-2 py-2 text-center text-[11px] font-medium uppercase tracking-wider text-gray-400">vs Vendor</th>
+                  <th className="px-2 py-2 text-center text-[11px] font-medium uppercase tracking-wider text-gray-400">vs Sire</th>
+                </>
+              )}
+              <th className="px-2 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">Sale</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
+            {pageData.map((h, i) => {
+              const cfg = PERF_CONFIG[h.level] || PERF_CONFIG.default;
+              return (
+                <tr key={`${h.saleKey}-${h.hip}-${i}`} className="table-row-hover">
+                  <td className="px-2 py-2 font-mono text-gray-400 text-xs">{page * PER_PAGE + i + 1}</td>
+                  <td className="px-2 py-2 font-mono font-semibold text-brand-600">
+                    <Link to={`/sale/${h.saleKey}/hip/${h.hip}`} className="hover:underline">
+                      #{h.hip}
+                    </Link>
+                  </td>
+                  <td className="px-2 py-2 text-gray-900 text-xs max-w-[130px] truncate">
+                    {h.horseName || "—"}
+                  </td>
+                  <td className="px-2 py-2">
+                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold ${cfg.badge}`}>
+                      {cfg.label}
+                    </span>
+                  </td>
+                  <td className="px-2 py-2 text-gray-700 text-xs max-w-[110px] truncate">{h.sire}</td>
+                  <td className="px-2 py-2 text-gray-700 text-xs max-w-[130px] truncate">{h.consignor}</td>
+                  <td className="px-2 py-2 text-center text-gray-500 text-xs">{h.distance}</td>
+                  <td className="px-2 py-2 text-right font-mono font-semibold text-gray-900">
+                    {formatBreezeTime(h.time)}
+                  </td>
+                  <td className="px-2 py-2 text-right font-mono text-gray-600 text-xs">
+                    {h.price ? formatCurrency(h.price) : "—"}
+                  </td>
+                  {showBenchmarks && (
+                    <>
+                      <td className="px-2 py-2 text-center">
+                        <BenchmarkBadge beat={h.beatOverall} diff={h.overallDiff} />
+                      </td>
+                      <td className="px-2 py-2 text-center">
+                        <BenchmarkBadge beat={h.beatVendor} diff={h.vendorDiff} />
+                      </td>
+                      <td className="px-2 py-2 text-center">
+                        <BenchmarkBadge beat={h.beatSire} diff={h.sireDiff} />
+                      </td>
+                    </>
+                  )}
+                  <td className="px-2 py-2 text-gray-500 text-xs">{h.saleName}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+          <span className="text-xs text-gray-400">
+            {formatNumber(runners.length)} elite runners — Page {page + 1} of {totalPages}
+          </span>
+          <div className="flex gap-1">
+            <PaginationBtn onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0}>Prev</PaginationBtn>
+            <PaginationBtn onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1}>Next</PaginationBtn>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function BenchmarkBadge({ beat, diff }) {
+  if (diff == null) return <span className="text-gray-300 text-xs">—</span>;
+  return (
+    <span className={`inline-flex items-center gap-0.5 font-mono text-[11px] font-semibold ${beat ? "text-emerald-600" : "text-red-400"}`}>
+      {beat ? "+" : ""}
+      {diff.toFixed(2)}s
+    </span>
   );
 }
 
