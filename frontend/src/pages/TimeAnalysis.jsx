@@ -91,23 +91,27 @@ export default function TimeAnalysis() {
     setLoadingSales(true);
 
     async function loadAll() {
-      const results = {};
-      for (const [key] of analyticsSales) {
-        try {
-          const res = await fetch(
-            `/.netlify/functions/sale-data?sale=${encodeURIComponent(key)}`
-          );
-          if (res.ok) {
-            const data = await res.json();
-            if (data && data.hips) {
-              results[key] = data.hips;
+      const entries = await Promise.all(
+        analyticsSales.map(async ([key]) => {
+          try {
+            const res = await fetch(
+              `/.netlify/functions/sale-data?sale=${encodeURIComponent(key)}`
+            );
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.hips) return [key, data.hips];
             }
+          } catch {
+            // Skip failed sales
           }
-        } catch {
-          // Skip failed sales
-        }
-      }
+          return null;
+        })
+      );
       if (!cancelled) {
+        const results = {};
+        for (const entry of entries) {
+          if (entry) results[entry[0]] = entry[1];
+        }
         setAllSaleData(results);
         setLoadingSales(false);
       }
@@ -237,17 +241,25 @@ export default function TimeAnalysis() {
     return [...set].sort();
   }, [allHips]);
 
-  // Overall stats
-  const eighthTimes = eighthHips.map((h) => h.time);
-  const quarterTimes = quarterHips.map((h) => h.time);
-  const allTimes = filtered.map((h) => h.time);
+  // Overall stats (memoized to avoid recalculating on every render)
+  const eighthTimes = useMemo(() => eighthHips.map((h) => h.time), [eighthHips]);
+  const quarterTimes = useMemo(() => quarterHips.map((h) => h.time), [quarterHips]);
+  const allTimes = useMemo(() => filtered.map((h) => h.time), [filtered]);
+
+  const summaryStats = useMemo(() => ({
+    eighthMedian: eighthTimes.length ? median(eighthTimes) : null,
+    quarterMedian: quarterTimes.length ? median(quarterTimes) : null,
+    fastest8th: eighthTimes.length ? Math.min(...eighthTimes) : null,
+    fastest4th: quarterTimes.length ? Math.min(...quarterTimes) : null,
+    avgTime: allTimes.length ? allTimes.reduce((s, t) => s + t, 0) / allTimes.length : null,
+  }), [eighthTimes, quarterTimes, allTimes]);
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 tracking-tight">
             Time Analysis
           </h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -258,7 +270,7 @@ export default function TimeAnalysis() {
           <select
             value={distanceFilter}
             onChange={(e) => setDistanceFilter(e.target.value)}
-            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 flex-1 sm:flex-none"
           >
             <option value="all">All Distances</option>
             {availableDistances.map((d) => (
@@ -270,7 +282,7 @@ export default function TimeAnalysis() {
           <select
             value={selectedSaleKey}
             onChange={(e) => setSelectedSaleKey(e.target.value)}
-            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 flex-1 sm:flex-none"
           >
             <option value="all">All Sales</option>
             {analyticsSales.map(([key]) => (
@@ -299,26 +311,26 @@ export default function TimeAnalysis() {
             <StatCard
               label="1/8 Mile"
               value={formatNumber(eighthHips.length)}
-              sub={eighthTimes.length ? `Med: ${formatBreezeTime(median(eighthTimes))}` : "—"}
+              sub={summaryStats.eighthMedian != null ? `Med: ${formatBreezeTime(summaryStats.eighthMedian)}` : "—"}
             />
             <StatCard
               label="1/4 Mile"
               value={formatNumber(quarterHips.length)}
-              sub={quarterTimes.length ? `Med: ${formatBreezeTime(median(quarterTimes))}` : "—"}
+              sub={summaryStats.quarterMedian != null ? `Med: ${formatBreezeTime(summaryStats.quarterMedian)}` : "—"}
             />
             <StatCard
               label="Fastest 1/8"
-              value={eighthTimes.length ? formatBreezeTime(Math.min(...eighthTimes)) : "—"}
+              value={summaryStats.fastest8th != null ? formatBreezeTime(summaryStats.fastest8th) : "—"}
               accent
             />
             <StatCard
               label="Fastest 1/4"
-              value={quarterTimes.length ? formatBreezeTime(Math.min(...quarterTimes)) : "—"}
+              value={summaryStats.fastest4th != null ? formatBreezeTime(summaryStats.fastest4th) : "—"}
               accent
             />
             <StatCard
               label="Avg Time"
-              value={allTimes.length ? formatBreezeTime(allTimes.reduce((s, t) => s + t, 0) / allTimes.length) : "—"}
+              value={summaryStats.avgTime != null ? formatBreezeTime(summaryStats.avgTime) : "—"}
             />
           </div>
 
@@ -397,23 +409,26 @@ export default function TimeAnalysis() {
 /* ── Sub Components ───────────────────────────────────────── */
 
 function TimeDistribution({ hips, title, color, maxTime: maxTimeProp }) {
-  const times = hips.map((h) => h.time);
-  const min = Math.floor(Math.min(...times) * 5) / 5;
-  const rawMax = Math.ceil(Math.max(...times) * 5) / 5;
-  const max = maxTimeProp != null ? Math.min(rawMax, maxTimeProp) : rawMax;
-  const step = 0.2;
+  const buckets = useMemo(() => {
+    const times = hips.map((h) => h.time);
+    const min = Math.floor(Math.min(...times) * 5) / 5;
+    const rawMax = Math.ceil(Math.max(...times) * 5) / 5;
+    const max = maxTimeProp != null ? Math.min(rawMax, maxTimeProp) : rawMax;
+    const step = 0.2;
 
-  const buckets = [];
-  for (let t = min; t < max; t = +(t + step).toFixed(1)) {
-    const high = +(t + step).toFixed(1);
-    const count = times.filter((v) => v >= t && v < high).length;
-    buckets.push({ label: `${t.toFixed(1)}s`, count });
-  }
+    const b = [];
+    for (let t = min; t < max; t = +(t + step).toFixed(1)) {
+      const high = +(t + step).toFixed(1);
+      const count = times.filter((v) => v >= t && v < high).length;
+      b.push({ label: `${t.toFixed(1)}s`, count });
+    }
+    return b;
+  }, [hips, maxTimeProp]);
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">{title}</h3>
-      <ResponsiveContainer width="100%" height={260}>
+    <div className="rounded-xl border border-gray-100 bg-white p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">{title}</h3>
+      <ResponsiveContainer width="100%" height={220}>
         <BarChart
           data={buckets}
           margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
@@ -488,7 +503,7 @@ function TimeVsPrice({ hips, title, color, minDomain, maxDomain }) {
   }, [navigate]);
 
   const chartContent = (isExpanded) => (
-    <ResponsiveContainer width="100%" height={isExpanded ? 600 : 280}>
+    <ResponsiveContainer width="100%" height={isExpanded ? 600 : 240}>
       <ScatterChart margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
         <XAxis
@@ -546,8 +561,8 @@ function TimeVsPrice({ hips, title, color, minDomain, maxDomain }) {
 
   return (
     <>
-      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <div className="flex items-center justify-between mb-4">
+      <div className="rounded-xl border border-gray-100 bg-white p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
           <button
             onClick={() => setExpanded(true)}
@@ -651,12 +666,12 @@ function MedianBySale({ saleMedians }) {
   if (data.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">
+    <div className="rounded-xl border border-gray-100 bg-white p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">
         Median Breeze Times by Sale
       </h3>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto -mx-4 sm:-mx-5 px-4 sm:px-5">
+        <table className="w-full text-sm min-w-[480px]">
           <thead>
             <tr className="border-b border-gray-100">
               <th className="text-left py-2 px-3 text-[11px] font-medium uppercase tracking-wider text-gray-400">
@@ -743,12 +758,12 @@ function DiffToMedianTable({ hips }) {
   ];
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">
+    <div className="rounded-xl border border-gray-100 bg-white p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">
         Individual Times &amp; Difference to Sale Median
       </h3>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto -mx-4 sm:-mx-5 px-4 sm:px-5">
+        <table className="w-full text-sm min-w-[640px]">
           <thead>
             <tr className="border-b border-gray-100">
               {cols.map((c) => (
@@ -849,39 +864,39 @@ function DiffToMedianTable({ hips }) {
 }
 
 function TimeBucketOutcomes({ hips, title, distance }) {
-  // Create time buckets based on distance
-  const times = hips.map((h) => h.time);
-  const minTime = Math.floor(Math.min(...times) * 5) / 5;
-  const maxTime = Math.ceil(Math.max(...times) * 5) / 5;
-  const step = 0.2;
+  const filteredBuckets = useMemo(() => {
+    const times = hips.map((h) => h.time);
+    const minTime = Math.floor(Math.min(...times) * 5) / 5;
+    const maxTime = Math.ceil(Math.max(...times) * 5) / 5;
+    const step = 0.2;
 
-  const buckets = [];
-  for (let t = minTime; t < maxTime; t = +(t + step).toFixed(1)) {
-    const high = +(t + step).toFixed(1);
-    const inBucket = hips.filter((h) => h.time >= t && h.time < high);
-    const sold = inBucket.filter((h) => h.price && h.price > 0);
-    const avgPrice = sold.length
-      ? sold.reduce((s, h) => s + h.price, 0) / sold.length
-      : 0;
-    const medPrice = sold.length
-      ? median(sold.map((h) => h.price))
-      : 0;
+    const buckets = [];
+    for (let t = minTime; t < maxTime; t = +(t + step).toFixed(1)) {
+      const high = +(t + step).toFixed(1);
+      const inBucket = hips.filter((h) => h.time >= t && h.time < high);
+      const sold = inBucket.filter((h) => h.price && h.price > 0);
+      const avgPrice = sold.length
+        ? sold.reduce((s, h) => s + h.price, 0) / sold.length
+        : 0;
+      const medPrice = sold.length
+        ? median(sold.map((h) => h.price))
+        : 0;
 
-    buckets.push({
-      label: `${t.toFixed(1)}-${high.toFixed(1)}s`,
-      count: inBucket.length,
-      sold: sold.length,
-      avgPrice,
-      medPrice,
-    });
-  }
-
-  const filteredBuckets = buckets.filter((b) => b.count > 0);
+      buckets.push({
+        label: `${t.toFixed(1)}-${high.toFixed(1)}s`,
+        count: inBucket.length,
+        sold: sold.length,
+        avgPrice,
+        medPrice,
+      });
+    }
+    return buckets.filter((b) => b.count > 0);
+  }, [hips]);
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">{title}</h3>
-      <ResponsiveContainer width="100%" height={280}>
+    <div className="rounded-xl border border-gray-100 bg-white p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">{title}</h3>
+      <ResponsiveContainer width="100%" height={240}>
         <BarChart
           data={filteredBuckets}
           margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
