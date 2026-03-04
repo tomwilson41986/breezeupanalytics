@@ -7,8 +7,8 @@ export default function Layout() {
       <Sidebar />
 
       {/* Main content — offset by sidebar width */}
-      <main className="ml-[240px] min-h-screen">
-        <div className="max-w-[1200px] mx-auto px-8 py-8">
+      <main className="ml-[220px] min-h-screen">
+        <div className="max-w-[1400px] mx-auto px-6 py-6">
           <Outlet />
         </div>
       </main>
