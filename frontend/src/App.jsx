@@ -9,6 +9,7 @@ import TimeAnalysis from "./pages/TimeAnalysis";
 import PerformanceTracker from "./pages/PerformanceTracker";
 import BreezePerformance from "./pages/BreezePerformance";
 import Vendors from "./pages/Vendors";
+import VendorSireAnalytics from "./pages/VendorSireAnalytics";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="analytics/time" element={<TimeAnalysis />} />
           <Route path="analytics/performance" element={<PerformanceTracker />} />
           <Route path="analytics/breeze-performance" element={<BreezePerformance />} />
+          <Route path="analytics/benchmarks" element={<VendorSireAnalytics />} />
           <Route path="vendors" element={<Vendors />} />
           <Route path="vendors/:tab" element={<Vendors />} />
         </Route>
