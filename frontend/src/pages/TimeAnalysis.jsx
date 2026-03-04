@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { SALE_CATALOG } from "../lib/api";
-import { useSaleData } from "../hooks/useSaleData";
+import { useHistoricRecords } from "../hooks/useHistoricData";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorBanner from "../components/ErrorBanner";
 import StatCard from "../components/StatCard";
@@ -20,6 +20,33 @@ import {
   Cell,
   Legend,
 } from "recharts";
+
+/** Map sale name + year to s3Key */
+function toSaleKey(saleNameStr, year) {
+  const map = {
+    "OBS March Sale": "march",
+    "OBS Spring Sale": "spring",
+    "OBS June Sale": "june",
+  };
+  const season = map[saleNameStr];
+  if (!season) return null;
+  return `obs_${season}_${year}`;
+}
+
+/** Get performance level for coloring */
+function performanceLevel(r) {
+  if (r.g1Winner) return "g1";
+  if (r.gradedStakesWinner) return "gsw";
+  if (r.stakesWinner) return "sw";
+  return "default";
+}
+
+const PERF_CONFIG = {
+  g1: { label: "G1 Winner", color: "#ef4444" },
+  gsw: { label: "Graded SW", color: "#8b5cf6" },
+  sw: { label: "Stakes Winner", color: "#3b82f6" },
+  default: { label: "Other", color: "#94a3b8" },
+};
 
 const analyticsSales = Object.entries(SALE_CATALOG)
   .filter(([, meta]) => meta.hasData)
@@ -46,6 +73,17 @@ export default function TimeAnalysis() {
   // Load all sales with data
   const [allSaleData, setAllSaleData] = useState({});
   const [loadingSales, setLoadingSales] = useState(true);
+
+  // Load historic records for performance outcomes
+  const {
+    records: historicRecords,
+    loading: loadingRecords,
+    load: loadRecords,
+  } = useHistoricRecords();
+
+  useEffect(() => {
+    loadRecords();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,16 +116,40 @@ export default function TimeAnalysis() {
     return () => { cancelled = true; };
   }, []);
 
-  // Normalize hip data from S3 format
+  // Build performance lookup from historic records
+  const performanceLookup = useMemo(() => {
+    if (!historicRecords) return {};
+    const lookup = {};
+    for (const r of historicRecords) {
+      const saleKey = toSaleKey(r.sale, r.year);
+      if (!saleKey) continue;
+      const key = `${saleKey}:${r.hip}`;
+      lookup[key] = {
+        level: performanceLevel(r),
+        name: r.name,
+        stakesWinner: r.stakesWinner,
+        gradedStakesWinner: r.gradedStakesWinner,
+        g1Winner: r.g1Winner,
+      };
+    }
+    return lookup;
+  }, [historicRecords]);
+
+  // Normalize hip data from S3 format, enriched with performance data
   const allHips = useMemo(() => {
     const hips = [];
     for (const [saleKey, rawHips] of Object.entries(allSaleData)) {
+      const meta = SALE_CATALOG[saleKey];
       for (const h of rawHips) {
         const time = h.under_tack_time || null;
         const distance = h.under_tack_distance
           ? h.under_tack_distance.trim()
           : null;
         if (!time || !distance) continue;
+
+        const lookupKey = `${saleKey}:${h.hip_number}`;
+        const perf = performanceLookup[lookupKey] || { level: "default" };
+
         hips.push({
           saleKey,
           hip: h.hip_number,
@@ -99,12 +161,15 @@ export default function TimeAnalysis() {
           dam: h.dam || "Unknown",
           sex: h.sex || "—",
           consignor: h.consignor || "—",
-          name: h.horse_name || null,
+          name: h.horse_name || perf.name || null,
+          level: perf.level,
+          year: meta?.year || null,
+          saleName: saleName(saleKey),
         });
       }
     }
     return hips;
-  }, [allSaleData]);
+  }, [allSaleData, performanceLookup]);
 
   // Filter by sale and distance
   const filtered = useMemo(() => {
@@ -216,13 +281,13 @@ export default function TimeAnalysis() {
         </div>
       </div>
 
-      {loadingSales && <LoadingSpinner message="Loading breeze time data..." />}
+      {(loadingSales || loadingRecords) && <LoadingSpinner message="Loading breeze time data..." />}
 
-      {!loadingSales && allHips.length === 0 && (
+      {!loadingSales && !loadingRecords && allHips.length === 0 && (
         <ErrorBanner message="No breeze time data available yet. Times will appear as sales complete their under-tack shows." />
       )}
 
-      {!loadingSales && allHips.length > 0 && (
+      {!loadingSales && !loadingRecords && allHips.length > 0 && (
         <>
           {/* Summary stats */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -263,6 +328,7 @@ export default function TimeAnalysis() {
                 hips={eighthHips}
                 title="1/8 Mile Time Distribution"
                 color="#3b82f6"
+                maxTime={11.2}
               />
             )}
             {quarterHips.length > 0 && (
@@ -327,10 +393,11 @@ export default function TimeAnalysis() {
 
 /* ── Sub Components ───────────────────────────────────────── */
 
-function TimeDistribution({ hips, title, color }) {
+function TimeDistribution({ hips, title, color, maxTime: maxTimeProp }) {
   const times = hips.map((h) => h.time);
   const min = Math.floor(Math.min(...times) * 5) / 5;
-  const max = Math.ceil(Math.max(...times) * 5) / 5;
+  const rawMax = Math.ceil(Math.max(...times) * 5) / 5;
+  const max = maxTimeProp != null ? Math.min(rawMax, maxTimeProp) : rawMax;
   const step = 0.2;
 
   const buckets = [];
@@ -381,60 +448,188 @@ function TimeDistribution({ hips, title, color }) {
 }
 
 function TimeVsPrice({ hips, title, color, minDomain }) {
-  const data = hips
-    .filter((h) => h.price && h.price > 0)
-    .map((h) => ({
-      time: h.time,
-      price: h.price,
-      label: `Hip #${h.hip} — ${h.sire}`,
-    }));
+  const navigate = useNavigate();
+  const [expanded, setExpanded] = useState(false);
+
+  const data = useMemo(() =>
+    hips
+      .filter((h) => h.price && h.price > 0)
+      .map((h) => ({
+        time: h.time,
+        price: h.price,
+        hip: h.hip,
+        saleKey: h.saleKey,
+        name: h.name,
+        sire: h.sire,
+        year: h.year,
+        saleName: h.saleName,
+        level: h.level,
+        annotation: `${h.year || ""} ${h.saleName || ""} #${h.hip}${h.name ? " " + h.name : ""}`,
+      }))
+      // Sort so elite performers render on top
+      .sort((a, b) => {
+        const order = { default: 0, sw: 1, gsw: 2, g1: 3 };
+        return (order[a.level] || 0) - (order[b.level] || 0);
+      }),
+    [hips]
+  );
 
   if (data.length === 0) return null;
 
   const xDomain = minDomain != null ? [minDomain, 'auto'] : ['auto', 'auto'];
 
+  const handleDotClick = useCallback((entry) => {
+    if (entry?.saleKey && entry?.hip) {
+      navigate(`/sale/${entry.saleKey}/hip/${entry.hip}`);
+    }
+  }, [navigate]);
+
+  const chartContent = (isExpanded) => (
+    <ResponsiveContainer width="100%" height={isExpanded ? 600 : 280}>
+      <ScatterChart margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+        <XAxis
+          dataKey="time"
+          name="Time"
+          unit="s"
+          type="number"
+          domain={xDomain}
+          tick={{ fill: "#6b7280", fontSize: 11 }}
+          axisLine={{ stroke: "#e5e7eb" }}
+          tickLine={false}
+          allowDataOverflow={isExpanded}
+        />
+        <YAxis
+          dataKey="price"
+          name="Price"
+          type="number"
+          tickFormatter={(v) => formatCompact(v)}
+          tick={{ fill: "#6b7280", fontSize: 11 }}
+          axisLine={{ stroke: "#e5e7eb" }}
+          tickLine={false}
+          allowDataOverflow={isExpanded}
+        />
+        <ZAxis range={[isExpanded ? 50 : 30, isExpanded ? 50 : 30]} />
+        <Tooltip content={<TimeVsPriceTooltip />} />
+        <Legend
+          iconSize={10}
+          wrapperStyle={{ fontSize: 11, color: "#6b7280" }}
+        />
+        {/* Render non-performers first, then performers on top */}
+        {[
+          { level: "default", cfg: PERF_CONFIG.default },
+          { level: "sw", cfg: PERF_CONFIG.sw },
+          { level: "gsw", cfg: PERF_CONFIG.gsw },
+          { level: "g1", cfg: PERF_CONFIG.g1 },
+        ].map(({ level, cfg }) => {
+          const levelData = data.filter((d) => d.level === level);
+          if (levelData.length === 0) return null;
+          return (
+            <Scatter
+              key={level}
+              name={cfg.label}
+              data={levelData}
+              fill={cfg.color}
+              fillOpacity={level === "default" ? 0.4 : 0.8}
+              shape={level === "g1" || level === "gsw" ? "star" : "circle"}
+              onClick={handleDotClick}
+              cursor="pointer"
+            />
+          );
+        })}
+      </ScatterChart>
+    </ResponsiveContainer>
+  );
+
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">{title}</h3>
-      <ResponsiveContainer width="100%" height={280}>
-        <ScatterChart margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-          <XAxis
-            dataKey="time"
-            name="Time"
-            unit="s"
-            type="number"
-            domain={xDomain}
-            tick={{ fill: "#6b7280", fontSize: 11 }}
-            axisLine={{ stroke: "#e5e7eb" }}
-            tickLine={false}
-          />
-          <YAxis
-            dataKey="price"
-            name="Price"
-            type="number"
-            tickFormatter={(v) => formatCompact(v)}
-            tick={{ fill: "#6b7280", fontSize: 11 }}
-            axisLine={{ stroke: "#e5e7eb" }}
-            tickLine={false}
-          />
-          <ZAxis range={[30, 30]} />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "#ffffff",
-              border: "1px solid #e5e7eb",
-              borderRadius: 8,
-              fontSize: 12,
-              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-            }}
-            formatter={(val, name) =>
-              name === "Price" ? formatCurrency(val) : `${val}s`
-            }
-            labelFormatter={() => ""}
-          />
-          <Scatter data={data} fill={color} fillOpacity={0.6} />
-        </ScatterChart>
-      </ResponsiveContainer>
+    <>
+      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
+          <button
+            onClick={() => setExpanded(true)}
+            className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors"
+            title="Expand chart"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+            </svg>
+            Expand
+          </button>
+        </div>
+        {chartContent(false)}
+        <p className="text-[11px] text-gray-400 mt-2 text-center">
+          Click a dot to view horse details. Colored by racing performance.
+        </p>
+      </div>
+
+      {/* Expanded modal overlay */}
+      {expanded && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setExpanded(false); }}
+        >
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-auto p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+              <button
+                onClick={() => setExpanded(false)}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            {chartContent(true)}
+            <p className="text-xs text-gray-400 mt-3 text-center">
+              Click a dot to navigate to the horse's assets page. Use the chart's built-in zoom by scrolling.
+            </p>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function TimeVsPriceTooltip({ active, payload }) {
+  if (!active || !payload || !payload.length) return null;
+  const d = payload[0]?.payload;
+  if (!d) return null;
+
+  const cfg = PERF_CONFIG[d.level] || PERF_CONFIG.default;
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm max-w-[280px]">
+      <div className="flex items-center gap-2 mb-1">
+        <span
+          className="w-2.5 h-2.5 rounded-full"
+          style={{ backgroundColor: cfg.color }}
+        />
+        <span className="font-semibold text-gray-900">
+          Hip #{d.hip}
+        </span>
+        {d.level !== "default" && (
+          <span className="text-[11px] font-medium" style={{ color: cfg.color }}>
+            {cfg.label}
+          </span>
+        )}
+      </div>
+      {d.name && (
+        <p className="text-gray-700 font-medium">{d.name}</p>
+      )}
+      <p className="text-gray-500 text-xs">
+        {d.year && `${d.year} `}{d.saleName}
+      </p>
+      <div className="flex gap-4 mt-1.5 text-xs">
+        <span className="text-gray-600">
+          Time: <span className="font-mono font-semibold">{d.time?.toFixed(1)}s</span>
+        </span>
+        <span className="text-gray-600">
+          Price: <span className="font-mono font-semibold">{d.price ? formatCurrency(d.price) : "—"}</span>
+        </span>
+      </div>
+      <p className="text-[10px] text-gray-400 mt-1">Click to view details</p>
     </div>
   );
 }
