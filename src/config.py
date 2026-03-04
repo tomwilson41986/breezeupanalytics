@@ -74,10 +74,95 @@ OBS_LEGACY_RESULTS: dict[str, dict] = {
 # Fasig-Tipton catalog
 # ---------------------------------------------------------------------------
 FT_BASE = "https://fasigtipton.com"
+FT_API_BASE = "https://www.fasigtipton.com/django/api"
 
 FT_SALES: dict[str, dict] = {
     "gulfstream": {"name": "The Gulfstream Sale", "slug": "The-Gulfstream-Sale"},
     "midlantic": {"name": "Midlantic 2YO Sale", "slug": "Midlantic-2YO-Sale"},
+}
+
+# Fasig-Tipton sale identifiers and their S3 keys.
+# sale_key -> {sale_identifier, api_id, year, source_url, display_name, location}
+FT_CATALOG_IDS: dict[str, dict] = {
+    # 2025
+    "ft_midlantic_2025": {
+        "sale_identifier": "M25A",
+        "api_id": 274,
+        "year": 2025,
+        "source_url": "https://www.fasigtipton.com/2025/Midlantic-2YO-Sale",
+        "display_name": "Fasig-Tipton Midlantic May 2YO 2025",
+        "location": "Timonium, MD",
+    },
+    # 2024
+    "ft_midlantic_june_2024": {
+        "sale_identifier": "M24J",
+        "api_id": 254,
+        "year": 2024,
+        "source_url": "https://www.fasigtipton.com/2024/Midlantic-June-2YO-Sale",
+        "display_name": "Fasig-Tipton Midlantic June 2YO 2024",
+        "location": "Timonium, MD",
+    },
+    # 2023
+    "ft_midlantic_june_2023": {
+        "sale_identifier": "M23J",
+        "api_id": 219,
+        "year": 2023,
+        "source_url": "https://www.fasigtipton.com/2023/Midlantic-June-2YO-Sale",
+        "display_name": "Fasig-Tipton Midlantic June 2YO 2023",
+        "location": "Timonium, MD",
+    },
+    # 2022
+    "ft_midlantic_2022": {
+        "sale_identifier": "M22A",
+        "api_id": 198,
+        "year": 2022,
+        "source_url": "https://www.fasigtipton.com/index.php/2022/Midlantic-Two-Year-Olds-in-Training",
+        "display_name": "Fasig-Tipton Midlantic 2YO 2022",
+        "location": "Timonium, MD",
+    },
+    # 2021
+    "ft_santaanita_2021": {
+        "sale_identifier": "C21A",
+        "api_id": 182,
+        "year": 2021,
+        "source_url": "https://www.fasigtipton.com/2021/Santa-Anita-Two-Year-Olds-in-Training",
+        "display_name": "Fasig-Tipton Santa Anita 2YO 2021",
+        "location": "Santa Anita, CA",
+    },
+    "ft_midlantic_2021": {
+        "sale_identifier": "M21A",
+        "api_id": 181,
+        "year": 2021,
+        "source_url": "https://www.fasigtipton.com/2021/Midlantic-Two-Year-Olds-in-Training",
+        "display_name": "Fasig-Tipton Midlantic 2YO 2021",
+        "location": "Timonium, MD",
+    },
+    # 2020
+    "ft_midlantic_2020": {
+        "sale_identifier": "M20A",
+        "api_id": 170,
+        "year": 2020,
+        "source_url": "https://www.fasigtipton.com/2020/Midlantic-Two-Year-Olds-in-Training",
+        "display_name": "Fasig-Tipton Midlantic 2YO 2020",
+        "location": "Timonium, MD",
+    },
+    # 2019
+    "ft_santaanita_2019": {
+        "sale_identifier": "C19A",
+        "api_id": 156,
+        "year": 2019,
+        "source_url": "https://www.fasigtipton.com/2019/Santa-Anita-Two-Year-Olds-in-Training",
+        "display_name": "Fasig-Tipton Santa Anita 2YO 2019",
+        "location": "Santa Anita, CA",
+    },
+    "ft_midlantic_2019": {
+        "sale_identifier": "M19A",
+        "api_id": 155,
+        "year": 2019,
+        "source_url": "https://www.fasigtipton.com/2019/Midlantic-Two-Year-Olds-in-Training",
+        "display_name": "Fasig-Tipton Midlantic 2YO 2019",
+        "location": "Timonium, MD",
+    },
 }
 
 # ---------------------------------------------------------------------------

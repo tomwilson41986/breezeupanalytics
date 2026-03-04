@@ -37,7 +37,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pathlib import Path
 
-from src.config import OBS_CATALOG_IDS, OBS_LEGACY_RESULTS
+from src.config import OBS_CATALOG_IDS, OBS_LEGACY_RESULTS, FT_CATALOG_IDS
 from src.scrapers.obs.catalog import fetch_sale, discover_sale_ids
 
 LOCAL_SALES_DIR = Path(__file__).resolve().parent.parent / "data" / "sales"
@@ -271,6 +271,9 @@ SALE_MAP: dict[str, int] = dict(OBS_CATALOG_IDS)
 # Legacy sales that must be synced from local JSON files (no live API)
 LEGACY_SALE_KEYS: list[str] = list(OBS_LEGACY_RESULTS.keys())
 
+# Fasig-Tipton sales (synced from local JSON files scraped via FT API)
+FT_SALE_KEYS: list[str] = list(FT_CATALOG_IDS.keys())
+
 
 def _upload_sale(sale_key: str, sale_dict: dict) -> None:
     """Compute stats and upload a sale dict to S3."""
@@ -342,12 +345,15 @@ def main():
         return
 
     if "--all" in args:
-        # Sync everything: API sales + legacy local files
+        # Sync everything: API sales + legacy local files + FT sales
         args = [k for k in args if k != "--all"]
-        logger.info("Syncing ALL sales: %d API + %d legacy", len(SALE_MAP), len(LEGACY_SALE_KEYS))
+        logger.info("Syncing ALL sales: %d API + %d legacy + %d FT",
+                     len(SALE_MAP), len(LEGACY_SALE_KEYS), len(FT_SALE_KEYS))
         for key in sorted(SALE_MAP):
             sync_sale(key)
         for key in sorted(LEGACY_SALE_KEYS):
+            sync_local_sale(key)
+        for key in sorted(FT_SALE_KEYS):
             sync_local_sale(key)
         return
 

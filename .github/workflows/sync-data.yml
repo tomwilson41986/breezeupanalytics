@@ -25,7 +25,10 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests beautifulsoup4
+
+      - name: Scrape Fasig-Tipton sales
+        run: python scripts/scrape_all_ft_sales.py
 
       - name: Sync sale data to S3
         env:
