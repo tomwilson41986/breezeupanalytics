@@ -29,12 +29,45 @@ OBS_SALES: dict[str, dict] = {
 # Known OBS SPA sale IDs (catalog/#/{sale_id})
 # These change each year - discovered via catalog inspection
 OBS_CATALOG_IDS: dict[str, int] = {
+    # 2024
+    "obs_march_2024": 135,
+    "obs_spring_2024": 136,
+    "obs_june_2024": 137,
     # 2025
     "obs_march_2025": 142,
     "obs_spring_2025": 144,
     "obs_june_2025": 145,
     # 2026
     "obs_march_2026": 149,
+}
+
+# OBS legacy results pages (obscatalog.com) for pre-2024 sales.
+# Maps (sale_code_prefix, year) -> URL path segment.
+OBS_LEGACY_RESULTS: dict[str, dict] = {
+    # 2023
+    "obs_june_2023": {"url": "https://www.obscatalog.com/junresults/2023/", "sale_code": "jun", "year": 2023},
+    "obs_spring_2023": {"url": "https://www.obscatalog.com/aprresults/2023/", "sale_code": "apr", "year": 2023},
+    "obs_march_2023": {"url": "https://www.obscatalog.com/marresults/2023/", "sale_code": "mar", "year": 2023},
+    # 2022
+    "obs_june_2022": {"url": "https://www.obscatalog.com/junresults/2022/", "sale_code": "jun", "year": 2022},
+    "obs_spring_2022": {"url": "https://www.obscatalog.com/aprresults/2022/", "sale_code": "apr", "year": 2022},
+    "obs_march_2022": {"url": "https://www.obscatalog.com/marresults/2022/", "sale_code": "mar", "year": 2022},
+    # 2021
+    "obs_june_2021": {"url": "https://www.obscatalog.com/junresults/2021/", "sale_code": "jun", "year": 2021},
+    "obs_spring_2021": {"url": "https://www.obscatalog.com/aprresults/2021/", "sale_code": "apr", "year": 2021},
+    "obs_march_2021": {"url": "https://www.obscatalog.com/marresults/2021/", "sale_code": "mar", "year": 2021},
+    # 2020
+    "obs_june_2020": {"url": "https://www.obscatalog.com/julresults/2020/", "sale_code": "jul", "year": 2020},
+    "obs_spring_2020": {"url": "https://www.obscatalog.com/aprresults/2020/", "sale_code": "apr", "year": 2020},
+    "obs_march_2020": {"url": "https://www.obscatalog.com/marresults/2020/", "sale_code": "mar", "year": 2020},
+    # 2019
+    "obs_june_2019": {"url": "https://www.obscatalog.com/junresults/2019/", "sale_code": "jun", "year": 2019},
+    "obs_spring_2019": {"url": "https://www.obscatalog.com/aprresults/2019/", "sale_code": "apr", "year": 2019},
+    "obs_march_2019": {"url": "https://www.obscatalog.com/marresults/2019/", "sale_code": "mar", "year": 2019},
+    # 2018
+    "obs_june_2018": {"url": "https://www.obscatalog.com/junresults/2018/", "sale_code": "jun", "year": 2018},
+    "obs_spring_2018": {"url": "https://www.obscatalog.com/aprresults/2018/", "sale_code": "apr", "year": 2018},
+    "obs_march_2018": {"url": "https://www.obscatalog.com/marresults/2018/", "sale_code": "mar", "year": 2018},
 }
 
 # ---------------------------------------------------------------------------

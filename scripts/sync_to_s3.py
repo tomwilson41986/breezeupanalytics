@@ -35,8 +35,12 @@ import requests
 # Allow running from repo root: `python scripts/sync_to_s3.py`
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.config import OBS_CATALOG_IDS
+from pathlib import Path
+
+from src.config import OBS_CATALOG_IDS, OBS_LEGACY_RESULTS
 from src.scrapers.obs.catalog import fetch_sale, discover_sale_ids
+
+LOCAL_SALES_DIR = Path(__file__).resolve().parent.parent / "data" / "sales"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -261,46 +265,62 @@ def compute_stats(sale_dict: dict) -> dict:
 
 # ── Sale key mapping ────────────────────────────────────────────
 
-# Maps sale_key (S3 folder) -> OBS catalog sale_id
-SALE_MAP = {
-    "obs_march_2025": 142,
-    "obs_spring_2025": 144,
-    "obs_june_2025": 145,
-    "obs_march_2026": 149,
-}
+# Use the canonical catalog IDs from config
+SALE_MAP: dict[str, int] = dict(OBS_CATALOG_IDS)
+
+# Legacy sales that must be synced from local JSON files (no live API)
+LEGACY_SALE_KEYS: list[str] = list(OBS_LEGACY_RESULTS.keys())
 
 
-def sync_sale(sale_key: str) -> None:
-    """Fetch a sale from OBS, process it, and upload to S3."""
-    catalog_id = SALE_MAP.get(sale_key)
-    if catalog_id is None:
-        logger.error("Unknown sale key: %s (known: %s)", sale_key, list(SALE_MAP.keys()))
-        return
-
-    logger.info("Syncing %s (catalog_id=%s)", sale_key, catalog_id)
-
-    # Fetch from OBS
-    sale = fetch_sale(catalog_id)
-
-    # Convert to JSON
-    sale_dict = sale_to_json(sale)
+def _upload_sale(sale_key: str, sale_dict: dict) -> None:
+    """Compute stats and upload a sale dict to S3."""
     sale_json = json.dumps(sale_dict, cls=DecimalEncoder, indent=2)
-
-    # Compute stats
     stats_dict = compute_stats(sale_dict)
     stats_json = json.dumps(stats_dict, cls=DecimalEncoder, indent=2)
 
-    # Upload to S3
     s3_put(f"data/{sale_key}/sale.json", sale_json.encode())
     s3_put(f"data/{sale_key}/stats.json", stats_json.encode())
 
+    hip_count = len(sale_dict.get("hips", []))
     logger.info(
         "Done: %s — %d hips, %d sold, $%s total revenue",
         sale_key,
-        len(sale.hips),
+        hip_count,
         stats_dict["soldCount"],
         f"{stats_dict['totalRevenue']:,.0f}",
     )
+
+
+def sync_sale(sale_key: str) -> None:
+    """Fetch a sale from OBS API, process it, and upload to S3."""
+    catalog_id = SALE_MAP.get(sale_key)
+    if catalog_id is None:
+        logger.error("Unknown API sale key: %s (known: %s)", sale_key, list(SALE_MAP.keys()))
+        return
+
+    logger.info("Syncing %s (catalog_id=%s) from OBS API", sale_key, catalog_id)
+    sale = fetch_sale(catalog_id)
+    sale_dict = sale_to_json(sale)
+    sale_dict["synced_at"] = datetime.now(timezone.utc).isoformat()
+    _upload_sale(sale_key, sale_dict)
+
+
+def sync_local_sale(sale_key: str) -> None:
+    """Upload a pre-scraped sale from data/sales/{sale_key}.json to S3."""
+    local_path = LOCAL_SALES_DIR / f"{sale_key}.json"
+    if not local_path.exists():
+        logger.error(
+            "Local file not found: %s — run scripts/scrape_all_obs_sales.py first",
+            local_path,
+        )
+        return
+
+    logger.info("Syncing %s from local file %s", sale_key, local_path)
+    with open(local_path) as f:
+        sale_dict = json.load(f)
+
+    sale_dict["synced_at"] = datetime.now(timezone.utc).isoformat()
+    _upload_sale(sale_key, sale_dict)
 
 
 def main():
@@ -321,12 +341,27 @@ def main():
             print(f"  {s['sale_id']}: {s['sale_name']} ({s.get('sale_starts', 'TBD')})")
         return
 
-    if args:
-        # Sync specific sales
-        for key in args:
+    if "--all" in args:
+        # Sync everything: API sales + legacy local files
+        args = [k for k in args if k != "--all"]
+        logger.info("Syncing ALL sales: %d API + %d legacy", len(SALE_MAP), len(LEGACY_SALE_KEYS))
+        for key in sorted(SALE_MAP):
             sync_sale(key)
+        for key in sorted(LEGACY_SALE_KEYS):
+            sync_local_sale(key)
+        return
+
+    if args:
+        # Sync specific sales (auto-detect API vs local)
+        for key in args:
+            if key in SALE_MAP:
+                sync_sale(key)
+            elif (LOCAL_SALES_DIR / f"{key}.json").exists():
+                sync_local_sale(key)
+            else:
+                logger.error("Unknown sale: %s (not in API map or local files)", key)
     else:
-        # Sync all known sales
+        # Default: sync API-based sales only (same as before)
         for key in SALE_MAP:
             sync_sale(key)
 
