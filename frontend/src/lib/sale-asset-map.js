@@ -94,6 +94,10 @@ export const SALE_ASSET_MAP = [
   { saleEntity: "Fasig Tipton Midlantic Sale", year: 2024, s3Key: "ft_midlantic_2024", displayName: "Fasig-Tipton Midlantic 2YO 2024", company: "Fasig-Tipton", month: 5, location: "Timonium, MD", hipRange: [1, 585], recordCount: 580, obsId: null },
   { saleEntity: "Fasig Tipton Midlantic Sale", year: 2025, s3Key: "ft_midlantic_2025", displayName: "Fasig-Tipton Midlantic 2YO 2025", company: "Fasig-Tipton", month: 5, location: "Timonium, MD", hipRange: [1, 586], recordCount: 583, obsId: null },
 
+  // ── Fasig-Tipton Midlantic June Sales ────────────────────────
+  { saleEntity: "Fasig Tipton Midlantic June Sale", year: 2023, s3Key: "ft_midlantic_june_2023", displayName: "Fasig-Tipton Midlantic June 2YO 2023", company: "Fasig-Tipton", month: 6, location: "Timonium, MD", hipRange: [1, 99], recordCount: 99, obsId: null },
+  { saleEntity: "Fasig Tipton Midlantic June Sale", year: 2024, s3Key: "ft_midlantic_june_2024", displayName: "Fasig-Tipton Midlantic June 2YO 2024", company: "Fasig-Tipton", month: 6, location: "Timonium, MD", hipRange: [1, 80], recordCount: 79, obsId: null },
+
   // ── Fasig-Tipton Gulfstream Sales ────────────────────────────
   { saleEntity: "Gulfstream Sale", year: 2018, s3Key: "ft_gulfstream_2018", displayName: "Fasig-Tipton Gulfstream 2018", company: "Fasig-Tipton", month: 3, location: "Gulfstream Park, FL", hipRange: [1, 166], recordCount: 162, obsId: null },
   { saleEntity: "Gulfstream Sale", year: 2019, s3Key: "ft_gulfstream_2019", displayName: "Fasig-Tipton Gulfstream 2019", company: "Fasig-Tipton", month: 3, location: "Gulfstream Park, FL", hipRange: [1, 188], recordCount: 186, obsId: null },
@@ -182,6 +186,7 @@ export const ENTITY_TO_S3_PREFIX = {
   "OBS June Sale": "obs_june",
   "July 2yo Sale": "obs_june",  // 2020 COVID-delayed June sale
   "Fasig Tipton Midlantic Sale": "ft_midlantic",
+  "Fasig Tipton Midlantic June Sale": "ft_midlantic_june",
   "Gulfstream Sale": "ft_gulfstream",
   "Santa Anita 2yo Sale": "ft_santaanita",
   "Texas 2yo Sale": "texas_2yo",
