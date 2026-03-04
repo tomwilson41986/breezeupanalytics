@@ -53,6 +53,9 @@ const analyticsSales = Object.entries(SALE_CATALOG)
   .filter(([, meta]) => meta.hasData)
   .sort(([, a], [, b]) => b.year - a.year || b.month - a.month);
 
+// Module-level cache — persists across SPA navigations, cleared on full page reload
+let _timeAnalysisCache = null;
+
 function median(arr) {
   if (!arr.length) return 0;
   const sorted = [...arr].sort((a, b) => a - b);
@@ -91,30 +94,30 @@ export default function TimeAnalysis() {
     setLoadingSales(true);
 
     async function loadAll() {
-      const entries = await Promise.all(
-        analyticsSales.map(async ([key]) => {
-          try {
-            const res = await fetch(
-              `/.netlify/functions/sale-data?sale=${encodeURIComponent(key)}`
-            );
-            if (res.ok) {
-              const data = await res.json();
-              if (data && data.hips) return [key, data.hips];
-            }
-          } catch {
-            // Skip failed sales
-          }
-          return null;
-        })
-      );
-      if (!cancelled) {
-        const results = {};
-        for (const entry of entries) {
-          if (entry) results[entry[0]] = entry[1];
-        }
-        setAllSaleData(results);
+      // Use module-level cache for instant re-renders on SPA navigation
+      if (_timeAnalysisCache) {
+        setAllSaleData(_timeAnalysisCache);
         setLoadingSales(false);
+        return;
       }
+
+      // Single aggregated request replaces 25+ individual function calls
+      const saleKeys = analyticsSales.map(([key]) => key).join(",");
+      try {
+        const res = await fetch(
+          `/.netlify/functions/time-analysis-data?sales=${saleKeys}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (!cancelled && data.sales) {
+            _timeAnalysisCache = data.sales;
+            setAllSaleData(data.sales);
+          }
+        }
+      } catch {
+        // Silently fail
+      }
+      if (!cancelled) setLoadingSales(false);
     }
 
     loadAll();
