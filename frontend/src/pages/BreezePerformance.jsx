@@ -96,23 +96,27 @@ export default function BreezePerformance() {
     setLoadingSales(true);
 
     async function loadAll() {
-      const results = {};
-      for (const [key] of analyticsSales) {
-        try {
-          const res = await fetch(
-            `/.netlify/functions/sale-data?sale=${encodeURIComponent(key)}`
-          );
-          if (res.ok) {
-            const data = await res.json();
-            if (data && data.hips) {
-              results[key] = data.hips;
+      const entries = await Promise.all(
+        analyticsSales.map(async ([key]) => {
+          try {
+            const res = await fetch(
+              `/.netlify/functions/sale-data?sale=${encodeURIComponent(key)}`
+            );
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.hips) return [key, data.hips];
             }
+          } catch {
+            // Skip failed sales
           }
-        } catch {
-          // Skip failed sales
-        }
-      }
+          return null;
+        })
+      );
       if (!cancelled) {
+        const results = {};
+        for (const entry of entries) {
+          if (entry) results[entry[0]] = entry[1];
+        }
         setAllSaleData(results);
         setLoadingSales(false);
       }
@@ -246,7 +250,7 @@ export default function BreezePerformance() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 tracking-tight">
           Breeze Performance
         </h1>
         <p className="text-sm text-gray-500 mt-1">
@@ -266,8 +270,8 @@ export default function BreezePerformance() {
       {!loading && mergedHips.length > 0 && (
         <>
           {/* Legend */}
-          <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-            <div className="flex flex-wrap items-center gap-4">
+          <div className="rounded-xl border border-gray-100 bg-white p-3 sm:p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Legend:
               </span>
@@ -298,7 +302,7 @@ export default function BreezePerformance() {
           </div>
 
           {/* Filters */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3">
             <select
               value={distanceFilter}
               onChange={(e) => setDistanceFilter(e.target.value)}
@@ -338,7 +342,7 @@ export default function BreezePerformance() {
                   </option>
                 ))}
             </select>
-            <div className="flex-1 min-w-[200px]">
+            <div className="flex-1 min-w-0 sm:min-w-[200px]">
               <input
                 type="text"
                 placeholder="Search horse, sire, dam..."
@@ -457,9 +461,9 @@ function BreezeScatterByPerformance({ hips, title, minDomain }) {
   const priceHips = hips.filter((h) => h.price && h.price > 0);
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">{title}</h3>
-      <ResponsiveContainer width="100%" height={400}>
+    <div className="rounded-xl border border-gray-100 bg-white p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">{title}</h3>
+      <ResponsiveContainer width="100%" height={340}>
         <ScatterChart margin={{ top: 10, right: 20, left: 10, bottom: 10 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
           <XAxis
@@ -595,9 +599,9 @@ function TimeByPerformance({ hips, title, distance }) {
   const xMin = distance === "1/4" ? 19 : 9;
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">{title}</h3>
-      <ResponsiveContainer width="100%" height={280}>
+    <div className="rounded-xl border border-gray-100 bg-white p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">{title}</h3>
+      <ResponsiveContainer width="100%" height={240}>
         <BarChart
           data={data}
           margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
@@ -708,12 +712,12 @@ function ElitePerformersTable({ hips }) {
   ];
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">
+    <div className="rounded-xl border border-gray-100 bg-white p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">
         Performers with Breeze Data ({formatNumber(performers.length)} horses)
       </h3>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto -mx-4 sm:-mx-5 px-4 sm:px-5">
+        <table className="w-full text-sm min-w-[700px]">
           <thead>
             <tr className="border-b border-gray-100">
               {cols.map((c) => (

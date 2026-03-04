@@ -28,7 +28,7 @@ function shortName(meta) {
 
 /* ── Sidebar ────────────────────────────────────────────── */
 
-export default function Sidebar() {
+export default function Sidebar({ open, onClose }) {
   const location = useLocation();
   const [expandedYears, setExpandedYears] = useState({});
 
@@ -39,6 +39,8 @@ export default function Sidebar() {
       const year = match[2];
       setExpandedYears((prev) => (prev[year] ? prev : { ...prev, [year]: true }));
     }
+    // Close mobile sidebar on navigation
+    if (onClose) onClose();
   }, [location.pathname]);
 
   function toggleYear(year) {
@@ -46,14 +48,23 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="fixed top-0 left-0 bottom-0 w-[220px] bg-white border-r border-gray-200/80 flex flex-col z-40">
+    <aside className={`fixed top-0 left-0 bottom-0 w-[220px] bg-white border-r border-gray-200/80 flex flex-col z-50 transition-transform duration-200 ease-in-out ${open ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}>
       {/* Logo */}
-      <div className="h-14 flex items-center px-5 border-b border-gray-100 shrink-0">
-        <NavLink to="/" className="flex items-center">
+      <div className="h-14 flex items-center justify-between px-5 border-b border-gray-100 shrink-0">
+        <NavLink to="/" className="flex items-center" onClick={onClose}>
           <span className="text-[15px] font-semibold tracking-tight text-gray-900">
             Breeze<span className="text-brand-600">Vision</span>
           </span>
         </NavLink>
+        <button
+          onClick={onClose}
+          className="lg:hidden p-1 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+          aria-label="Close menu"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       {/* Navigation */}
