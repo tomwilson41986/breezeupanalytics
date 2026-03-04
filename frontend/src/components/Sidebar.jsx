@@ -46,44 +46,10 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="fixed top-0 left-0 bottom-0 w-[240px] bg-white border-r border-gray-200/80 flex flex-col z-40">
+    <aside className="fixed top-0 left-0 bottom-0 w-[220px] bg-white border-r border-gray-200/80 flex flex-col z-40">
       {/* Logo */}
-      <div className="h-16 flex items-center px-6 border-b border-gray-100 shrink-0">
-        <NavLink to="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center">
-            <svg
-              viewBox="0 0 24 24"
-              className="w-5 h-5 text-white"
-              fill="currentColor"
-            >
-              {/* Digital horse icon made of dots */}
-              {/* Head & ear */}
-              <circle cx="19" cy="3.5" r="1.1" />
-              <circle cx="20.5" cy="5" r="1" />
-              <circle cx="19" cy="6" r="1.1" />
-              {/* Neck */}
-              <circle cx="17" cy="7.5" r="1.1" />
-              <circle cx="15.5" cy="9" r="1.1" />
-              {/* Body */}
-              <circle cx="13.5" cy="10.5" r="1.3" />
-              <circle cx="11" cy="10.5" r="1.3" />
-              <circle cx="8.5" cy="10.5" r="1.3" />
-              <circle cx="6.5" cy="9.5" r="1.1" />
-              {/* Front legs */}
-              <circle cx="12.5" cy="13" r="1" />
-              <circle cx="12" cy="15.5" r="0.9" />
-              <circle cx="11.5" cy="18" r="0.8" />
-              <circle cx="11" cy="20.5" r="0.7" />
-              {/* Back legs */}
-              <circle cx="7" cy="12.5" r="1" />
-              <circle cx="6" cy="15" r="0.9" />
-              <circle cx="5.5" cy="17.5" r="0.8" />
-              <circle cx="5" cy="20" r="0.7" />
-              {/* Tail */}
-              <circle cx="4.5" cy="8" r="0.9" />
-              <circle cx="3" cy="6.5" r="0.8" />
-            </svg>
-          </div>
+      <div className="h-14 flex items-center px-5 border-b border-gray-100 shrink-0">
+        <NavLink to="/" className="flex items-center">
           <span className="text-[15px] font-semibold tracking-tight text-gray-900">
             Breeze<span className="text-brand-600">Vision</span>
           </span>
@@ -260,7 +226,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-gray-100 shrink-0">
+      <div className="px-5 py-3 border-t border-gray-100 shrink-0">
         <p className="text-[11px] text-gray-400">
           Data sourced from OBS &amp; S3
         </p>
