@@ -25,7 +25,7 @@ function buildCatalog() {
       year: entry.year,
       location: entry.location,
       s3Key: entry.s3Key,
-      hasData: entry.obsId != null, // Pre-processed JSON available via OBS API or S3 sync
+      hasData: entry.obsId != null || (entry.company === "OBS" && entry.year >= 2018 && entry.year <= 2025),
       isLive: entry.year >= 2026,
     };
   }
