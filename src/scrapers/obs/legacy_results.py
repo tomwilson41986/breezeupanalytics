@@ -214,6 +214,26 @@ def _parse_ut_time(raw: str) -> Decimal | None:
         return None
 
 
+def _derive_ut_distance(time_val: Decimal | None) -> str | None:
+    """Derive under-tack distance from the breeze time.
+
+    OBS legacy pages (2018-2023) record the time but not the distance.
+    The distance is unambiguous from the time value — the ranges have
+    zero overlap:
+      ≤ 15 s  → 1/8 mile  (typical 9–12 s)
+      ≤ 27 s  → 1/4 mile  (typical 20–24 s)
+      > 27 s  → 3/8 mile  (typical 31–36 s)
+    """
+    if time_val is None:
+        return None
+    t = float(time_val)
+    if t <= 15:
+        return "1/8"
+    if t <= 27:
+        return "1/4"
+    return "3/8"
+
+
 def _determine_sale_status(buyer: str, price: str, ps: str, ut_time: str) -> str:
     """Determine sale status from buyer/price/PS fields."""
     buyer_lower = (buyer or "").strip().lower()
@@ -317,6 +337,7 @@ def fetch_legacy_sale(
             hammer_raw = price_raw
 
         ut_time = _parse_ut_time(ut_raw)
+        ut_distance = _derive_ut_distance(ut_time)
         video_url = _extract_video_url(get("video_link"))
         walk_url = _extract_video_url(get("walk_link")) if "walk_link" in col_map else None
 
@@ -340,7 +361,7 @@ def fetch_legacy_sale(
             state_bred=get("state").strip() or None if "state" in col_map else None,
             barn_number=None,
             session_number=None,
-            under_tack_distance=None,  # Not explicitly in legacy pages
+            under_tack_distance=ut_distance,
             under_tack_time=ut_time,
             under_tack_date=None,
             under_tack_set=None,
