@@ -27,6 +27,7 @@ function toSaleKey(saleNameStr, year) {
     "OBS March Sale": "march",
     "OBS Spring Sale": "spring",
     "OBS June Sale": "june",
+    "July 2yo Sale": "june",
   };
   const season = map[saleNameStr];
   if (!season) return null;
@@ -348,6 +349,7 @@ export default function TimeAnalysis() {
                 title="1/8 Mile: Time vs Sale Price"
                 color="#3b82f6"
                 minDomain={9}
+                maxDomain={12}
               />
             )}
             {quarterHips.length > 0 && (
@@ -356,6 +358,7 @@ export default function TimeAnalysis() {
                 title="1/4 Mile: Time vs Sale Price"
                 color="#8b5cf6"
                 minDomain={19}
+                maxDomain={24}
               />
             )}
           </div>
@@ -447,7 +450,7 @@ function TimeDistribution({ hips, title, color, maxTime: maxTimeProp }) {
   );
 }
 
-function TimeVsPrice({ hips, title, color, minDomain }) {
+function TimeVsPrice({ hips, title, color, minDomain, maxDomain }) {
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
 
@@ -476,7 +479,7 @@ function TimeVsPrice({ hips, title, color, minDomain }) {
 
   if (data.length === 0) return null;
 
-  const xDomain = minDomain != null ? [minDomain, 'auto'] : ['auto', 'auto'];
+  const xDomain = [minDomain != null ? minDomain : 'auto', maxDomain != null ? maxDomain : 'auto'];
 
   const handleDotClick = useCallback((entry) => {
     if (entry?.saleKey && entry?.hip) {
@@ -497,7 +500,7 @@ function TimeVsPrice({ hips, title, color, minDomain }) {
           tick={{ fill: "#6b7280", fontSize: 11 }}
           axisLine={{ stroke: "#e5e7eb" }}
           tickLine={false}
-          allowDataOverflow={isExpanded}
+          allowDataOverflow
         />
         <YAxis
           dataKey="price"
@@ -507,7 +510,7 @@ function TimeVsPrice({ hips, title, color, minDomain }) {
           tick={{ fill: "#6b7280", fontSize: 11 }}
           axisLine={{ stroke: "#e5e7eb" }}
           tickLine={false}
-          allowDataOverflow={isExpanded}
+          allowDataOverflow
         />
         <ZAxis range={[isExpanded ? 50 : 30, isExpanded ? 50 : 30]} />
         <Tooltip content={<TimeVsPriceTooltip />} />
