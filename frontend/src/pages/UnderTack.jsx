@@ -27,19 +27,39 @@ export default function UnderTack() {
     let cancelled = false;
     setLoading(true);
 
+    async function tryJson(url) {
+      const r = await fetch(url);
+      return r.ok ? r.json() : null;
+    }
+
     async function load() {
       try {
-        // Try S3 under-tack data first, fall back to full sale data
+        // Try S3 via Netlify function first, then static files from repo, then full sale data
         const [utRes, videosRes, saleRes] = await Promise.allSettled([
-          fetch(`${API_BASE}/sale-data?sale=${ACTIVE_SALE_KEY}&type=under-tack/latest`).then(r => r.ok ? r.json() : null),
-          fetch(`${API_BASE}/sale-data?sale=${ACTIVE_SALE_KEY}&type=under-tack/videos`).then(r => r.ok ? r.json() : null),
+          tryJson(`${API_BASE}/sale-data?sale=${ACTIVE_SALE_KEY}&type=under-tack/latest`),
+          tryJson(`${API_BASE}/sale-data?sale=${ACTIVE_SALE_KEY}&type=under-tack/videos`),
           fetchSaleFromS3(ACTIVE_SALE_KEY),
         ]);
 
         if (cancelled) return;
 
-        const ut = utRes.status === "fulfilled" ? utRes.value : null;
-        const vids = videosRes.status === "fulfilled" ? videosRes.value : null;
+        let ut = utRes.status === "fulfilled" ? utRes.value : null;
+        let vids = videosRes.status === "fulfilled" ? videosRes.value : null;
+
+        // Fallback to static files from repo if S3 returned nothing
+        if (!ut || !ut.hips) {
+          try {
+            ut = await tryJson(`/data/under-tack/${ACTIVE_SALE_KEY}/latest.json`);
+          } catch { /* ignore */ }
+        }
+        if (!vids) {
+          try {
+            vids = await tryJson(`/data/under-tack/${ACTIVE_SALE_KEY}/videos.json`);
+          } catch { /* ignore */ }
+        }
+
+        if (cancelled) return;
+
         const sale = saleRes.status === "fulfilled" ? saleRes.value : null;
 
         if (ut && ut.hips) {
