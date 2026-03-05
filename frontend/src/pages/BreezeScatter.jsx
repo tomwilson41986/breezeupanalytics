@@ -19,9 +19,9 @@ import {
 
 const AXIS_OPTIONS = [
   { key: "timeUT", label: "UT Time", unit: "s" },
-  { key: "strideLengthUT", label: "Stride Length UT", unit: "ft" },
+  { key: "strideLengthUT", label: "Stride Length UT (ft)", unit: "ft" },
   { key: "rating", label: "Breeze Rating", unit: "" },
-  { key: "strideLengthGO", label: "Stride Length GO", unit: "ft" },
+  { key: "strideLengthGO", label: "Stride Length GO (ft)", unit: "ft" },
 ];
 
 const DISTANCE_OPTIONS = [
