@@ -212,7 +212,7 @@ export default function LotDetail() {
         <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <ChartIcon className="w-4 h-4 text-brand-500" />
-            Rating & Stride Analysis
+            Breeze Rating & Stride Analysis
             <span className="text-xs font-normal text-gray-400 ml-auto">
               Distance group: {hip.ratings.distanceUT || "—"}
             </span>
@@ -235,7 +235,7 @@ export default function LotDetail() {
                 {hip.ratings.rating?.toFixed(1)}
               </div>
               <div className="text-[11px] uppercase tracking-wider text-gray-400 mt-1">
-                Rating
+                Breeze Rating
               </div>
             </div>
             <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">

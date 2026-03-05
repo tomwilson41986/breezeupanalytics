@@ -10,6 +10,7 @@ import PerformanceTracker from "./pages/PerformanceTracker";
 import BreezePerformance from "./pages/BreezePerformance";
 import Vendors from "./pages/Vendors";
 import VendorSireAnalytics from "./pages/VendorSireAnalytics";
+import BreezeScatter from "./pages/BreezeScatter";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="historic" element={<HistoricSales />} />
           <Route path="sale/:saleKey" element={<SaleDetail />} />
           <Route path="sale/:saleKey/hip/:hipNumber" element={<LotDetail />} />
+          <Route path="analysis/breeze-scatter" element={<BreezeScatter />} />
           <Route path="analytics/sales" element={<SalesAnalysis />} />
           <Route path="analytics/time" element={<TimeAnalysis />} />
           <Route path="analytics/performance" element={<PerformanceTracker />} />
