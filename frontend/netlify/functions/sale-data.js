@@ -140,6 +140,8 @@ export default async (req) => {
   let s3Key;
   if (dataType === "stats") {
     s3Key = `data/${saleKey}/stats.json`;
+  } else if (dataType === "ratings") {
+    s3Key = `data/${saleKey}/ratings.json`;
   } else if (dataType.startsWith("under-tack/")) {
     // Support under-tack/latest, under-tack/videos, under-tack/daily/{date}
     s3Key = `data/${saleKey}/${dataType}.json`;

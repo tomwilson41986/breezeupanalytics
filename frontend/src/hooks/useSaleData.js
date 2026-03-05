@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {
   fetchSaleFromS3,
   fetchStatsFromS3,
+  fetchRatingsFromS3,
   parseS3SaleResponse,
   fetchSale,
   parseSaleResponse,
@@ -68,13 +69,26 @@ export function useSaleData(s3Key) {
     setLoading(true);
     setError(null);
 
-    // Fetch sale data and S3 asset index in parallel
+    // Fetch sale data, S3 asset index, and ratings in parallel
     const dataPromise = loadSaleData(s3Key);
     const assetsPromise = fetchSaleAssetIndex(s3Key);
+    const ratingsPromise = fetchRatingsFromS3(s3Key);
 
-    Promise.all([dataPromise, assetsPromise])
-      .then(([{ sale: parsed, stats: computedStats, source }, s3Index]) => {
+    Promise.all([dataPromise, assetsPromise, ratingsPromise])
+      .then(([{ sale: parsed, stats: computedStats, source }, s3Index, ratings]) => {
         if (cancelled) return;
+
+        // Merge ratings into hip data if available
+        if (parsed && parsed.hips && ratings) {
+          parsed.hips = parsed.hips.map((hip) => {
+            const r = ratings[String(hip.hipNumber)];
+            if (r) {
+              return { ...hip, ratings: r };
+            }
+            return hip;
+          });
+        }
+
         setSale(parsed);
         setStats(computedStats);
         setAssetIndex(s3Index);
