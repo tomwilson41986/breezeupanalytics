@@ -1,0 +1,65 @@
+name: Rate Horses by Distance
+
+on:
+  # Trigger when CSV/TSV files are pushed to data/ratings/
+  push:
+    paths:
+      - "data/ratings/**"
+      - "!data/ratings/*_rated.csv"
+      - "!data/ratings/.gitkeep"
+
+  # Allow manual trigger from Actions tab
+  workflow_dispatch:
+    inputs:
+      input_file:
+        description: "File in data/ratings/ to rate (blank = all CSV/TSV files)"
+        required: false
+        type: string
+
+jobs:
+  rate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pandas
+
+      - name: Run ratings
+        run: |
+          if [ -n "${{ inputs.input_file }}" ]; then
+            echo "Rating single file: data/ratings/${{ inputs.input_file }}"
+            python scripts/rate_horses.py "data/ratings/${{ inputs.input_file }}"
+          else
+            echo "Rating all CSV/TSV files in data/ratings/"
+            found=0
+            for f in data/ratings/*.csv data/ratings/*.tsv; do
+              [ -f "$f" ] || continue
+              # Skip already-rated output files
+              case "$f" in *_rated.csv) continue;; esac
+              echo "→ Rating $f"
+              python scripts/rate_horses.py "$f"
+              found=$((found + 1))
+            done
+            if [ "$found" -eq 0 ]; then
+              echo "No input files found in data/ratings/"
+              exit 0
+            fi
+          fi
+
+      - name: Commit rated results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ratings/*_rated.csv
+          if git diff --cached --quiet; then
+            echo "No new rated files to commit"
+          else
+            git commit -m "Generate horse ratings $(date -u +%Y-%m-%d)"
+            git push
+          fi
