@@ -12,8 +12,8 @@ const SORT_FIELDS = [
   { key: "hipNumber", label: "Hip #" },
   { key: "price", label: "Price" },
   { key: "breezeTime", label: "UT Time" },
-  { key: "strideLengthUT", label: "Stride Length UT" },
-  { key: "strideLengthGO", label: "Stride Length GO" },
+  { key: "strideLengthUT", label: "Stride Length UT (ft)" },
+  { key: "strideLengthGO", label: "Stride Length GO (ft)" },
   { key: "sire", label: "Sire" },
   { key: "rating", label: "Rating" },
 ];
@@ -147,6 +147,9 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
               <SortHeader field="strideLengthUT">Stride Length UT</SortHeader>
               <SortHeader field="strideLengthGO">Stride Length GO</SortHeader>
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 whitespace-nowrap">
+              <SortHeader field="strideLengthUT">Stride Length UT (ft)</SortHeader>
+              <SortHeader field="strideLengthGO">Stride Length GO (ft)</SortHeader>
+              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 UT Video
               </th>
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 whitespace-nowrap">
