@@ -90,22 +90,6 @@ export default function Sidebar({ open, onClose }) {
               {shortName(meta)}
             </NavLink>
           ))}
-          <NavLink
-            to="/under-tack"
-            className={({ isActive }) =>
-              `flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[13px] transition-colors ${
-                isActive
-                  ? "bg-brand-50 text-brand-700 font-medium"
-                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-              }`
-            }
-          >
-            <svg className="w-3.5 h-3.5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-            Under Tack Times
-          </NavLink>
         </Section>
 
         {/* ── Analytics Tools ───────────────────────────── */}
