@@ -137,7 +137,15 @@ export default async (req) => {
   }
 
   const dataType = url.searchParams.get("type") || "sale";
-  const s3Key = `data/${saleKey}/${dataType === "stats" ? "stats" : "sale"}.json`;
+  let s3Key;
+  if (dataType === "stats") {
+    s3Key = `data/${saleKey}/stats.json`;
+  } else if (dataType.startsWith("under-tack/")) {
+    // Support under-tack/latest, under-tack/videos, under-tack/daily/{date}
+    s3Key = `data/${saleKey}/${dataType}.json`;
+  } else {
+    s3Key = `data/${saleKey}/sale.json`;
+  }
 
   try {
     const res = await s3Get(s3Key, accessKeyId, secretAccessKey);
