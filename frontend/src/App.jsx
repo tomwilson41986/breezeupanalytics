@@ -8,7 +8,6 @@ import SalesAnalysis from "./pages/SalesAnalysis";
 import TimeAnalysis from "./pages/TimeAnalysis";
 import PerformanceTracker from "./pages/PerformanceTracker";
 import BreezePerformance from "./pages/BreezePerformance";
-import UnderTack from "./pages/UnderTack";
 import Vendors from "./pages/Vendors";
 import VendorSireAnalytics from "./pages/VendorSireAnalytics";
 
@@ -19,7 +18,6 @@ export default function App() {
         <Route element={<Layout />}>
           <Route index element={<LiveSales />} />
           <Route path="live" element={<LiveSales />} />
-          <Route path="under-tack" element={<UnderTack />} />
           <Route path="historic" element={<HistoricSales />} />
           <Route path="sale/:saleKey" element={<SaleDetail />} />
           <Route path="sale/:saleKey/hip/:hipNumber" element={<LotDetail />} />
