@@ -53,13 +53,9 @@ export default function LotDetail() {
     return () => { cancelled = true; };
   }, [saleKey]);
 
-  if (loading) return <LoadingSpinner message="Loading hip details..." />;
-  if (error) return <ErrorBanner message={error} />;
+  // Merge UT data into the hip (must be above conditional returns to satisfy Rules of Hooks)
+  const rawHip = sale?.hips?.find((h) => String(h.hipNumber) === String(hipNumber)) ?? null;
 
-  // For asset-only sales, show assets directly without full hip data
-  const rawHip = sale?.hips.find((h) => String(h.hipNumber) === String(hipNumber));
-
-  // Merge UT data into the hip
   const hip = useMemo(() => {
     if (!rawHip) return rawHip;
     const utHip = utLatest?.hips?.find((uh) => uh.hip_number === rawHip.hipNumber);
@@ -73,6 +69,9 @@ export default function LotDetail() {
       walkVideoUrl: rawHip.walkVideoUrl ?? utHip.walk_video_url ?? null,
     };
   }, [rawHip, utLatest]);
+
+  if (loading) return <LoadingSpinner message="Loading hip details..." />;
+  if (error) return <ErrorBanner message={error} />;
 
   if (!hip && dataSource !== "assets-only") {
     return <ErrorBanner message={`Hip #${hipNumber} not found`} />;
