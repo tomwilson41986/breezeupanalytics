@@ -240,13 +240,13 @@ export default function LotDetail() {
             </div>
             <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">
               <MetricCard
-                label="Stride UT"
+                label="Stride UT (ft)"
                 value={hip.ratings.strideLengthUT}
                 unit="ft"
                 rank={hip.ratings.rankStrideLengthUt}
               />
               <MetricCard
-                label="Stride GO"
+                label="Stride GO (ft)"
                 value={hip.ratings.strideLengthGO}
                 unit="ft"
                 rank={hip.ratings.rankStrideLengthGo}
