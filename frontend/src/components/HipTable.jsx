@@ -12,6 +12,7 @@ const SORT_FIELDS = [
   { key: "hipNumber", label: "Hip #" },
   { key: "price", label: "Price" },
   { key: "breezeTime", label: "UT Time" },
+  { key: "strideLengthUT", label: "Stride UT" },
   { key: "sire", label: "Sire" },
   { key: "rating", label: "Rating" },
 ];
@@ -43,8 +44,8 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
     }
 
     list.sort((a, b) => {
-      let av = sortBy === "rating" ? a.ratings?.rating : a[sortBy];
-      let bv = sortBy === "rating" ? b.ratings?.rating : b[sortBy];
+      let av = sortBy === "rating" ? a.ratings?.rating : sortBy === "strideLengthUT" ? a.ratings?.strideLengthUT : a[sortBy];
+      let bv = sortBy === "rating" ? b.ratings?.rating : sortBy === "strideLengthUT" ? b.ratings?.strideLengthUT : b[sortBy];
       if (av == null) return 1;
       if (bv == null) return -1;
       if (typeof av === "string") av = av.toLowerCase();
@@ -134,11 +135,12 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Consignor
               </th>
-              <SortHeader field="breezeTime">Breeze</SortHeader>
-              <SortHeader field="rating">Rating</SortHeader>
+              <SortHeader field="breezeTime">UT Time</SortHeader>
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
-                Stride
+                UT Video
               </th>
+              <SortHeader field="rating">Rating</SortHeader>
+              <SortHeader field="strideLengthUT">Stride UT</SortHeader>
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Status
               </th>
@@ -180,16 +182,6 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
                     : "—"}
                 </td>
                 <td className="px-3 py-2.5">
-                  {hip.ratings?.rating != null ? (
-                    <RatingBadge rating={hip.ratings.rating} />
-                  ) : (
-                    <span className="text-gray-300">—</span>
-                  )}
-                </td>
-                <td className="px-3 py-2.5 font-mono text-gray-600 text-xs">
-                  {hip.ratings?.strideLengthUT != null
-                    ? `${hip.ratings.strideLengthUT}ft`
-                    : "—"}
                   {(() => {
                     const videoLink = hip.videoUrl || assetIndex?.[String(hip.hipNumber)]?.video;
                     return videoLink ? (
@@ -201,12 +193,25 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
                         title="Watch Under Tack Video"
                       >
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                          <circle cx="12" cy="13" r="4" />
+                          <polygon points="5,3 19,12 5,21 5,3" />
                         </svg>
                       </a>
-                    ) : "—";
+                    ) : (
+                      <span className="text-gray-300">—</span>
+                    );
                   })()}
+                </td>
+                <td className="px-3 py-2.5">
+                  {hip.ratings?.rating != null ? (
+                    <RatingBadge rating={hip.ratings.rating} />
+                  ) : (
+                    <span className="text-gray-300">—</span>
+                  )}
+                </td>
+                <td className="px-3 py-2.5 font-mono text-gray-600 text-xs">
+                  {hip.ratings?.strideLengthUT != null
+                    ? `${hip.ratings.strideLengthUT}ft`
+                    : <span className="text-gray-300">—</span>}
                 </td>
                 <td className="px-3 py-2.5">
                   <StatusBadge status={hip.status} />
