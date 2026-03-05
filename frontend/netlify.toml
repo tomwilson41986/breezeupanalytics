@@ -2,7 +2,7 @@
 # All paths are relative to frontend/
 
 [build]
-  command = "npm install && npm run build"
+  command = "cp -r ../data/under-tack/ public/data/under-tack/ 2>/dev/null; npm install && npm run build"
   publish = "dist"
   functions = "netlify/functions"
 
@@ -26,3 +26,9 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Under Tack data updates daily — short cache
+[[headers]]
+  for = "/data/under-tack/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=600"
