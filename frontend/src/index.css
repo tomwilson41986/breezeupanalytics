@@ -77,6 +77,35 @@ body {
   background-color: #f9fafb;
 }
 
+/* Table horizontal scroller — always visible */
+.table-scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  /* Firefox */
+  scrollbar-width: auto;
+  scrollbar-color: #9ca3af #f3f4f6;
+}
+.table-scroll-container > table {
+  white-space: nowrap;
+}
+.table-scroll-container::-webkit-scrollbar {
+  height: 14px;
+  display: block;
+}
+.table-scroll-container::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 0 0 12px 12px;
+}
+.table-scroll-container::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 7px;
+  border: 2px solid #f3f4f6;
+  min-width: 40px;
+}
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
 /* Pulse animation */
 @keyframes pulse-brand {
   0%, 100% { opacity: 1; }
