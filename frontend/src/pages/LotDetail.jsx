@@ -267,7 +267,7 @@ export default function LotDetail() {
           </div>
 
           {/* Detail row */}
-          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-50">
+          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-50">
             <div className="text-center">
               <span className="text-[11px] uppercase tracking-wider text-gray-400 block">
                 Diff (UT vs GO)
@@ -287,14 +287,6 @@ export default function LotDetail() {
               </span>
               <span className="text-sm font-mono font-medium text-gray-700">
                 {hip.ratings.meanRank?.toFixed(2) || "—"}
-              </span>
-            </div>
-            <div className="text-center">
-              <span className="text-[11px] uppercase tracking-wider text-gray-400 block">
-                Distance
-              </span>
-              <span className="text-sm font-mono font-medium text-gray-700">
-                {hip.ratings.distanceUT || "—"}
               </span>
             </div>
           </div>
