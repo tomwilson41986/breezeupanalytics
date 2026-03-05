@@ -12,7 +12,8 @@ const SORT_FIELDS = [
   { key: "hipNumber", label: "Hip #" },
   { key: "price", label: "Price" },
   { key: "breezeTime", label: "UT Time" },
-  { key: "strideLengthUT", label: "Stride UT" },
+  { key: "strideLengthUT", label: "Stride Length UT" },
+  { key: "strideLengthGO", label: "Stride Length GO" },
   { key: "sire", label: "Sire" },
   { key: "rating", label: "Rating" },
 ];
@@ -44,8 +45,8 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
     }
 
     list.sort((a, b) => {
-      let av = sortBy === "rating" ? a.ratings?.rating : sortBy === "strideLengthUT" ? a.ratings?.strideLengthUT : a[sortBy];
-      let bv = sortBy === "rating" ? b.ratings?.rating : sortBy === "strideLengthUT" ? b.ratings?.strideLengthUT : b[sortBy];
+      let av = sortBy === "rating" ? a.ratings?.rating : sortBy === "strideLengthUT" ? a.ratings?.strideLengthUT : sortBy === "strideLengthGO" ? a.ratings?.strideLengthGO : a[sortBy];
+      let bv = sortBy === "rating" ? b.ratings?.rating : sortBy === "strideLengthUT" ? b.ratings?.strideLengthUT : sortBy === "strideLengthGO" ? b.ratings?.strideLengthGO : b[sortBy];
       if (av == null) return 1;
       if (bv == null) return -1;
       if (typeof av === "string") av = av.toLowerCase();
@@ -135,12 +136,13 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Consignor
               </th>
+              <SortHeader field="rating">Rating</SortHeader>
               <SortHeader field="breezeTime">UT Time</SortHeader>
+              <SortHeader field="strideLengthUT">Stride Length UT</SortHeader>
+              <SortHeader field="strideLengthGO">Stride Length GO</SortHeader>
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 UT Video
               </th>
-              <SortHeader field="rating">Rating</SortHeader>
-              <SortHeader field="strideLengthUT">Stride UT</SortHeader>
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Status
               </th>
@@ -176,10 +178,27 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
                 <td className="px-3 py-2.5 text-gray-500 text-xs max-w-[200px] truncate">
                   {hip.consignor}
                 </td>
+                <td className="px-3 py-2.5">
+                  {hip.ratings?.rating != null ? (
+                    <RatingBadge rating={hip.ratings.rating} />
+                  ) : (
+                    <span className="text-gray-300">—</span>
+                  )}
+                </td>
                 <td className="px-3 py-2.5 font-mono text-gray-600">
                   {hip.breezeTime
                     ? formatBreezeTime(hip.breezeTime)
                     : "—"}
+                </td>
+                <td className="px-3 py-2.5 font-mono text-gray-600 text-xs">
+                  {hip.ratings?.strideLengthUT != null
+                    ? `${hip.ratings.strideLengthUT}ft`
+                    : <span className="text-gray-300">—</span>}
+                </td>
+                <td className="px-3 py-2.5 font-mono text-gray-600 text-xs">
+                  {hip.ratings?.strideLengthGO != null
+                    ? `${hip.ratings.strideLengthGO}ft`
+                    : <span className="text-gray-300">—</span>}
                 </td>
                 <td className="px-3 py-2.5">
                   {(() => {
@@ -200,18 +219,6 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
                       <span className="text-gray-300">—</span>
                     );
                   })()}
-                </td>
-                <td className="px-3 py-2.5">
-                  {hip.ratings?.rating != null ? (
-                    <RatingBadge rating={hip.ratings.rating} />
-                  ) : (
-                    <span className="text-gray-300">—</span>
-                  )}
-                </td>
-                <td className="px-3 py-2.5 font-mono text-gray-600 text-xs">
-                  {hip.ratings?.strideLengthUT != null
-                    ? `${hip.ratings.strideLengthUT}ft`
-                    : <span className="text-gray-300">—</span>}
                 </td>
                 <td className="px-3 py-2.5">
                   <StatusBadge status={hip.status} />
