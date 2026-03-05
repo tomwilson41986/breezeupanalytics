@@ -1,6 +1,39 @@
 import { useState, useEffect } from "react";
 
 /**
+ * Split a CSV row respecting quoted fields (handles commas inside quotes).
+ */
+function splitCsvRow(line) {
+  const fields = [];
+  let current = "";
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"' && line[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else if (ch === '"') {
+        inQuotes = false;
+      } else {
+        current += ch;
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ",") {
+        fields.push(current.trim());
+        current = "";
+      } else {
+        current += ch;
+      }
+    }
+  }
+  fields.push(current.trim());
+  return fields;
+}
+
+/**
  * Parse a CSV string into our standard times data shape.
  * Auto-detects columns and normalises header names.
  */
@@ -8,13 +41,13 @@ function parseCsv(text) {
   const lines = text.trim().split(/\r?\n/);
   if (lines.length < 2) return null;
 
-  const rawHeaders = lines[0].split(",").map((h) => h.trim());
+  const rawHeaders = splitCsvRow(lines[0]);
   const headers = rawHeaders.map(normalizeHeader);
 
   const hips = {};
   for (let i = 1; i < lines.length; i++) {
-    const vals = lines[i].split(",").map((v) => v.trim());
-    if (!vals.length) continue;
+    const vals = splitCsvRow(lines[i]);
+    if (!vals.length || vals.every((v) => !v)) continue;
 
     const record = {};
     for (let j = 0; j < headers.length; j++) {
