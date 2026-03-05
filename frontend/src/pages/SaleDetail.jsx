@@ -16,6 +16,7 @@ import {
   formatPercent,
   formatCurrency,
 } from "../lib/format";
+import StickyScrollbar from "../components/StickyScrollbar";
 
 export default function SaleDetail() {
   const { saleKey } = useParams();
@@ -471,7 +472,7 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey, hips }) {
       </div>
 
       {/* Table */}
-      <div className="table-scroll-container rounded-xl border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <StickyScrollbar className="table-scroll-container rounded-xl border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <table className="min-w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100">
@@ -574,7 +575,7 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey, hips }) {
             No hips match your search
           </div>
         )}
-      </div>
+      </StickyScrollbar>
     </div>
   );
 }
