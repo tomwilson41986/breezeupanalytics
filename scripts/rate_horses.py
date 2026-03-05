@@ -7,11 +7,11 @@ ranks them on five metrics with equal weight, and produces a rating
 between 10 (worst) and 100 (best).
 
 Ranking metrics (all within each Distance UT group):
-  - Time UT        : lower is better  (rank 1 = fastest)
-  - Time GO        : lower is better  (rank 1 = fastest)
-  - Stride Length UT: higher is better (rank 1 = longest)
-  - Stride Length GO: higher is better (rank 1 = longest)
-  - diff           : higher is better  (rank 1 = biggest positive diff)
+  - Time UT              : lower is better  (rank 1 = fastest)
+  - Time GO              : lower is better  (rank 1 = fastest)
+  - Stride Length UT (ft): higher is better (rank 1 = longest)
+  - Stride Length GO (ft): higher is better (rank 1 = longest)
+  - diff                 : higher is better  (rank 1 = biggest positive diff)
 
 Usage
 -----
@@ -28,13 +28,15 @@ from pathlib import Path
 
 import pandas as pd
 
+from convert_stride_to_feet import convert_stride_to_feet
+
 
 RANK_COLS = {
     # column_name: ascending (True = lower is better → rank ascending)
     "Time UT": True,
     "Time GO": True,
-    "Stride Length UT": False,
-    "Stride Length GO": False,
+    "Stride Length UT (ft)": False,
+    "Stride Length GO (ft)": False,
     "diff": False,
 }
 
@@ -119,6 +121,7 @@ def main(argv: list[str] | None = None) -> None:
         sys.exit(1)
 
     df = load_data(args.input)
+    df = convert_stride_to_feet(df)
     df = compute_ratings(df)
 
     output_path = args.output or args.input.with_name(args.input.stem + "_rated.csv")
