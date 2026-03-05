@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
+import StickyScrollbar from "./StickyScrollbar";
 import {
   formatCurrency,
   formatBreezeTime,
@@ -117,7 +118,7 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
       </div>
 
       {/* Table */}
-      <div className="table-scroll-container rounded-xl border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <StickyScrollbar className="table-scroll-container rounded-xl border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <table className="min-w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100">
@@ -246,7 +247,7 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
             No hips match your filters
           </div>
         )}
-      </div>
+      </StickyScrollbar>
     </div>
   );
 }

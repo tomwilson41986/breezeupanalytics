@@ -106,6 +106,35 @@ body {
   background: #6b7280;
 }
 
+/* Sticky mirror scrollbar — viewport-pinned duplicate */
+.sticky-scroll-mirror {
+  position: sticky;
+  bottom: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  z-index: 30;
+  background: #f3f4f6;
+  scrollbar-width: auto;
+  scrollbar-color: #9ca3af #f3f4f6;
+}
+.sticky-scroll-mirror::-webkit-scrollbar {
+  height: 14px;
+  display: block;
+}
+.sticky-scroll-mirror::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 7px;
+}
+.sticky-scroll-mirror::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 7px;
+  border: 2px solid #f3f4f6;
+  min-width: 40px;
+}
+.sticky-scroll-mirror::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
 /* Pulse animation */
 @keyframes pulse-brand {
   0%, 100% { opacity: 1; }
