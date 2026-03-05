@@ -83,7 +83,17 @@ export function useSaleData(s3Key) {
           parsed.hips = parsed.hips.map((hip) => {
             const r = ratings[String(hip.hipNumber)];
             if (r) {
-              return { ...hip, ratings: r };
+              // Convert stride lengths from metres to feet if still in metres
+              // (backend now outputs feet ~20-25, old data has metres ~6-8)
+              const METRES_TO_FEET = 3.28084;
+              const converted = { ...r };
+              if (converted.strideLengthUT != null && converted.strideLengthUT < 15) {
+                converted.strideLengthUT = Math.round(converted.strideLengthUT * METRES_TO_FEET * 100) / 100;
+              }
+              if (converted.strideLengthGO != null && converted.strideLengthGO < 15) {
+                converted.strideLengthGO = Math.round(converted.strideLengthGO * METRES_TO_FEET * 100) / 100;
+              }
+              return { ...hip, ratings: converted };
             }
             return hip;
           });

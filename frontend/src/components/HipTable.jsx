@@ -144,9 +144,6 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
               </th>
               <SortHeader field="rating">Rating</SortHeader>
               <SortHeader field="breezeTime">UT Time</SortHeader>
-              <SortHeader field="strideLengthUT">Stride Length UT</SortHeader>
-              <SortHeader field="strideLengthGO">Stride Length GO</SortHeader>
-              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 whitespace-nowrap">
               <SortHeader field="strideLengthUT">Stride Length UT (ft)</SortHeader>
               <SortHeader field="strideLengthGO">Stride Length GO (ft)</SortHeader>
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
