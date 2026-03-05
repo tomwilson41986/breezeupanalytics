@@ -1,3 +1,4 @@
+import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useSaleData } from "../hooks/useSaleData";
 import { useHipAssets } from "../hooks/useHipAssets";
@@ -15,6 +16,7 @@ import {
 export default function LotDetail() {
   const { saleKey, hipNumber } = useParams();
   const { sale, dataSource, loading, error } = useSaleData(saleKey);
+  const [utLatest, setUtLatest] = useState(null);
 
   // Use s3Key directly for asset fetching
   const { assets: s3Assets, loading: assetsLoading } = useHipAssets(
@@ -24,11 +26,52 @@ export default function LotDetail() {
 
   const meta = SALE_CATALOG[saleKey];
 
+  // Fetch Under Tack latest data for merging
+  useEffect(() => {
+    if (!saleKey) return;
+    let cancelled = false;
+    async function loadUt() {
+      try {
+        const res = await fetch(
+          `/.netlify/functions/sale-data?sale=${encodeURIComponent(saleKey)}&type=under-tack/latest`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (!cancelled) setUtLatest(data);
+          return;
+        }
+      } catch {}
+      try {
+        const res = await fetch(`/data/under-tack/${saleKey}/latest.json`);
+        if (res.ok) {
+          const data = await res.json();
+          if (!cancelled) setUtLatest(data);
+        }
+      } catch {}
+    }
+    loadUt();
+    return () => { cancelled = true; };
+  }, [saleKey]);
+
+  // Merge UT data into the hip (must be above conditional returns to satisfy Rules of Hooks)
+  const rawHip = sale?.hips?.find((h) => String(h.hipNumber) === String(hipNumber)) ?? null;
+
+  const hip = useMemo(() => {
+    if (!rawHip) return rawHip;
+    const utHip = utLatest?.hips?.find((uh) => uh.hip_number === rawHip.hipNumber);
+    if (!utHip) return rawHip;
+    return {
+      ...rawHip,
+      breezeTime: rawHip.breezeTime ?? utHip.ut_time ?? null,
+      breezeDistance: rawHip.breezeDistance ?? utHip.ut_distance ?? null,
+      breezeDate: rawHip.breezeDate ?? utHip.ut_actual_date ?? null,
+      videoUrl: rawHip.videoUrl ?? utHip.video_url ?? null,
+      walkVideoUrl: rawHip.walkVideoUrl ?? utHip.walk_video_url ?? null,
+    };
+  }, [rawHip, utLatest]);
+
   if (loading) return <LoadingSpinner message="Loading hip details..." />;
   if (error) return <ErrorBanner message={error} />;
-
-  // For asset-only sales, show assets directly without full hip data
-  const hip = sale?.hips.find((h) => String(h.hipNumber) === String(hipNumber));
 
   if (!hip && dataSource !== "assets-only") {
     return <ErrorBanner message={`Hip #${hipNumber} not found`} />;

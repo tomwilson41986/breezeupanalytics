@@ -11,7 +11,7 @@ import {
 const SORT_FIELDS = [
   { key: "hipNumber", label: "Hip #" },
   { key: "price", label: "Price" },
-  { key: "breezeTime", label: "Breeze" },
+  { key: "breezeTime", label: "UT Time" },
   { key: "sire", label: "Sire" },
   { key: "rating", label: "Rating" },
 ];
@@ -176,7 +176,7 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
                 </td>
                 <td className="px-3 py-2.5 font-mono text-gray-600">
                   {hip.breezeTime
-                    ? `${formatBreezeTime(hip.breezeTime)} (${hip.breezeDistance})`
+                    ? formatBreezeTime(hip.breezeTime)
                     : "—"}
                 </td>
                 <td className="px-3 py-2.5">
@@ -190,6 +190,23 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
                   {hip.ratings?.strideLengthUT != null
                     ? `${hip.ratings.strideLengthUT}ft`
                     : "—"}
+                  {(() => {
+                    const videoLink = hip.videoUrl || assetIndex?.[String(hip.hipNumber)]?.video;
+                    return videoLink ? (
+                      <a
+                        href={videoLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-brand-500 hover:text-brand-700 transition-colors"
+                        title="Watch Under Tack Video"
+                      >
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                          <circle cx="12" cy="13" r="4" />
+                        </svg>
+                      </a>
+                    ) : "—";
+                  })()}
                 </td>
                 <td className="px-3 py-2.5">
                   <StatusBadge status={hip.status} />
