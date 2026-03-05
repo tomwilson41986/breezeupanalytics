@@ -65,6 +65,8 @@ export default function StickyScrollbar({ children, className = "" }) {
     });
   }, []);
 
+  const needsScroll = scrollWidth > clientWidth;
+
   useEffect(() => {
     const el = containerRef.current;
     const mirror = mirrorRef.current;
@@ -75,9 +77,7 @@ export default function StickyScrollbar({ children, className = "" }) {
       el.removeEventListener("scroll", onContainerScroll);
       mirror.removeEventListener("scroll", onMirrorScroll);
     };
-  }, [onContainerScroll, onMirrorScroll]);
-
-  const needsScroll = scrollWidth > clientWidth;
+  }, [onContainerScroll, onMirrorScroll, needsScroll]);
 
   return (
     <div>
