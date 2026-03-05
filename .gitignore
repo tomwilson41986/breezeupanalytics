@@ -22,6 +22,10 @@ data/sales/*.json
 data/exports/*.csv
 data/exports/*.parquet
 !data/exports/.gitkeep
+data/ratings/*.csv
+data/ratings/*.xlsx
+data/ratings/*.tsv
+!data/ratings/.gitkeep
 data/videos/
 
 # Environment
