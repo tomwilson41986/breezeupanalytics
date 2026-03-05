@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useSaleData } from "../hooks/useSaleData";
 import { useHipAssets } from "../hooks/useHipAssets";
+import { useLiveSaleTimes } from "../hooks/useLiveSaleTimes";
 import { SALE_CATALOG } from "../lib/api";
 import StatusBadge from "../components/StatusBadge";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -23,6 +24,11 @@ export default function LotDetail() {
     saleKey,
     hipNumber
   );
+
+  // Fetch detailed live sale times
+  const { timesData } = useLiveSaleTimes(saleKey);
+  const hipTimes = timesData?.hips?.[String(hipNumber)] || null;
+  const timesColumns = timesData?.columns || [];
 
   const meta = SALE_CATALOG[saleKey];
 
@@ -291,6 +297,34 @@ export default function LotDetail() {
                 {hip.ratings.distanceUT || "—"}
               </span>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Detailed Times */}
+      {hipTimes && (
+        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <TimerIcon className="w-4 h-4 text-brand-500" />
+            Detailed Times
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {timesColumns
+              .filter((col) => col !== "hip_number" && hipTimes[col] != null)
+              .map((col) => (
+                <div key={col} className="rounded-lg bg-gray-50 p-3 text-center">
+                  <div className="text-[11px] uppercase tracking-wider text-gray-400 mb-1">
+                    {col.replace(/_/g, " ")}
+                  </div>
+                  <div className="text-lg font-mono font-semibold text-gray-800">
+                    {typeof hipTimes[col] === "number"
+                      ? hipTimes[col] % 1 === 0
+                        ? hipTimes[col]
+                        : hipTimes[col].toFixed(2)
+                      : hipTimes[col]}
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
       )}
