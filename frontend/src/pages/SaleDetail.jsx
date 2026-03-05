@@ -5,6 +5,7 @@ import { useLiveSaleTimes } from "../hooks/useLiveSaleTimes";
 import { SALE_CATALOG } from "../lib/api";
 import StatCard from "../components/StatCard";
 import HipTable from "../components/HipTable";
+import StatusBadge from "../components/StatusBadge";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorBanner from "../components/ErrorBanner";
 import PriceDistributionChart from "../components/charts/PriceDistributionChart";
@@ -300,6 +301,7 @@ export default function SaleDetail() {
             timesData={timesData}
             timesLoading={timesLoading}
             saleKey={saleKey}
+            hips={mergedHips}
           />
         )}
       </div>
@@ -308,13 +310,36 @@ export default function SaleDetail() {
 }
 
 /**
- * Table view for detailed live sale times data.
- * Shows all columns from the uploaded CSV with sorting and search.
+ * Columns from the sale catalog to show before the CSV timing columns.
+ * Each entry maps a display label to a getter function on the hip object.
  */
-function DetailedTimesTable({ timesData, timesLoading, saleKey }) {
+const CATALOG_COLUMNS = [
+  { key: "_horseName", label: "Horse", get: (h) => h.horseName },
+  { key: "_dam", label: "Dam", get: (h) => h.dam },
+  { key: "_damSire", label: "Dam Sire", get: (h) => h.damSire },
+  { key: "_status", label: "Status", get: (h) => h.status },
+  { key: "_price", label: "Price", get: (h) => h.price },
+  { key: "_buyer", label: "Buyer", get: (h) => h.buyer },
+  { key: "_rating", label: "Rating", get: (h) => h.ratings?.rating ?? null },
+];
+
+function DetailedTimesTable({ timesData, timesLoading, saleKey, hips }) {
   const [sortBy, setSortBy] = useState("hip_number");
   const [sortDir, setSortDir] = useState("asc");
   const [filter, setFilter] = useState("");
+
+  // Build a lookup map from catalog hips by hip number
+  const hipMap = useMemo(() => {
+    const map = {};
+    if (hips?.length) {
+      for (const h of hips) {
+        map[String(h.hipNumber)] = h;
+      }
+    }
+    return map;
+  }, [hips]);
+
+  const hasCatalog = Object.keys(hipMap).length > 0;
 
   const columns = useMemo(() => {
     if (!timesData?.columns) return [];
@@ -328,13 +353,30 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey }) {
 
   const rows = useMemo(() => {
     if (!timesData?.hips) return [];
-    let list = Object.values(timesData.hips);
+    // Merge catalog data into each times row
+    let list = Object.values(timesData.hips).map((row) => {
+      const hip = hipMap[String(row.hip_number)];
+      if (!hip) return row;
+      // Attach catalog fields with _ prefix so they don't collide with CSV columns
+      return {
+        ...row,
+        _horseName: hip.horseName || null,
+        _dam: hip.dam || null,
+        _damSire: hip.damSire || null,
+        _status: hip.status || null,
+        _price: hip.price || null,
+        _buyer: hip.buyer || null,
+        _rating: hip.ratings?.rating ?? null,
+      };
+    });
 
     if (filter) {
       const q = filter.toLowerCase();
       list = list.filter((r) =>
         String(r.hip_number).includes(q) ||
-        Object.values(r).some((v) => String(v).toLowerCase().includes(q))
+        (r._horseName && r._horseName.toLowerCase().includes(q)) ||
+        (r._buyer && r._buyer.toLowerCase().includes(q)) ||
+        Object.values(r).some((v) => v != null && String(v).toLowerCase().includes(q))
       );
     }
 
@@ -351,7 +393,7 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey }) {
     });
 
     return list;
-  }, [timesData, filter, sortBy, sortDir]);
+  }, [timesData, hipMap, filter, sortBy, sortDir]);
 
   function handleSort(key) {
     if (sortBy === key) {
@@ -360,6 +402,24 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey }) {
       setSortBy(key);
       setSortDir("asc");
     }
+  }
+
+  function SortTh({ field, children, className = "" }) {
+    return (
+      <th
+        className={`px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 cursor-pointer hover:text-gray-700 select-none whitespace-nowrap ${className}`}
+        onClick={() => handleSort(field)}
+      >
+        <span className="flex items-center gap-1">
+          {children}
+          {sortBy === field && (
+            <span className="text-brand-600">
+              {sortDir === "asc" ? "↑" : "↓"}
+            </span>
+          )}
+        </span>
+      </th>
+    );
   }
 
   if (timesLoading) {
@@ -397,7 +457,7 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey }) {
           type="text"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          placeholder="Search by hip number..."
+          placeholder="Search by hip, horse name, buyer..."
           className="flex-1 min-w-[200px] bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 transition-shadow"
         />
         <span className="text-xs text-gray-400">
@@ -415,40 +475,30 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100">
-              <th
-                className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 cursor-pointer hover:text-gray-700 select-none w-16 sticky left-0 bg-white z-10"
-                onClick={() => handleSort("hip_number")}
-              >
-                <span className="flex items-center gap-1">
-                  Hip
-                  {sortBy === "hip_number" && (
-                    <span className="text-brand-600">
-                      {sortDir === "asc" ? "↑" : "↓"}
-                    </span>
-                  )}
-                </span>
-              </th>
+              {/* Hip column — sticky */}
+              <SortTh field="hip_number" className="w-16 sticky left-0 bg-white z-10">
+                Hip
+              </SortTh>
+
+              {/* Catalog columns (hip details & metadata) */}
+              {hasCatalog && CATALOG_COLUMNS.map((col) => (
+                <SortTh key={col.key} field={col.key}>
+                  {col.label}
+                </SortTh>
+              ))}
+
+              {/* CSV timing columns */}
               {displayColumns.map((col) => (
-                <th
-                  key={col}
-                  className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 cursor-pointer hover:text-gray-700 select-none whitespace-nowrap"
-                  onClick={() => handleSort(col)}
-                >
-                  <span className="flex items-center gap-1">
-                    {col.replace(/_/g, " ")}
-                    {sortBy === col && (
-                      <span className="text-brand-600">
-                        {sortDir === "asc" ? "↑" : "↓"}
-                      </span>
-                    )}
-                  </span>
-                </th>
+                <SortTh key={col} field={col}>
+                  {col.replace(/_/g, " ")}
+                </SortTh>
               ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
             {rows.map((row) => (
               <tr key={row.hip_number} className="table-row-hover">
+                {/* Hip number — sticky */}
                 <td className="px-3 py-2.5 font-mono font-semibold text-brand-600 sticky left-0 bg-white z-10">
                   <Link
                     to={`/sale/${saleKey}/hip/${row.hip_number}`}
@@ -457,6 +507,15 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey }) {
                     {row.hip_number}
                   </Link>
                 </td>
+
+                {/* Catalog columns */}
+                {hasCatalog && CATALOG_COLUMNS.map((col) => (
+                  <td key={col.key} className="px-3 py-2.5 whitespace-nowrap">
+                    <CatalogCell colKey={col.key} value={row[col.key]} />
+                  </td>
+                ))}
+
+                {/* CSV timing columns */}
                 {displayColumns.map((col) => (
                   <td
                     key={col}
@@ -483,6 +542,44 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey }) {
       </div>
     </div>
   );
+}
+
+/** Renders a catalog-enriched cell with appropriate formatting per column type. */
+function CatalogCell({ colKey, value }) {
+  if (value == null) return <span className="text-gray-300">—</span>;
+
+  switch (colKey) {
+    case "_horseName":
+      return <span className="text-gray-900 font-medium">{value}</span>;
+    case "_dam":
+    case "_damSire":
+      return <span className="text-gray-500">{value}</span>;
+    case "_status":
+      return <StatusBadge status={value} />;
+    case "_price":
+      return (
+        <span className="font-mono font-medium text-gray-900">
+          {formatCurrency(value)}
+        </span>
+      );
+    case "_buyer":
+      return <span className="text-gray-500 text-xs max-w-[160px] truncate block">{value}</span>;
+    case "_rating": {
+      const rating = value;
+      let color = "bg-gray-50 text-gray-500 border-gray-200";
+      if (rating >= 80) color = "bg-emerald-50 text-emerald-700 border-emerald-200";
+      else if (rating >= 60) color = "bg-sky-50 text-sky-700 border-sky-200";
+      else if (rating >= 40) color = "bg-amber-50 text-amber-700 border-amber-200";
+      else color = "bg-red-50 text-red-700 border-red-200";
+      return (
+        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold font-mono border ${color}`}>
+          {rating.toFixed(1)}
+        </span>
+      );
+    }
+    default:
+      return <span className="text-gray-600">{value}</span>;
+  }
 }
 
 /**
