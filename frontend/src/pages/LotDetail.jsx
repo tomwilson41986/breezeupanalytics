@@ -201,6 +201,100 @@ export default function LotDetail() {
         </div>
       )}
 
+      {/* Ratings & Stride Analysis */}
+      {hip?.ratings && (
+        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <ChartIcon className="w-4 h-4 text-brand-500" />
+            Rating & Stride Analysis
+            <span className="text-xs font-normal text-gray-400 ml-auto">
+              Distance group: {hip.ratings.distanceUT || "—"}
+            </span>
+          </h3>
+
+          {/* Rating hero */}
+          <div className="flex items-center gap-6 mb-5">
+            <div className="text-center">
+              <div
+                className={`text-4xl font-bold font-mono ${
+                  hip.ratings.rating >= 80
+                    ? "text-emerald-600"
+                    : hip.ratings.rating >= 60
+                    ? "text-sky-600"
+                    : hip.ratings.rating >= 40
+                    ? "text-amber-600"
+                    : "text-red-600"
+                }`}
+              >
+                {hip.ratings.rating?.toFixed(1)}
+              </div>
+              <div className="text-[11px] uppercase tracking-wider text-gray-400 mt-1">
+                Rating
+              </div>
+            </div>
+            <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <MetricCard
+                label="Stride UT"
+                value={hip.ratings.strideLengthUT}
+                unit="ft"
+                rank={hip.ratings.rankStrideLengthUt}
+              />
+              <MetricCard
+                label="Stride GO"
+                value={hip.ratings.strideLengthGO}
+                unit="ft"
+                rank={hip.ratings.rankStrideLengthGo}
+              />
+              <MetricCard
+                label="Time UT"
+                value={hip.ratings.timeUT}
+                unit="s"
+                rank={hip.ratings.rankTimeUt}
+              />
+              <MetricCard
+                label="Time GO"
+                value={hip.ratings.timeGO}
+                unit="s"
+                rank={hip.ratings.rankTimeGo}
+              />
+            </div>
+          </div>
+
+          {/* Detail row */}
+          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-50">
+            <div className="text-center">
+              <span className="text-[11px] uppercase tracking-wider text-gray-400 block">
+                Diff (UT vs GO)
+              </span>
+              <span className="text-sm font-mono font-medium text-gray-700">
+                {hip.ratings.diff != null ? hip.ratings.diff.toFixed(2) : "—"}
+              </span>
+              {hip.ratings.rankDiff != null && (
+                <span className="text-[10px] text-gray-400 block">
+                  Rank #{hip.ratings.rankDiff}
+                </span>
+              )}
+            </div>
+            <div className="text-center">
+              <span className="text-[11px] uppercase tracking-wider text-gray-400 block">
+                Mean Rank
+              </span>
+              <span className="text-sm font-mono font-medium text-gray-700">
+                {hip.ratings.meanRank?.toFixed(2) || "—"}
+              </span>
+            </div>
+            <div className="text-center">
+              <span className="text-[11px] uppercase tracking-wider text-gray-400 block">
+                Distance
+              </span>
+              <span className="text-sm font-mono font-medium text-gray-700">
+                {hip.ratings.distanceUT || "—"}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Assets */}
       <div>
         <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -393,7 +487,44 @@ function AssetCard({ label, type, url, accentColor, fromS3 }) {
   );
 }
 
+function MetricCard({ label, value, unit, rank }) {
+  return (
+    <div className="rounded-lg bg-gray-50 p-2.5 text-center">
+      <div className="text-[11px] uppercase tracking-wider text-gray-400 mb-1">
+        {label}
+      </div>
+      <div className="text-lg font-mono font-semibold text-gray-800">
+        {value != null ? value.toFixed(2) : "—"}
+        {value != null && (
+          <span className="text-xs font-normal text-gray-400">{unit}</span>
+        )}
+      </div>
+      {rank != null && (
+        <div className="text-[10px] text-gray-400 mt-0.5">Rank #{rank}</div>
+      )}
+    </div>
+  );
+}
+
 /* Icons */
+function ChartIcon({ className }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="18" y1="20" x2="18" y2="10" />
+      <line x1="12" y1="20" x2="12" y2="4" />
+      <line x1="6" y1="20" x2="6" y2="14" />
+    </svg>
+  );
+}
+
 function PedigreeIcon({ className }) {
   return (
     <svg

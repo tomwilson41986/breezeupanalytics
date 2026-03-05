@@ -58,6 +58,17 @@ export async function fetchStatsFromS3(s3Key) {
   return res.json();
 }
 
+/**
+ * Fetch horse ratings from S3 (keyed by hip number)
+ */
+export async function fetchRatingsFromS3(s3Key) {
+  const res = await fetch(
+    `${API_BASE}/sale-data?sale=${encodeURIComponent(s3Key)}&type=ratings`
+  );
+  if (!res.ok) return null;
+  return res.json();
+}
+
 /* ── OBS API (fallback) ─────────────────────────────────────── */
 
 /**

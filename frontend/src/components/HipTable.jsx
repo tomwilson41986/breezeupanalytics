@@ -13,6 +13,7 @@ const SORT_FIELDS = [
   { key: "price", label: "Price" },
   { key: "breezeTime", label: "UT Time" },
   { key: "sire", label: "Sire" },
+  { key: "rating", label: "Rating" },
 ];
 
 export default function HipTable({ hips, saleKey, assetIndex }) {
@@ -42,8 +43,8 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
     }
 
     list.sort((a, b) => {
-      let av = a[sortBy];
-      let bv = b[sortBy];
+      let av = sortBy === "rating" ? a.ratings?.rating : a[sortBy];
+      let bv = sortBy === "rating" ? b.ratings?.rating : b[sortBy];
       if (av == null) return 1;
       if (bv == null) return -1;
       if (typeof av === "string") av = av.toLowerCase();
@@ -133,9 +134,10 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Consignor
               </th>
-              <SortHeader field="breezeTime">UT Time</SortHeader>
-              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 w-10">
-                UT Video
+              <SortHeader field="breezeTime">Breeze</SortHeader>
+              <SortHeader field="rating">Rating</SortHeader>
+              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
+                Stride
               </th>
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 Status
@@ -178,6 +180,16 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
                     : "—"}
                 </td>
                 <td className="px-3 py-2.5">
+                  {hip.ratings?.rating != null ? (
+                    <RatingBadge rating={hip.ratings.rating} />
+                  ) : (
+                    <span className="text-gray-300">—</span>
+                  )}
+                </td>
+                <td className="px-3 py-2.5 font-mono text-gray-600 text-xs">
+                  {hip.ratings?.strideLengthUT != null
+                    ? `${hip.ratings.strideLengthUT}ft`
+                    : "—"}
                   {(() => {
                     const videoLink = hip.videoUrl || assetIndex?.[String(hip.hipNumber)]?.video;
                     return videoLink ? (
@@ -233,6 +245,30 @@ function AssetIndicators({ hip, assetIndex }) {
       {hasPhoto && <AssetDot label="P" title="Photo" color="violet" />}
       {hasPedigree && <AssetDot label="D" title="Pedigree" color="amber" />}
     </div>
+  );
+}
+
+function RatingBadge({ rating }) {
+  let color = "gray";
+  if (rating >= 80) color = "emerald";
+  else if (rating >= 60) color = "sky";
+  else if (rating >= 40) color = "amber";
+  else color = "red";
+
+  const colorMap = {
+    emerald: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    sky: "bg-sky-50 text-sky-700 border-sky-200",
+    amber: "bg-amber-50 text-amber-700 border-amber-200",
+    red: "bg-red-50 text-red-700 border-red-200",
+    gray: "bg-gray-50 text-gray-500 border-gray-200",
+  };
+
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold font-mono border ${colorMap[color]}`}
+    >
+      {rating.toFixed(1)}
+    </span>
   );
 }
 

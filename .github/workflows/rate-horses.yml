@@ -15,6 +15,10 @@ on:
         description: "File in data/ratings/ to rate (blank = all CSV/TSV files)"
         required: false
         type: string
+      sale_key:
+        description: "Sale key to publish ratings to (e.g. obs_march_2026). Required to publish to live site."
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -31,13 +35,19 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install pandas
+        run: pip install pandas requests
 
       - name: Run ratings
+        id: rate
         run: |
+          rated_files=""
           if [ -n "${{ inputs.input_file }}" ]; then
             echo "Rating single file: data/ratings/${{ inputs.input_file }}"
             python scripts/rate_horses.py "data/ratings/${{ inputs.input_file }}"
+            # Derive rated filename
+            base="${{ inputs.input_file }}"
+            stem="${base%.*}"
+            rated_files="data/ratings/${stem}_rated.csv"
           else
             echo "Rating all CSV/TSV files in data/ratings/"
             found=0
@@ -47,6 +57,8 @@ jobs:
               case "$f" in *_rated.csv) continue;; esac
               echo "→ Rating $f"
               python scripts/rate_horses.py "$f"
+              stem="$(basename "${f%.*}")"
+              rated_files="${rated_files}data/ratings/${stem}_rated.csv "
               found=$((found + 1))
             done
             if [ "$found" -eq 0 ]; then
@@ -54,6 +66,22 @@ jobs:
               exit 0
             fi
           fi
+          echo "rated_files=${rated_files}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload ratings to S3
+        if: inputs.sale_key != ''
+        env:
+          BREEZEUP_AWS_ACCESS_KEY_ID: ${{ secrets.BREEZEUP_AWS_ACCESS_KEY_ID }}
+          BREEZEUP_AWS_SECRET_ACCESS_KEY: ${{ secrets.BREEZEUP_AWS_SECRET_ACCESS_KEY }}
+        run: |
+          # Find the most recently modified rated CSV
+          rated_csv=$(ls -t data/ratings/*_rated.csv 2>/dev/null | head -1)
+          if [ -z "$rated_csv" ]; then
+            echo "No rated CSV found, skipping S3 upload"
+            exit 0
+          fi
+          echo "Uploading $rated_csv to S3 for sale ${{ inputs.sale_key }}"
+          python scripts/upload_ratings_to_s3.py "${{ inputs.sale_key }}" "$rated_csv"
 
       - name: Commit rated results
         run: |
