@@ -68,9 +68,10 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
     }
   }
 
-  const SortHeader = ({ field, children, className = "" }) => (
+  const SortHeader = ({ field, children, className = "", style }) => (
     <th
-      className={`px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 cursor-pointer hover:text-gray-700 select-none ${className}`}
+      className={`px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 cursor-pointer hover:text-gray-700 select-none whitespace-nowrap ${className}`}
+      style={style}
       onClick={() => handleSort(field)}
     >
       <span className="flex items-center gap-1">
@@ -116,48 +117,56 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <table className="w-full text-sm">
+      <div className="table-scroll-container rounded-xl border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <table className="min-w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100">
-              <SortHeader field="hipNumber" className="w-16">
+              <SortHeader field="hipNumber" className="sticky left-0 bg-white z-20 w-[64px] min-w-[64px]">
                 Hip
               </SortHeader>
-              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
+              <th
+                className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 sticky bg-white z-20 min-w-[150px] w-[150px]"
+                style={{ left: 64 }}
+              >
                 Horse
               </th>
-              <SortHeader field="sire">Sire</SortHeader>
-              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
+              <SortHeader field="sire" className="sticky bg-white z-20 min-w-[150px] w-[150px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]" style={{ left: 214 }}>
+                Sire
+              </SortHeader>
+              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 whitespace-nowrap">
                 Dam
               </th>
-              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 whitespace-nowrap">
                 Sex
               </th>
-              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 whitespace-nowrap">
                 Consignor
               </th>
               <SortHeader field="rating">Rating</SortHeader>
               <SortHeader field="breezeTime">UT Time</SortHeader>
+              <SortHeader field="strideLengthUT">Stride Length UT</SortHeader>
+              <SortHeader field="strideLengthGO">Stride Length GO</SortHeader>
+              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 whitespace-nowrap">
               <SortHeader field="strideLengthUT">Stride Length UT (ft)</SortHeader>
               <SortHeader field="strideLengthGO">Stride Length GO (ft)</SortHeader>
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 UT Video
               </th>
-              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 whitespace-nowrap">
                 Status
               </th>
               <SortHeader field="price" className="text-right">
                 Price
               </SortHeader>
-              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 whitespace-nowrap">
                 Assets
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
             {filtered.map((hip) => (
-              <tr key={hip.hipNumber} className="table-row-hover">
-                <td className="px-3 py-2.5 font-mono font-semibold text-brand-600">
+              <tr key={hip.hipNumber} className="group table-row-hover">
+                <td className="px-3 py-2.5 font-mono font-semibold text-brand-600 sticky left-0 bg-white group-hover:bg-gray-50 z-10 w-[64px] min-w-[64px]">
                   <Link
                     to={`/sale/${saleKey}/hip/${hip.hipNumber}`}
                     className="hover:underline"
@@ -165,17 +174,19 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
                     {hip.hipNumber}
                   </Link>
                 </td>
-                <td className="px-3 py-2.5 text-gray-900 font-medium">
+                <td className="px-3 py-2.5 text-gray-900 font-medium whitespace-nowrap sticky bg-white group-hover:bg-gray-50 z-10 min-w-[150px] w-[150px]" style={{ left: 64 }}>
                   {hip.horseName || (
                     <span className="text-gray-400 italic">Unnamed</span>
                   )}
                 </td>
-                <td className="px-3 py-2.5 text-gray-700">{hip.sire}</td>
-                <td className="px-3 py-2.5 text-gray-500">{hip.dam}</td>
-                <td className="px-3 py-2.5 text-gray-500">
+                <td className="px-3 py-2.5 text-gray-700 whitespace-nowrap sticky bg-white group-hover:bg-gray-50 z-10 min-w-[150px] w-[150px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]" style={{ left: 214 }}>
+                  {hip.sire}
+                </td>
+                <td className="px-3 py-2.5 text-gray-500 whitespace-nowrap">{hip.dam}</td>
+                <td className="px-3 py-2.5 text-gray-500 whitespace-nowrap">
                   {sexLabel(hip.sex)}
                 </td>
-                <td className="px-3 py-2.5 text-gray-500 text-xs max-w-[200px] truncate">
+                <td className="px-3 py-2.5 text-gray-500 text-xs max-w-[200px] truncate whitespace-nowrap">
                   {hip.consignor}
                 </td>
                 <td className="px-3 py-2.5">

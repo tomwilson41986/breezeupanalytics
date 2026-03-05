@@ -314,7 +314,6 @@ export default function SaleDetail() {
  * Each entry maps a display label to a getter function on the hip object.
  */
 const CATALOG_COLUMNS = [
-  { key: "_horseName", label: "Horse", get: (h) => h.horseName },
   { key: "_dam", label: "Dam", get: (h) => h.dam },
   { key: "_damSire", label: "Dam Sire", get: (h) => h.damSire },
   { key: "_status", label: "Status", get: (h) => h.status },
@@ -347,7 +346,7 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey, hips }) {
   }, [timesData]);
 
   const displayColumns = useMemo(
-    () => columns.filter((c) => c !== "hip_number"),
+    () => columns.filter((c) => c !== "hip_number" && c !== "sire"),
     [columns]
   );
 
@@ -404,10 +403,11 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey, hips }) {
     }
   }
 
-  function SortTh({ field, children, className = "" }) {
+  function SortTh({ field, children, className = "", style }) {
     return (
       <th
         className={`px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 cursor-pointer hover:text-gray-700 select-none whitespace-nowrap ${className}`}
+        style={style}
         onClick={() => handleSort(field)}
       >
         <span className="flex items-center gap-1">
@@ -471,16 +471,32 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey, hips }) {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <table className="w-full text-sm">
+      <div className="table-scroll-container rounded-xl border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <table className="min-w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100">
               {/* Hip column — sticky */}
-              <SortTh field="hip_number" className="w-16 sticky left-0 bg-white z-10">
+              <SortTh field="hip_number" className="sticky left-0 bg-white z-20 w-[64px] min-w-[64px]">
                 Hip
               </SortTh>
 
-              {/* Catalog columns (hip details & metadata) */}
+              {/* Horse column — sticky */}
+              {hasCatalog && (
+                <SortTh field="_horseName" className="sticky bg-white z-20 min-w-[150px] w-[150px]" style={{ left: 64 }}>
+                  Horse
+                </SortTh>
+              )}
+
+              {/* Sire column — sticky (from CSV) */}
+              <SortTh
+                field="sire"
+                className="sticky bg-white z-20 min-w-[150px] w-[150px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                style={{ left: hasCatalog ? 214 : 64 }}
+              >
+                Sire
+              </SortTh>
+
+              {/* Remaining catalog columns */}
               {hasCatalog && CATALOG_COLUMNS.map((col) => (
                 <SortTh key={col.key} field={col.key}>
                   {col.label}
@@ -497,9 +513,9 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey, hips }) {
           </thead>
           <tbody className="divide-y divide-gray-50">
             {rows.map((row) => (
-              <tr key={row.hip_number} className="table-row-hover">
+              <tr key={row.hip_number} className="group table-row-hover">
                 {/* Hip number — sticky */}
-                <td className="px-3 py-2.5 font-mono font-semibold text-brand-600 sticky left-0 bg-white z-10">
+                <td className="px-3 py-2.5 font-mono font-semibold text-brand-600 sticky left-0 bg-white group-hover:bg-gray-50 z-10 w-[64px] min-w-[64px]">
                   <Link
                     to={`/sale/${saleKey}/hip/${row.hip_number}`}
                     className="hover:underline"
@@ -508,7 +524,26 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey, hips }) {
                   </Link>
                 </td>
 
-                {/* Catalog columns */}
+                {/* Horse — sticky */}
+                {hasCatalog && (
+                  <td className="px-3 py-2.5 whitespace-nowrap sticky bg-white group-hover:bg-gray-50 z-10 min-w-[150px] w-[150px]" style={{ left: 64 }}>
+                    <CatalogCell colKey="_horseName" value={row._horseName} />
+                  </td>
+                )}
+
+                {/* Sire — sticky */}
+                <td
+                  className="px-3 py-2.5 whitespace-nowrap sticky bg-white group-hover:bg-gray-50 z-10 min-w-[150px] w-[150px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                  style={{ left: hasCatalog ? 214 : 64 }}
+                >
+                  {row.sire ? (
+                    <span className="text-gray-700">{row.sire}</span>
+                  ) : (
+                    <span className="text-gray-300">—</span>
+                  )}
+                </td>
+
+                {/* Remaining catalog columns */}
                 {hasCatalog && CATALOG_COLUMNS.map((col) => (
                   <td key={col.key} className="px-3 py-2.5 whitespace-nowrap">
                     <CatalogCell colKey={col.key} value={row[col.key]} />
