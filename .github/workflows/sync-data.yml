@@ -12,6 +12,11 @@ on:
         description: "Sale key to sync (blank = all)"
         required: false
         type: string
+      sync_under_tack:
+        description: "Also sync Under Tack data"
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   sync:
@@ -30,6 +35,13 @@ jobs:
       - name: Scrape Fasig-Tipton sales
         run: python scripts/scrape_all_ft_sales.py
 
+      - name: Sync Under Tack data
+        if: inputs.sync_under_tack != false
+        env:
+          BREEZEUP_AWS_ACCESS_KEY_ID: ${{ secrets.BREEZEUP_AWS_ACCESS_KEY_ID }}
+          BREEZEUP_AWS_SECRET_ACCESS_KEY: ${{ secrets.BREEZEUP_AWS_SECRET_ACCESS_KEY }}
+        run: python scripts/sync_under_tack.py
+
       - name: Sync sale data to S3
         env:
           BREEZEUP_AWS_ACCESS_KEY_ID: ${{ secrets.BREEZEUP_AWS_ACCESS_KEY_ID }}
@@ -39,4 +51,16 @@ jobs:
             python scripts/sync_to_s3.py "${{ inputs.sale_key }}"
           else
             python scripts/sync_to_s3.py
+          fi
+
+      - name: Commit Under Tack data to repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/under-tack/
+          if git diff --cached --quiet; then
+            echo "No changes to Under Tack data"
+          else
+            git commit -m "Update Under Tack data $(date -u +%Y-%m-%d)"
+            git push
           fi
