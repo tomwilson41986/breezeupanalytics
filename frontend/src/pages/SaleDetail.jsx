@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useSaleData } from "../hooks/useSaleData";
+import { useLiveSaleTimes } from "../hooks/useLiveSaleTimes";
 import { SALE_CATALOG } from "../lib/api";
 import StatCard from "../components/StatCard";
 import HipTable from "../components/HipTable";
@@ -20,6 +21,9 @@ export default function SaleDetail() {
   const { sale, stats, assetIndex, dataSource, loading, error } = useSaleData(saleKey);
   const [utVideos, setUtVideos] = useState(null);
   const [utLatest, setUtLatest] = useState(null);
+  const [catalogTab, setCatalogTab] = useState("catalog");
+  const { timesData, loading: timesLoading } = useLiveSaleTimes(saleKey);
+  const hasTimesData = timesData && timesData.count > 0;
 
   const meta = SALE_CATALOG[saleKey];
 
@@ -253,12 +257,229 @@ export default function SaleDetail() {
         <SireLeaderboard sires={stats.topSires} limit={10} />
       </div>
 
-      {/* Hip table */}
+      {/* Hip table with tabs */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          Full Catalog
-        </h2>
-        <HipTable hips={mergedHips} saleKey={saleKey} assetIndex={assetIndex} />
+        <div className="flex items-center gap-1 mb-4">
+          <button
+            onClick={() => setCatalogTab("catalog")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              catalogTab === "catalog"
+                ? "bg-brand-50 text-brand-700 border border-brand-200"
+                : "text-gray-500 hover:text-gray-700 border border-gray-200 hover:border-gray-300"
+            }`}
+          >
+            Full Catalog
+          </button>
+          <button
+            onClick={() => setCatalogTab("times")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+              catalogTab === "times"
+                ? "bg-brand-50 text-brand-700 border border-brand-200"
+                : "text-gray-500 hover:text-gray-700 border border-gray-200 hover:border-gray-300"
+            }`}
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            Detailed Times
+            {hasTimesData && (
+              <span className="text-[10px] bg-brand-100 text-brand-600 px-1.5 py-0.5 rounded-full font-semibold">
+                {timesData.count}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {catalogTab === "catalog" && (
+          <HipTable hips={mergedHips} saleKey={saleKey} assetIndex={assetIndex} />
+        )}
+
+        {catalogTab === "times" && (
+          <DetailedTimesTable
+            timesData={timesData}
+            timesLoading={timesLoading}
+            saleKey={saleKey}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Table view for detailed live sale times data.
+ * Shows all columns from the uploaded CSV with sorting and search.
+ */
+function DetailedTimesTable({ timesData, timesLoading, saleKey }) {
+  const [sortBy, setSortBy] = useState("hip_number");
+  const [sortDir, setSortDir] = useState("asc");
+  const [filter, setFilter] = useState("");
+
+  const columns = useMemo(() => {
+    if (!timesData?.columns) return [];
+    return timesData.columns;
+  }, [timesData]);
+
+  const displayColumns = useMemo(
+    () => columns.filter((c) => c !== "hip_number"),
+    [columns]
+  );
+
+  const rows = useMemo(() => {
+    if (!timesData?.hips) return [];
+    let list = Object.values(timesData.hips);
+
+    if (filter) {
+      const q = filter.toLowerCase();
+      list = list.filter((r) =>
+        String(r.hip_number).includes(q) ||
+        Object.values(r).some((v) => String(v).toLowerCase().includes(q))
+      );
+    }
+
+    list.sort((a, b) => {
+      let av = a[sortBy];
+      let bv = b[sortBy];
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (typeof av === "string") av = av.toLowerCase();
+      if (typeof bv === "string") bv = bv.toLowerCase();
+      if (av < bv) return sortDir === "asc" ? -1 : 1;
+      if (av > bv) return sortDir === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    return list;
+  }, [timesData, filter, sortBy, sortDir]);
+
+  function handleSort(key) {
+    if (sortBy === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortBy(key);
+      setSortDir("asc");
+    }
+  }
+
+  if (timesLoading) {
+    return (
+      <div className="rounded-xl border border-gray-100 bg-white p-12 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <p className="text-gray-400 text-sm">Loading detailed times...</p>
+      </div>
+    );
+  }
+
+  if (!timesData || !timesData.count) {
+    return (
+      <div className="rounded-xl border border-gray-100 bg-white p-12 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="flex flex-col items-center gap-3">
+          <svg className="w-10 h-10 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <p className="text-gray-400 text-sm">
+            No detailed times data available yet.
+          </p>
+          <p className="text-gray-300 text-xs">
+            Upload a CSV using the upload script to populate this view.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {/* Controls */}
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <input
+          type="text"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          placeholder="Search by hip number..."
+          className="flex-1 min-w-[200px] bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 transition-shadow"
+        />
+        <span className="text-xs text-gray-400">
+          {rows.length} of {timesData.count} hips
+        </span>
+        {timesData.generated_at && (
+          <span className="text-xs text-gray-300">
+            Updated {new Date(timesData.generated_at).toLocaleDateString()}
+          </span>
+        )}
+      </div>
+
+      {/* Table */}
+      <div className="overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-gray-100">
+              <th
+                className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 cursor-pointer hover:text-gray-700 select-none w-16 sticky left-0 bg-white z-10"
+                onClick={() => handleSort("hip_number")}
+              >
+                <span className="flex items-center gap-1">
+                  Hip
+                  {sortBy === "hip_number" && (
+                    <span className="text-brand-600">
+                      {sortDir === "asc" ? "↑" : "↓"}
+                    </span>
+                  )}
+                </span>
+              </th>
+              {displayColumns.map((col) => (
+                <th
+                  key={col}
+                  className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400 cursor-pointer hover:text-gray-700 select-none whitespace-nowrap"
+                  onClick={() => handleSort(col)}
+                >
+                  <span className="flex items-center gap-1">
+                    {col.replace(/_/g, " ")}
+                    {sortBy === col && (
+                      <span className="text-brand-600">
+                        {sortDir === "asc" ? "↑" : "↓"}
+                      </span>
+                    )}
+                  </span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
+            {rows.map((row) => (
+              <tr key={row.hip_number} className="table-row-hover">
+                <td className="px-3 py-2.5 font-mono font-semibold text-brand-600 sticky left-0 bg-white z-10">
+                  <Link
+                    to={`/sale/${saleKey}/hip/${row.hip_number}`}
+                    className="hover:underline"
+                  >
+                    {row.hip_number}
+                  </Link>
+                </td>
+                {displayColumns.map((col) => (
+                  <td
+                    key={col}
+                    className="px-3 py-2.5 font-mono text-gray-600 whitespace-nowrap"
+                  >
+                    {row[col] != null
+                      ? typeof row[col] === "number"
+                        ? row[col] % 1 === 0
+                          ? row[col]
+                          : row[col].toFixed(2)
+                        : row[col]
+                      : <span className="text-gray-300">—</span>}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {rows.length === 0 && (
+          <div className="text-center py-12 text-gray-400">
+            No hips match your search
+          </div>
+        )}
       </div>
     </div>
   );
