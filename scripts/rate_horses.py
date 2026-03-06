@@ -40,8 +40,22 @@ RANK_COLS = {
     "diff": False,
 }
 
+# Known standard distances (ft). Nearby values are snapped to these.
+STANDARD_DISTANCES = [205, 404.32]
+DISTANCE_SNAP_TOLERANCE = 5  # ft – values within this range snap to the standard
+
 RATING_MIN = 10
 RATING_MAX = 100
+
+
+def _snap_distance(val, standards=STANDARD_DISTANCES, tol=DISTANCE_SNAP_TOLERANCE):
+    """Snap a distance value to the nearest standard if within tolerance."""
+    if pd.isna(val):
+        return val
+    for std in standards:
+        if abs(val - std) <= tol:
+            return std
+    return val
 
 
 def load_data(path: Path) -> pd.DataFrame:
@@ -54,15 +68,51 @@ def load_data(path: Path) -> pd.DataFrame:
     return df
 
 
+def _sanitise_metrics(df: pd.DataFrame) -> pd.DataFrame:
+    """Replace negative or clearly erroneous metric values with NaN."""
+    metric_cols = ["Time UT", "Time GO",
+                   "Stride Length UT", "Stride Length GO",
+                   "Stride Length UT (ft)", "Stride Length GO (ft)",
+                   "Stride Frequency UT", "Stride Frequency GO",
+                   "diff"]
+    for col in metric_cols:
+        if col not in df.columns:
+            continue
+        numeric = pd.to_numeric(df[col], errors="coerce")
+        # Negative times, stride lengths, or frequencies are invalid
+        if col != "diff":
+            df.loc[numeric < 0, col] = pd.NA
+        # Recompute diff where underlying values were scrubbed
+        if col in ("Stride Length UT", "Stride Length GO",
+                    "Stride Length UT (ft)", "Stride Length GO (ft)"):
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+    return df
+
+
 def compute_ratings(df: pd.DataFrame) -> pd.DataFrame:
     """Add per-distance-group ranks and a composite rating (10–100)."""
+    df = df.copy()
+
+    # Snap distances to standard groups so near-misses aren't isolated
+    df["Distance UT"] = pd.to_numeric(df["Distance UT"], errors="coerce")
+    df["Distance UT"] = df["Distance UT"].apply(_snap_distance)
+
+    # Sanitise obviously bad metric values (negative times, strides, etc.)
+    df = _sanitise_metrics(df)
+
+    # Recompute diff after sanitisation (GO stride may have been NaN'd)
+    if "Stride Length GO (ft)" in df.columns and "Stride Length UT (ft)" in df.columns:
+        df["diff"] = pd.to_numeric(df.get("diff"), errors="coerce")
+        # Where stride GO was scrubbed, diff is also invalid
+        go_bad = df["Stride Length GO (ft)"].isna() | df["Stride Length UT (ft)"].isna()
+        df.loc[go_bad, "diff"] = pd.NA
+
     # Coerce metric columns to numeric; non-numeric → NaN
     for col in RANK_COLS:
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
     # Drop rows where ALL ranking columns are missing (empty horses)
     metric_mask = df[list(RANK_COLS)].notna().any(axis=1)
-    df = df.copy()
     df["_has_data"] = metric_mask
 
     rank_col_names: list[str] = []
@@ -96,8 +146,8 @@ def compute_ratings(df: pd.DataFrame) -> pd.DataFrame:
         lambda g: scale_group(g)
     )
 
-    # Round rating to 1 decimal place
-    df["Rating"] = df["Rating"].round(1)
+    # Round rating to 1 decimal place (use pd.to_numeric to handle NA safely)
+    df["Rating"] = pd.to_numeric(df["Rating"], errors="coerce").round(1)
 
     # Clean up helper column
     df.drop(columns=["_has_data"], inplace=True)
