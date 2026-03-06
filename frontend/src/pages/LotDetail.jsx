@@ -29,6 +29,7 @@ export default function LotDetail() {
   const { timesData } = useLiveSaleTimes(saleKey);
   const hipTimes = timesData?.hips?.[String(hipNumber)] || null;
   const timesColumns = timesData?.columns || [];
+  const columnLabels = timesData?.column_labels || {};
 
   const meta = SALE_CATALOG[saleKey];
 
@@ -306,7 +307,7 @@ export default function LotDetail() {
               .map((col) => (
                 <div key={col} className="rounded-lg bg-gray-50 p-3 text-center">
                   <div className="text-[11px] uppercase tracking-wider text-gray-400 mb-1">
-                    {col.replace(/_/g, " ")}
+                    {columnLabels[col] || col.replace(/_/g, " ")}
                   </div>
                   <div className="text-lg font-mono font-semibold text-gray-800">
                     {typeof hipTimes[col] === "number"
