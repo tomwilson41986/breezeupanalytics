@@ -340,6 +340,8 @@ export default function LotDetail() {
               url={videoUrl}
               accentColor="emerald"
               fromS3={!!s3Assets?.video}
+              posterUrl={photoUrl}
+              primary
             />
           )}
           {walkVideoUrl && (
@@ -349,6 +351,7 @@ export default function LotDetail() {
               url={walkVideoUrl}
               accentColor="sky"
               fromS3={!!s3Assets?.walkVideo}
+              posterUrl={photoUrl}
             />
           )}
           {photoUrl && (
@@ -428,7 +431,7 @@ function getYouTubeId(url) {
   return m ? m[1] : null;
 }
 
-function AssetCard({ label, type, url, accentColor, fromS3 }) {
+function AssetCard({ label, type, url, accentColor, fromS3, posterUrl, primary }) {
   const accentMap = {
     emerald: "border-gray-100 hover:border-emerald-200",
     sky: "border-gray-100 hover:border-sky-200",
@@ -455,7 +458,9 @@ function AssetCard({ label, type, url, accentColor, fromS3 }) {
         <video
           src={url}
           controls
-          preload="metadata"
+          preload={primary ? "auto" : "metadata"}
+          playsInline
+          poster={posterUrl || undefined}
           className="w-full aspect-video bg-gray-50"
         />
       )}

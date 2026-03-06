@@ -225,8 +225,8 @@ function jsonResponse(body, status = 200) {
 async function getHipAssets(saleKey, hipNumber, accessKeyId, secretAccessKey) {
   const prefix = `videos/${saleKey}/`;
   const assetDefs = [
-    { type: "video", key: `${prefix}${hipNumber}.mp4` },
-    { type: "walkVideo", key: `${prefix}${hipNumber}w.mp4` },
+    { type: "video", key: `${prefix}${hipNumber}.mp4`, proxyPath: `/v/${saleKey}/${hipNumber}.mp4` },
+    { type: "walkVideo", key: `${prefix}${hipNumber}w.mp4`, proxyPath: `/v/${saleKey}/${hipNumber}w.mp4` },
     { type: "photo", key: `${prefix}${hipNumber}p.jpg` },
     { type: "pedigree", key: `${prefix}${hipNumber}.pdf` },
   ];
@@ -238,7 +238,10 @@ async function getHipAssets(saleKey, hipNumber, accessKeyId, secretAccessKey) {
   const results = {};
   for (let i = 0; i < assetDefs.length; i++) {
     if (existChecks[i]) {
-      results[assetDefs[i].type] = presignUrl(assetDefs[i].key, accessKeyId, secretAccessKey);
+      // Use CDN proxy path for videos, pre-signed URLs for other assets
+      results[assetDefs[i].type] = assetDefs[i].proxyPath
+        ? assetDefs[i].proxyPath
+        : presignUrl(assetDefs[i].key, accessKeyId, secretAccessKey);
     }
   }
 
