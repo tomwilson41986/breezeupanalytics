@@ -46,8 +46,8 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
     }
 
     list.sort((a, b) => {
-      let av = sortBy === "rating" ? a.ratings?.rating : sortBy === "strideLengthUT" ? a.ratings?.strideLengthUT : sortBy === "strideLengthGO" ? a.ratings?.strideLengthGO : a[sortBy];
-      let bv = sortBy === "rating" ? b.ratings?.rating : sortBy === "strideLengthUT" ? b.ratings?.strideLengthUT : sortBy === "strideLengthGO" ? b.ratings?.strideLengthGO : b[sortBy];
+      let av = sortBy === "rating" ? a.ratings?.rating : sortBy === "strideLengthUT" ? a.ratings?.strideLengthUT : sortBy === "strideLengthGO" ? a.ratings?.strideLengthGO : sortBy === "breezeTime" ? (a.breezeTime ?? a.ratings?.timeUT) : a[sortBy];
+      let bv = sortBy === "rating" ? b.ratings?.rating : sortBy === "strideLengthUT" ? b.ratings?.strideLengthUT : sortBy === "strideLengthGO" ? b.ratings?.strideLengthGO : sortBy === "breezeTime" ? (b.breezeTime ?? b.ratings?.timeUT) : b[sortBy];
       if (av == null) return 1;
       if (bv == null) return -1;
       if (typeof av === "string") av = av.toLowerCase();
@@ -197,6 +197,8 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
                 <td className="px-3 py-2.5 font-mono text-gray-600">
                   {hip.breezeTime
                     ? formatBreezeTime(hip.breezeTime)
+                    : hip.ratings?.timeUT != null
+                    ? formatBreezeTime(hip.ratings.timeUT)
                     : "—"}
                 </td>
                 <td className="px-3 py-2.5 font-mono text-gray-600 text-xs">
