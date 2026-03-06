@@ -44,6 +44,13 @@ function parseCsv(text) {
   const rawHeaders = splitCsvRow(lines[0]);
   const headers = rawHeaders.map(normalizeHeader);
 
+  // Build a mapping from normalized keys to original CSV header labels
+  const column_labels = {};
+  for (let i = 0; i < rawHeaders.length; i++) {
+    const norm = normalizeHeader(rawHeaders[i]);
+    if (norm) column_labels[norm] = rawHeaders[i].trim();
+  }
+
   const hips = {};
   for (let i = 1; i < lines.length; i++) {
     const vals = splitCsvRow(lines[i]);
@@ -65,6 +72,7 @@ function parseCsv(text) {
     generated_at: null,
     count: Object.keys(hips).length,
     columns: headers,
+    column_labels,
     hips,
   };
 }

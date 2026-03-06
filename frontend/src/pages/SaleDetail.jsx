@@ -346,6 +346,8 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey, hips }) {
     return timesData.columns;
   }, [timesData]);
 
+  const columnLabels = timesData?.column_labels || {};
+
   const displayColumns = useMemo(
     () => columns.filter((c) => c !== "hip_number" && c !== "sire"),
     [columns]
@@ -507,7 +509,7 @@ function DetailedTimesTable({ timesData, timesLoading, saleKey, hips }) {
               {/* CSV timing columns */}
               {displayColumns.map((col) => (
                 <SortTh key={col} field={col}>
-                  {col.replace(/_/g, " ")}
+                  {columnLabels[col] || col.replace(/_/g, " ")}
                 </SortTh>
               ))}
             </tr>
