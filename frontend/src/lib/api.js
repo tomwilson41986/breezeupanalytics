@@ -59,24 +59,29 @@ export async function fetchStatsFromS3(s3Key) {
 }
 
 /**
- * Fetch horse ratings from S3 (keyed by hip number)
+ * Fetch horse ratings from S3 and local static JSON, merging both.
+ * Local ratings (generated from source CSV at build time) take precedence
+ * to ensure the latest data is always shown even if S3 is stale.
  */
 export async function fetchRatingsFromS3(s3Key) {
-  // Try S3 first
-  try {
-    const res = await fetch(
-      `${API_BASE}/sale-data?sale=${encodeURIComponent(s3Key)}&type=ratings`
-    );
-    if (res.ok) return res.json();
-  } catch {}
+  const [s3Result, localResult] = await Promise.allSettled([
+    fetch(`${API_BASE}/sale-data?sale=${encodeURIComponent(s3Key)}&type=ratings`).then(
+      (r) => (r.ok ? r.json() : null)
+    ),
+    fetch(`/data/live-sale-times/${s3Key}_ratings.json`).then((r) =>
+      r.ok ? r.json() : null
+    ),
+  ]);
 
-  // Fallback to local static ratings JSON
-  try {
-    const localRes = await fetch(`/data/live-sale-times/${s3Key}_ratings.json`);
-    if (localRes.ok) return localRes.json();
-  } catch {}
+  const s3Data = s3Result.status === "fulfilled" ? s3Result.value : null;
+  const localData = localResult.status === "fulfilled" ? localResult.value : null;
 
-  return null;
+  if (!s3Data && !localData) return null;
+  if (!s3Data) return localData;
+  if (!localData) return s3Data;
+
+  // Merge: start with S3, overlay with local (local wins on conflicts)
+  return { ...s3Data, ...localData };
 }
 
 /* ── OBS API (fallback) ─────────────────────────────────────── */
