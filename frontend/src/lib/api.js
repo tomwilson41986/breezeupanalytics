@@ -62,11 +62,21 @@ export async function fetchStatsFromS3(s3Key) {
  * Fetch horse ratings from S3 (keyed by hip number)
  */
 export async function fetchRatingsFromS3(s3Key) {
-  const res = await fetch(
-    `${API_BASE}/sale-data?sale=${encodeURIComponent(s3Key)}&type=ratings`
-  );
-  if (!res.ok) return null;
-  return res.json();
+  // Try S3 first
+  try {
+    const res = await fetch(
+      `${API_BASE}/sale-data?sale=${encodeURIComponent(s3Key)}&type=ratings`
+    );
+    if (res.ok) return res.json();
+  } catch {}
+
+  // Fallback to local static ratings JSON
+  try {
+    const localRes = await fetch(`/data/live-sale-times/${s3Key}_ratings.json`);
+    if (localRes.ok) return localRes.json();
+  } catch {}
+
+  return null;
 }
 
 /* ── OBS API (fallback) ─────────────────────────────────────── */
