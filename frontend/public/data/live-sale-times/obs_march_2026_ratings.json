@@ -1,6 +1,6 @@
 {
   "1": {
-    "rating": 40,
+    "rating": 28.9,
     "meanRank": 335.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.1,
@@ -15,21 +15,16 @@
     "rankDiff": 93
   },
   "2": {
-    "rating": 63.8,
-    "meanRank": 214.33,
     "distanceUT": "205.0",
     "strideLengthGO": 21.29,
     "timeUT": 10,
-    "timeGO": 11,
-    "rankTimeUt": 68,
-    "rankTimeGo": 272,
-    "rankStrideLengthGo": 303
+    "timeGO": 11
   },
   "3": {
     "distanceUT": "205.0"
   },
   "4": {
-    "rating": 96.4,
+    "rating": 95.7,
     "meanRank": 47.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.87,
@@ -47,7 +42,7 @@
     "distanceUT": "205.0"
   },
   "6": {
-    "rating": 96.1,
+    "rating": 95.4,
     "meanRank": 49.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.93,
@@ -62,7 +57,7 @@
     "rankDiff": 48
   },
   "7": {
-    "rating": 82.5,
+    "rating": 79.3,
     "meanRank": 118.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.1,
@@ -77,7 +72,7 @@
     "rankDiff": 75
   },
   "8": {
-    "rating": 84.8,
+    "rating": 82,
     "meanRank": 106.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -92,7 +87,7 @@
     "rankDiff": 1
   },
   "9": {
-    "rating": 55.2,
+    "rating": 49.9,
     "meanRank": 36.6,
     "distanceUT": "404.32",
     "strideLengthUT": 22.24,
@@ -107,7 +102,7 @@
     "rankDiff": 35
   },
   "10": {
-    "rating": 93,
+    "rating": 91.7,
     "meanRank": 64.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.28,
@@ -122,7 +117,7 @@
     "rankDiff": 13
   },
   "11": {
-    "rating": 72.9,
+    "rating": 67.9,
     "meanRank": 167.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -137,7 +132,7 @@
     "rankDiff": 132
   },
   "12": {
-    "rating": 74.2,
+    "rating": 75.1,
     "meanRank": 22.8,
     "distanceUT": "404.32",
     "strideLengthUT": 23.16,
@@ -152,7 +147,7 @@
     "rankDiff": 24
   },
   "13": {
-    "rating": 42.5,
+    "rating": 31.9,
     "meanRank": 323,
     "distanceUT": "205.0",
     "strideLengthUT": 23.36,
@@ -167,7 +162,7 @@
     "rankDiff": 356
   },
   "14": {
-    "rating": 50.2,
+    "rating": 40.9,
     "meanRank": 283.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -182,7 +177,7 @@
     "rankDiff": 240
   },
   "15": {
-    "rating": 81.6,
+    "rating": 78.2,
     "meanRank": 123.2,
     "distanceUT": "205.0",
     "strideLengthUT": 24.61,
@@ -200,7 +195,7 @@
     "distanceUT": "205.0"
   },
   "17": {
-    "rating": 91.6,
+    "rating": 90.1,
     "meanRank": 72,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -221,7 +216,7 @@
     "distanceUT": "205.0"
   },
   "20": {
-    "rating": 57.5,
+    "rating": 49.7,
     "meanRank": 246.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -242,7 +237,7 @@
     "distanceUT": "205.0"
   },
   "23": {
-    "rating": 68.3,
+    "rating": 62.4,
     "meanRank": 191.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.33,
@@ -260,7 +255,7 @@
     "distanceUT": "205.0"
   },
   "25": {
-    "rating": 74.5,
+    "rating": 69.8,
     "meanRank": 159.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.39,
@@ -275,7 +270,7 @@
     "rankDiff": 350
   },
   "26": {
-    "rating": 98,
+    "rating": 97.7,
     "meanRank": 39.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.06,
@@ -290,7 +285,7 @@
     "rankDiff": 17
   },
   "27": {
-    "rating": 93.6,
+    "rating": 92.4,
     "meanRank": 61.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -305,7 +300,7 @@
     "rankDiff": 30
   },
   "28": {
-    "rating": 56.4,
+    "rating": 48.3,
     "meanRank": 252,
     "distanceUT": "205.0",
     "strideLengthUT": 21.1,
@@ -320,7 +315,7 @@
     "rankDiff": 153
   },
   "29": {
-    "rating": 33.7,
+    "rating": 21.4,
     "meanRank": 368,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -335,7 +330,7 @@
     "rankDiff": 304
   },
   "30": {
-    "rating": 31.8,
+    "rating": 19.2,
     "meanRank": 377.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.18,
@@ -350,7 +345,7 @@
     "rankDiff": 341
   },
   "31": {
-    "rating": 64.6,
+    "rating": 58,
     "meanRank": 210.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -365,7 +360,7 @@
     "rankDiff": 196
   },
   "32": {
-    "rating": 71.5,
+    "rating": 66.3,
     "meanRank": 174.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.13,
@@ -380,7 +375,7 @@
     "rankDiff": 104
   },
   "33": {
-    "rating": 77.7,
+    "rating": 73.6,
     "meanRank": 143.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -395,7 +390,7 @@
     "rankDiff": 135
   },
   "34": {
-    "rating": 43.7,
+    "rating": 34.5,
     "meanRank": 45,
     "distanceUT": "404.32",
     "strideLengthUT": 21.92,
@@ -410,7 +405,7 @@
     "rankDiff": 13
   },
   "35": {
-    "rating": 46.2,
+    "rating": 36.3,
     "meanRank": 304,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -431,7 +426,7 @@
     "distanceUT": "205.0"
   },
   "38": {
-    "rating": 52,
+    "rating": 43.1,
     "meanRank": 274.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.01,
@@ -446,7 +441,7 @@
     "rankDiff": 110
   },
   "39": {
-    "rating": 82.7,
+    "rating": 79.5,
     "meanRank": 117.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.05,
@@ -461,7 +456,7 @@
     "rankDiff": 39
   },
   "40": {
-    "rating": 58.5,
+    "rating": 50.8,
     "meanRank": 241.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -482,7 +477,7 @@
     "distanceUT": "205.0"
   },
   "43": {
-    "rating": 68.4,
+    "rating": 62.5,
     "meanRank": 190.8,
     "distanceUT": "205.0",
     "strideLengthUT": 23.75,
@@ -500,7 +495,7 @@
     "distanceUT": "205.0"
   },
   "45": {
-    "rating": 59.7,
+    "rating": 52.2,
     "meanRank": 235.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -518,7 +513,7 @@
     "distanceUT": "205.0"
   },
   "47": {
-    "rating": 52.8,
+    "rating": 44.1,
     "meanRank": 270.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -533,7 +528,7 @@
     "rankDiff": 196
   },
   "48": {
-    "rating": 68.4,
+    "rating": 67.4,
     "meanRank": 27,
     "distanceUT": "404.32",
     "strideLengthUT": 21.82,
@@ -548,7 +543,7 @@
     "rankDiff": 17
   },
   "49": {
-    "rating": 54,
+    "rating": 45.4,
     "meanRank": 264.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.47,
@@ -563,7 +558,7 @@
     "rankDiff": 324
   },
   "50": {
-    "rating": 95.2,
+    "rating": 94.3,
     "meanRank": 53.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -584,7 +579,7 @@
     "distanceUT": "205.0"
   },
   "53": {
-    "rating": 60.7,
+    "rating": 53.5,
     "meanRank": 229.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.59,
@@ -599,7 +594,7 @@
     "rankDiff": 162
   },
   "54": {
-    "rating": 72.8,
+    "rating": 67.7,
     "meanRank": 168.4,
     "distanceUT": "205.0",
     "strideLengthUT": 20.64,
@@ -614,7 +609,7 @@
     "rankDiff": 43
   },
   "55": {
-    "rating": 94.9,
+    "rating": 94,
     "meanRank": 55.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.93,
@@ -629,7 +624,7 @@
     "rankDiff": 36
   },
   "56": {
-    "rating": 58.2,
+    "rating": 53.9,
     "meanRank": 34.4,
     "distanceUT": "404.32",
     "strideLengthUT": 22.57,
@@ -644,7 +639,7 @@
     "rankDiff": 58
   },
   "57": {
-    "rating": 73.2,
+    "rating": 68.2,
     "meanRank": 166.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.2,
@@ -659,7 +654,7 @@
     "rankDiff": 364
   },
   "58": {
-    "rating": 27.2,
+    "rating": 13.8,
     "meanRank": 401,
     "distanceUT": "205.0",
     "strideLengthUT": 21.1,
@@ -674,7 +669,7 @@
     "rankDiff": 379
   },
   "59": {
-    "rating": 78.6,
+    "rating": 81,
     "meanRank": 19.6,
     "distanceUT": "404.32",
     "strideLengthUT": 22.51,
@@ -689,7 +684,7 @@
     "rankDiff": 16
   },
   "60": {
-    "rating": 71.7,
+    "rating": 66.4,
     "meanRank": 174,
     "distanceUT": "205.0",
     "strideLengthUT": 23.39,
@@ -704,7 +699,7 @@
     "rankDiff": 381
   },
   "61": {
-    "rating": 51,
+    "rating": 42,
     "meanRank": 279.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.24,
@@ -722,7 +717,7 @@
     "distanceUT": "205.0"
   },
   "63": {
-    "rating": 87.7,
+    "rating": 85.5,
     "meanRank": 91.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.24,
@@ -737,7 +732,7 @@
     "rankDiff": 4
   },
   "64": {
-    "rating": 66.5,
+    "rating": 60.2,
     "meanRank": 200.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.24,
@@ -752,7 +747,7 @@
     "rankDiff": 135
   },
   "65": {
-    "rating": 66.5,
+    "rating": 60.3,
     "meanRank": 200.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -767,7 +762,7 @@
     "rankDiff": 110
   },
   "66": {
-    "rating": 69,
+    "rating": 63.2,
     "meanRank": 187.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -782,7 +777,7 @@
     "rankDiff": 110
   },
   "67": {
-    "rating": 63.2,
+    "rating": 56.4,
     "meanRank": 217.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -797,7 +792,7 @@
     "rankDiff": 104
   },
   "68": {
-    "rating": 43,
+    "rating": 32.5,
     "meanRank": 320.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.56,
@@ -815,7 +810,7 @@
     "distanceUT": "205.0"
   },
   "70": {
-    "rating": 58.7,
+    "rating": 51.1,
     "meanRank": 240,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -830,7 +825,7 @@
     "rankDiff": 383
   },
   "71": {
-    "rating": 78.3,
+    "rating": 74.3,
     "meanRank": 140,
     "distanceUT": "205.0",
     "strideLengthUT": 23.39,
@@ -848,7 +843,7 @@
     "distanceUT": "205.0"
   },
   "73": {
-    "rating": 58.1,
+    "rating": 50.3,
     "meanRank": 243.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -863,7 +858,7 @@
     "rankDiff": 142
   },
   "74": {
-    "rating": 53,
+    "rating": 44.3,
     "meanRank": 269.4,
     "distanceUT": "205.0",
     "strideLengthUT": 20.37,
@@ -878,7 +873,7 @@
     "rankDiff": 169
   },
   "75": {
-    "rating": 59.4,
+    "rating": 51.9,
     "meanRank": 236.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.9,
@@ -893,7 +888,7 @@
     "rankDiff": 341
   },
   "76": {
-    "rating": 36.4,
+    "rating": 24.7,
     "meanRank": 354,
     "distanceUT": "205.0",
     "strideLengthUT": 20.51,
@@ -908,7 +903,7 @@
     "rankDiff": 240
   },
   "77": {
-    "rating": 66.7,
+    "rating": 60.5,
     "meanRank": 199.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.18,
@@ -923,7 +918,7 @@
     "rankDiff": 162
   },
   "78": {
-    "rating": 75.4,
+    "rating": 70.9,
     "meanRank": 154.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.06,
@@ -941,7 +936,7 @@
     "distanceUT": "205.0"
   },
   "80": {
-    "rating": 71.8,
+    "rating": 66.6,
     "meanRank": 173.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.2,
@@ -956,7 +951,7 @@
     "rankDiff": 362
   },
   "81": {
-    "rating": 85.2,
+    "rating": 82.5,
     "meanRank": 104.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.82,
@@ -974,7 +969,7 @@
     "distanceUT": "205.0"
   },
   "83": {
-    "rating": 69.8,
+    "rating": 64.2,
     "meanRank": 183.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.18,
@@ -992,7 +987,7 @@
     "distanceUT": "205.0"
   },
   "85": {
-    "rating": 82.5,
+    "rating": 79.3,
     "meanRank": 118.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -1007,7 +1002,7 @@
     "rankDiff": 82
   },
   "86": {
-    "rating": 78.5,
+    "rating": 74.5,
     "meanRank": 139.2,
     "distanceUT": "205.0",
     "strideLengthUT": 24.11,
@@ -1022,7 +1017,7 @@
     "rankDiff": 370
   },
   "87": {
-    "rating": 51.2,
+    "rating": 42.1,
     "meanRank": 278.6,
     "distanceUT": "205.0",
     "strideLengthUT": 20.9,
@@ -1037,7 +1032,7 @@
     "rankDiff": 240
   },
   "88": {
-    "rating": 80.5,
+    "rating": 76.9,
     "meanRank": 129,
     "distanceUT": "205.0",
     "strideLengthUT": 24.84,
@@ -1052,7 +1047,7 @@
     "rankDiff": 387
   },
   "89": {
-    "rating": 62.2,
+    "rating": 55.2,
     "meanRank": 222.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -1073,7 +1068,7 @@
     "distanceUT": "205.0"
   },
   "92": {
-    "rating": 89.4,
+    "rating": 87.4,
     "meanRank": 83.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.47,
@@ -1091,7 +1086,7 @@
     "distanceUT": "205.0"
   },
   "94": {
-    "rating": 47.1,
+    "rating": 37.3,
     "meanRank": 299.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -1106,7 +1101,7 @@
     "rankDiff": 259
   },
   "95": {
-    "rating": 81,
+    "rating": 84.3,
     "meanRank": 17.8,
     "distanceUT": "404.32",
     "strideLengthUT": 23.56,
@@ -1121,7 +1116,7 @@
     "rankDiff": 60
   },
   "96": {
-    "rating": 73.3,
+    "rating": 74,
     "meanRank": 23.4,
     "distanceUT": "404.32",
     "strideLengthUT": 23.13,
@@ -1136,7 +1131,7 @@
     "rankDiff": 48
   },
   "97": {
-    "rating": 63.2,
+    "rating": 56.4,
     "meanRank": 217,
     "distanceUT": "205.0",
     "strideLengthUT": 22.64,
@@ -1151,7 +1146,7 @@
     "rankDiff": 250
   },
   "98": {
-    "rating": 48.5,
+    "rating": 39,
     "meanRank": 292.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -1166,7 +1161,7 @@
     "rankDiff": 279
   },
   "99": {
-    "rating": 42.8,
+    "rating": 33.4,
     "meanRank": 45.6,
     "distanceUT": "404.32",
     "strideLengthUT": 21.52,
@@ -1181,7 +1176,7 @@
     "rankDiff": 39
   },
   "100": {
-    "rating": 65.7,
+    "rating": 59.3,
     "meanRank": 204.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -1196,7 +1191,7 @@
     "rankDiff": 179
   },
   "101": {
-    "rating": 79.5,
+    "rating": 75.7,
     "meanRank": 134,
     "distanceUT": "205.0",
     "strideLengthUT": 23.75,
@@ -1211,7 +1206,7 @@
     "rankDiff": 240
   },
   "102": {
-    "rating": 67.9,
+    "rating": 61.9,
     "meanRank": 193.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.9,
@@ -1226,7 +1221,7 @@
     "rankDiff": 225
   },
   "103": {
-    "rating": 65.5,
+    "rating": 59.1,
     "meanRank": 205.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -1241,7 +1236,7 @@
     "rankDiff": 153
   },
   "104": {
-    "rating": 94.1,
+    "rating": 93,
     "meanRank": 59.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.13,
@@ -1259,7 +1254,7 @@
     "distanceUT": "205.0"
   },
   "106": {
-    "rating": 72.3,
+    "rating": 67.2,
     "meanRank": 170.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.6,
@@ -1274,7 +1269,7 @@
     "rankDiff": 22
   },
   "107": {
-    "rating": 39.5,
+    "rating": 29,
     "meanRank": 48,
     "distanceUT": "404.32",
     "strideLengthUT": 22.41,
@@ -1292,7 +1287,7 @@
     "distanceUT": "205.0"
   },
   "109": {
-    "rating": 55.5,
+    "rating": 47.3,
     "meanRank": 256.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -1307,7 +1302,7 @@
     "rankDiff": 150
   },
   "110": {
-    "rating": 78.6,
+    "rating": 74.6,
     "meanRank": 138.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -1322,7 +1317,7 @@
     "rankDiff": 45
   },
   "111": {
-    "rating": 60.2,
+    "rating": 52.8,
     "meanRank": 232.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -1337,7 +1332,7 @@
     "rankDiff": 196
   },
   "112": {
-    "rating": 67.8,
+    "rating": 61.8,
     "meanRank": 193.8,
     "distanceUT": "205.0",
     "strideLengthUT": 24.02,
@@ -1352,7 +1347,7 @@
     "rankDiff": 259
   },
   "113": {
-    "rating": 57.2,
+    "rating": 49.2,
     "meanRank": 248,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -1367,7 +1362,7 @@
     "rankDiff": 206
   },
   "114": {
-    "rating": 72,
+    "rating": 66.8,
     "meanRank": 172.4,
     "distanceUT": "205.0",
     "strideLengthUT": 24.21,
@@ -1382,7 +1377,7 @@
     "rankDiff": 186
   },
   "115": {
-    "rating": 80,
+    "rating": 76.3,
     "meanRank": 131.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -1400,7 +1395,7 @@
     "distanceUT": "205.0"
   },
   "117": {
-    "rating": 55.1,
+    "rating": 46.8,
     "meanRank": 258.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.06,
@@ -1421,7 +1416,7 @@
     "distanceUT": "205.0"
   },
   "120": {
-    "rating": 61,
+    "rating": 53.8,
     "meanRank": 228.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -1436,7 +1431,7 @@
     "rankDiff": 127
   },
   "121": {
-    "rating": 43.1,
+    "rating": 33.8,
     "meanRank": 45.4,
     "distanceUT": "404.32",
     "strideLengthUT": 21.52,
@@ -1451,7 +1446,7 @@
     "rankDiff": 19
   },
   "122": {
-    "rating": 58.2,
+    "rating": 50.4,
     "meanRank": 243,
     "distanceUT": "205.0",
     "strideLengthUT": 23.13,
@@ -1466,7 +1461,7 @@
     "rankDiff": 186
   },
   "123": {
-    "rating": 77.7,
+    "rating": 79.9,
     "meanRank": 20.2,
     "distanceUT": "404.32",
     "strideLengthUT": 22.74,
@@ -1481,7 +1476,7 @@
     "rankDiff": 59
   },
   "124": {
-    "rating": 72.4,
+    "rating": 67.2,
     "meanRank": 170.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.69,
@@ -1496,7 +1491,7 @@
     "rankDiff": 384
   },
   "125": {
-    "rating": 42,
+    "rating": 31.2,
     "meanRank": 325.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.01,
@@ -1511,7 +1506,7 @@
     "rankDiff": 296
   },
   "126": {
-    "rating": 91,
+    "rating": 89.3,
     "meanRank": 75.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.28,
@@ -1526,7 +1521,7 @@
     "rankDiff": 42
   },
   "127": {
-    "rating": 52.9,
+    "rating": 44.1,
     "meanRank": 270,
     "distanceUT": "205.0",
     "strideLengthUT": 21.1,
@@ -1541,7 +1536,7 @@
     "rankDiff": 153
   },
   "128": {
-    "rating": 50.5,
+    "rating": 41.4,
     "meanRank": 282,
     "distanceUT": "205.0",
     "strideLengthUT": 24.38,
@@ -1556,7 +1551,7 @@
     "rankDiff": 349
   },
   "129": {
-    "rating": 89.5,
+    "rating": 87.5,
     "meanRank": 83,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -1571,7 +1566,7 @@
     "rankDiff": 48
   },
   "130": {
-    "rating": 41.6,
+    "rating": 30.8,
     "meanRank": 327.6,
     "distanceUT": "205.0",
     "strideLengthUT": 20.44,
@@ -1586,7 +1581,7 @@
     "rankDiff": 145
   },
   "131": {
-    "rating": 69.2,
+    "rating": 68.5,
     "meanRank": 26.4,
     "distanceUT": "404.32",
     "strideLengthUT": 22.08,
@@ -1601,7 +1596,7 @@
     "rankDiff": 20
   },
   "132": {
-    "rating": 79.4,
+    "rating": 75.6,
     "meanRank": 134.4,
     "distanceUT": "205.0",
     "strideLengthUT": 24.84,
@@ -1616,7 +1611,7 @@
     "rankDiff": 388
   },
   "133": {
-    "rating": 57.1,
+    "rating": 52.4,
     "meanRank": 35.2,
     "distanceUT": "404.32",
     "strideLengthUT": 23.03,
@@ -1634,7 +1629,7 @@
     "distanceUT": "205.0"
   },
   "135": {
-    "rating": 84.3,
+    "rating": 81.4,
     "meanRank": 109.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.62,
@@ -1649,7 +1644,7 @@
     "rankDiff": 286
   },
   "136": {
-    "rating": 60.2,
+    "rating": 52.9,
     "meanRank": 232.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.9,
@@ -1664,7 +1659,7 @@
     "rankDiff": 270
   },
   "137": {
-    "rating": 70,
+    "rating": 64.5,
     "meanRank": 182.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.64,
@@ -1679,7 +1674,7 @@
     "rankDiff": 196
   },
   "138": {
-    "rating": 45.9,
+    "rating": 37.4,
     "meanRank": 43.4,
     "distanceUT": "404.32",
     "strideLengthUT": 21.52,
@@ -1694,7 +1689,7 @@
     "rankDiff": 54
   },
   "139": {
-    "rating": 66.7,
+    "rating": 60.5,
     "meanRank": 199.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.7,
@@ -1709,7 +1704,7 @@
     "rankDiff": 379
   },
   "140": {
-    "rating": 56.2,
+    "rating": 48,
     "meanRank": 253.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.33,
@@ -1724,7 +1719,7 @@
     "rankDiff": 299
   },
   "141": {
-    "rating": 34.1,
+    "rating": 21.9,
     "meanRank": 366,
     "distanceUT": "205.0",
     "strideLengthUT": 21.52,
@@ -1739,7 +1734,7 @@
     "rankDiff": 388
   },
   "142": {
-    "rating": 57.5,
+    "rating": 49.6,
     "meanRank": 246.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.6,
@@ -1754,7 +1749,7 @@
     "rankDiff": 240
   },
   "143": {
-    "rating": 67.8,
+    "rating": 61.9,
     "meanRank": 193.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.9,
@@ -1772,7 +1767,7 @@
     "distanceUT": "205.0"
   },
   "145": {
-    "rating": 84.8,
+    "rating": 82,
     "meanRank": 107,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -1787,7 +1782,7 @@
     "rankDiff": 58
   },
   "146": {
-    "rating": 73.3,
+    "rating": 74,
     "meanRank": 23.4,
     "distanceUT": "404.32",
     "strideLengthUT": 21.39,
@@ -1802,7 +1797,7 @@
     "rankDiff": 3
   },
   "147": {
-    "rating": 74.1,
+    "rating": 69.3,
     "meanRank": 161.6,
     "distanceUT": "205.0",
     "strideLengthUT": 20.64,
@@ -1820,7 +1815,7 @@
     "distanceUT": "205.0"
   },
   "149": {
-    "rating": 67.6,
+    "rating": 61.6,
     "meanRank": 194.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.1,
@@ -1835,7 +1830,7 @@
     "rankDiff": 304
   },
   "150": {
-    "rating": 73.7,
+    "rating": 68.9,
     "meanRank": 163.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -1853,7 +1848,7 @@
     "distanceUT": "205.0"
   },
   "152": {
-    "rating": 64.2,
+    "rating": 57.6,
     "meanRank": 212,
     "distanceUT": "205.0",
     "strideLengthUT": 25.43,
@@ -1868,7 +1863,7 @@
     "rankDiff": 392
   },
   "153": {
-    "rating": 93.6,
+    "rating": 92.4,
     "meanRank": 61.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -1886,7 +1881,7 @@
     "distanceUT": "205.0"
   },
   "155": {
-    "rating": 35.2,
+    "rating": 23.2,
     "meanRank": 360.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.16,
@@ -1901,7 +1896,7 @@
     "rankDiff": 237
   },
   "156": {
-    "rating": 50.4,
+    "rating": 41.3,
     "meanRank": 282.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.82,
@@ -1916,7 +1911,7 @@
     "rankDiff": 162
   },
   "157": {
-    "rating": 91.8,
+    "rating": 90.3,
     "meanRank": 71.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.87,
@@ -1931,7 +1926,7 @@
     "rankDiff": 78
   },
   "158": {
-    "rating": 43.6,
+    "rating": 33.2,
     "meanRank": 317.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.13,
@@ -1946,7 +1941,7 @@
     "rankDiff": 347
   },
   "159": {
-    "rating": 47.2,
+    "rating": 37.5,
     "meanRank": 298.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.95,
@@ -1961,7 +1956,7 @@
     "rankDiff": 193
   },
   "160": {
-    "rating": 52.9,
+    "rating": 44.2,
     "meanRank": 269.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.95,
@@ -1976,7 +1971,7 @@
     "rankDiff": 186
   },
   "161": {
-    "rating": 95.3,
+    "rating": 94.4,
     "meanRank": 53.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.87,
@@ -1991,7 +1986,7 @@
     "rankDiff": 18
   },
   "162": {
-    "rating": 47.8,
+    "rating": 38.2,
     "meanRank": 295.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.52,
@@ -2006,7 +2001,7 @@
     "rankDiff": 310
   },
   "163": {
-    "rating": 72.9,
+    "rating": 67.9,
     "meanRank": 167.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -2021,7 +2016,7 @@
     "rankDiff": 132
   },
   "164": {
-    "rating": 46.8,
+    "rating": 37,
     "meanRank": 301,
     "distanceUT": "205.0",
     "strideLengthUT": 21.59,
@@ -2036,7 +2031,7 @@
     "rankDiff": 250
   },
   "165": {
-    "rating": 84.8,
+    "rating": 82,
     "meanRank": 106.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -2054,7 +2049,7 @@
     "distanceUT": "205.0"
   },
   "167": {
-    "rating": 55.8,
+    "rating": 50.6,
     "meanRank": 36.2,
     "distanceUT": "404.32",
     "strideLengthUT": 22.67,
@@ -2069,7 +2064,7 @@
     "rankDiff": 39
   },
   "168": {
-    "rating": 59.6,
+    "rating": 55.7,
     "meanRank": 33.4,
     "distanceUT": "404.32",
     "strideLengthUT": 22.28,
@@ -2084,7 +2079,7 @@
     "rankDiff": 51
   },
   "169": {
-    "rating": 35.1,
+    "rating": 23.2,
     "meanRank": 51.2,
     "distanceUT": "404.32",
     "strideLengthUT": 21,
@@ -2099,7 +2094,7 @@
     "rankDiff": 25
   },
   "170": {
-    "rating": 85.8,
+    "rating": 83.2,
     "meanRank": 101.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.28,
@@ -2114,7 +2109,7 @@
     "rankDiff": 89
   },
   "171": {
-    "rating": 51.4,
+    "rating": 44.8,
     "meanRank": 39.4,
     "distanceUT": "404.32",
     "strideLengthUT": 21.62,
@@ -2129,7 +2124,7 @@
     "rankDiff": 17
   },
   "172": {
-    "rating": 71.7,
+    "rating": 66.4,
     "meanRank": 174,
     "distanceUT": "205.0",
     "strideLengthUT": 23.39,
@@ -2144,7 +2139,7 @@
     "rankDiff": 381
   },
   "173": {
-    "rating": 54.9,
+    "rating": 46.5,
     "meanRank": 259.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -2159,7 +2154,7 @@
     "rankDiff": 299
   },
   "174": {
-    "rating": 49.3,
+    "rating": 39.9,
     "meanRank": 288.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.03,
@@ -2174,21 +2169,16 @@
     "rankDiff": 216
   },
   "175": {
-    "rating": 61,
-    "meanRank": 228.67,
     "distanceUT": "205.0",
     "strideLengthGO": 21.42,
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182,
-    "rankStrideLengthGo": 280
+    "timeGO": 10.9
   },
   "176": {
     "distanceUT": "205.0"
   },
   "177": {
-    "rating": 89.9,
+    "rating": 88,
     "meanRank": 80.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.72,
@@ -2203,7 +2193,7 @@
     "rankDiff": 2
   },
   "178": {
-    "rating": 94.7,
+    "rating": 93.7,
     "meanRank": 56.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.13,
@@ -2218,7 +2208,7 @@
     "rankDiff": 93
   },
   "179": {
-    "rating": 66.9,
+    "rating": 60.8,
     "meanRank": 198.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -2233,7 +2223,7 @@
     "rankDiff": 377
   },
   "180": {
-    "rating": 82.5,
+    "rating": 79.3,
     "meanRank": 118.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -2248,7 +2238,7 @@
     "rankDiff": 82
   },
   "181": {
-    "rating": 87.7,
+    "rating": 85.5,
     "meanRank": 91.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -2263,7 +2253,7 @@
     "rankDiff": 48
   },
   "182": {
-    "rating": 73.9,
+    "rating": 74.8,
     "meanRank": 23,
     "distanceUT": "404.32",
     "strideLengthUT": 23.33,
@@ -2278,7 +2268,7 @@
     "rankDiff": 28
   },
   "183": {
-    "rating": 87.7,
+    "rating": 85.5,
     "meanRank": 91.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -2293,7 +2283,7 @@
     "rankDiff": 48
   },
   "184": {
-    "rating": 61.5,
+    "rating": 58.3,
     "meanRank": 32,
     "distanceUT": "404.32",
     "strideLengthUT": 23.03,
@@ -2308,7 +2298,7 @@
     "rankDiff": 32
   },
   "185": {
-    "rating": 84.8,
+    "rating": 82,
     "meanRank": 107,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -2323,7 +2313,7 @@
     "rankDiff": 58
   },
   "186": {
-    "rating": 66.6,
+    "rating": 60.4,
     "meanRank": 200,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -2338,7 +2328,7 @@
     "rankDiff": 169
   },
   "187": {
-    "rating": 59.8,
+    "rating": 52.4,
     "meanRank": 234.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -2353,7 +2343,7 @@
     "rankDiff": 365
   },
   "188": {
-    "rating": 65.2,
+    "rating": 58.8,
     "meanRank": 206.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.18,
@@ -2368,7 +2358,7 @@
     "rankDiff": 332
   },
   "189": {
-    "rating": 80,
+    "rating": 76.3,
     "meanRank": 131.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -2383,7 +2373,7 @@
     "rankDiff": 48
   },
   "190": {
-    "rating": 84.8,
+    "rating": 82,
     "meanRank": 107,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -2398,7 +2388,7 @@
     "rankDiff": 58
   },
   "191": {
-    "rating": 74.8,
+    "rating": 70.2,
     "meanRank": 157.8,
     "distanceUT": "205.0",
     "strideLengthUT": 23.29,
@@ -2413,7 +2403,7 @@
     "rankDiff": 225
   },
   "192": {
-    "rating": 65.7,
+    "rating": 59.3,
     "meanRank": 204.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -2428,7 +2418,7 @@
     "rankDiff": 370
   },
   "193": {
-    "rating": 73.5,
+    "rating": 68.6,
     "meanRank": 164.6,
     "distanceUT": "205.0",
     "strideLengthUT": 24.05,
@@ -2443,7 +2433,7 @@
     "rankDiff": 265
   },
   "194": {
-    "rating": 50.6,
+    "rating": 41.5,
     "meanRank": 281.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.75,
@@ -2458,7 +2448,7 @@
     "rankDiff": 186
   },
   "195": {
-    "rating": 69.6,
+    "rating": 64,
     "meanRank": 184.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.56,
@@ -2473,7 +2463,7 @@
     "rankDiff": 182
   },
   "196": {
-    "rating": 65.7,
+    "rating": 59.4,
     "meanRank": 204.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.56,
@@ -2488,7 +2478,7 @@
     "rankDiff": 310
   },
   "197": {
-    "rating": 75.3,
+    "rating": 70.8,
     "meanRank": 155.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.39,
@@ -2503,7 +2493,7 @@
     "rankDiff": 353
   },
   "198": {
-    "rating": 48.2,
+    "rating": 38.6,
     "meanRank": 294,
     "distanceUT": "205.0",
     "strideLengthUT": 22.01,
@@ -2521,7 +2511,7 @@
     "distanceUT": "205.0"
   },
   "200": {
-    "rating": 49.6,
+    "rating": 40.2,
     "meanRank": 286.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.47,
@@ -2536,7 +2526,7 @@
     "rankDiff": 216
   },
   "201": {
-    "rating": 81.7,
+    "rating": 78.3,
     "meanRank": 122.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -2551,7 +2541,7 @@
     "rankDiff": 30
   },
   "202": {
-    "rating": 55.8,
+    "rating": 47.6,
     "meanRank": 255.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -2566,7 +2556,7 @@
     "rankDiff": 206
   },
   "203": {
-    "rating": 79.4,
+    "rating": 82.1,
     "meanRank": 19,
     "distanceUT": "404.32",
     "strideLengthUT": 22.11,
@@ -2593,7 +2583,7 @@
     "distanceUT": "205.0"
   },
   "208": {
-    "rating": 73.2,
+    "rating": 68.3,
     "meanRank": 166,
     "distanceUT": "205.0",
     "strideLengthUT": 23.49,
@@ -2608,7 +2598,7 @@
     "rankDiff": 216
   },
   "209": {
-    "rating": 82.1,
+    "rating": 78.8,
     "meanRank": 120.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -2623,7 +2613,7 @@
     "rankDiff": 58
   },
   "210": {
-    "rating": 63,
+    "rating": 56.2,
     "meanRank": 218.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -2638,7 +2628,7 @@
     "rankDiff": 129
   },
   "211": {
-    "rating": 66.6,
+    "rating": 60.4,
     "meanRank": 200,
     "distanceUT": "205.0",
     "strideLengthUT": 23.1,
@@ -2653,7 +2643,7 @@
     "rankDiff": 320
   },
   "212": {
-    "rating": 48.9,
+    "rating": 41.5,
     "meanRank": 41.2,
     "distanceUT": "404.32",
     "strideLengthUT": 22.11,
@@ -2668,7 +2658,7 @@
     "rankDiff": 25
   },
   "213": {
-    "rating": 55.5,
+    "rating": 47.3,
     "meanRank": 256.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -2686,7 +2676,7 @@
     "distanceUT": "205.0"
   },
   "215": {
-    "rating": 59.6,
+    "rating": 55.7,
     "meanRank": 33.4,
     "distanceUT": "404.32",
     "strideLengthUT": 22.41,
@@ -2701,7 +2691,7 @@
     "rankDiff": 30
   },
   "216": {
-    "rating": 33.6,
+    "rating": 21.3,
     "meanRank": 368.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -2716,7 +2706,7 @@
     "rankDiff": 304
   },
   "217": {
-    "rating": 31.9,
+    "rating": 19.3,
     "meanRank": 377,
     "distanceUT": "205.0",
     "strideLengthUT": 20.24,
@@ -2734,7 +2724,7 @@
     "distanceUT": "205.0"
   },
   "219": {
-    "rating": 50.6,
+    "rating": 41.5,
     "meanRank": 281.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.87,
@@ -2749,7 +2739,7 @@
     "rankDiff": 356
   },
   "220": {
-    "rating": 73,
+    "rating": 68,
     "meanRank": 167.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.7,
@@ -2764,7 +2754,7 @@
     "rankDiff": 179
   },
   "221": {
-    "rating": 73.6,
+    "rating": 68.7,
     "meanRank": 164,
     "distanceUT": "205.0",
     "strideLengthUT": 21.13,
@@ -2779,7 +2769,7 @@
     "rankDiff": 82
   },
   "222": {
-    "rating": 69.5,
+    "rating": 63.9,
     "meanRank": 184.8,
     "distanceUT": "205.0",
     "strideLengthUT": 20.87,
@@ -2794,7 +2784,7 @@
     "rankDiff": 102
   },
   "223": {
-    "rating": 73.6,
+    "rating": 74.4,
     "meanRank": 23.2,
     "distanceUT": "404.32",
     "strideLengthUT": 22.7,
@@ -2812,7 +2802,7 @@
     "distanceUT": "205.0"
   },
   "225": {
-    "rating": 52.8,
+    "rating": 44.1,
     "meanRank": 270.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.18,
@@ -2827,7 +2817,7 @@
     "rankDiff": 250
   },
   "226": {
-    "rating": 58.8,
+    "rating": 51.2,
     "meanRank": 239.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.39,
@@ -2842,7 +2832,7 @@
     "rankDiff": 117
   },
   "227": {
-    "rating": 76,
+    "rating": 71.5,
     "meanRank": 152,
     "distanceUT": "205.0",
     "strideLengthUT": 21.13,
@@ -2860,7 +2850,7 @@
     "distanceUT": "205.0"
   },
   "229": {
-    "rating": 84.1,
+    "rating": 88.3,
     "meanRank": 15.6,
     "distanceUT": "404.32",
     "strideLengthUT": 22.38,
@@ -2875,7 +2865,7 @@
     "rankDiff": 4
   },
   "230": {
-    "rating": 54.8,
+    "rating": 46.5,
     "meanRank": 260,
     "distanceUT": "205.0",
     "strideLengthUT": 21.56,
@@ -2890,7 +2880,7 @@
     "rankDiff": 153
   },
   "231": {
-    "rating": 66.9,
+    "rating": 60.8,
     "meanRank": 198.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -2908,7 +2898,7 @@
     "distanceUT": "205.0"
   },
   "233": {
-    "rating": 72.4,
+    "rating": 67.2,
     "meanRank": 170.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.29,
@@ -2923,7 +2913,7 @@
     "rankDiff": 270
   },
   "234": {
-    "rating": 86.3,
+    "rating": 83.8,
     "meanRank": 99,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -2938,7 +2928,7 @@
     "rankDiff": 117
   },
   "235": {
-    "rating": 38.7,
+    "rating": 27.4,
     "meanRank": 342.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.36,
@@ -2953,7 +2943,7 @@
     "rankDiff": 259
   },
   "236": {
-    "rating": 52,
+    "rating": 43.1,
     "meanRank": 274.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.01,
@@ -2968,7 +2958,7 @@
     "rankDiff": 110
   },
   "237": {
-    "rating": 96.7,
+    "rating": 96.1,
     "meanRank": 46,
     "distanceUT": "205.0",
     "strideLengthUT": 23.13,
@@ -2983,7 +2973,7 @@
     "rankDiff": 22
   },
   "238": {
-    "rating": 40.5,
+    "rating": 29.4,
     "meanRank": 333.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.36,
@@ -3001,7 +2991,7 @@
     "distanceUT": "205.0"
   },
   "240": {
-    "rating": 77.7,
+    "rating": 73.6,
     "meanRank": 143.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.29,
@@ -3016,7 +3006,7 @@
     "rankDiff": 117
   },
   "241": {
-    "rating": 57.6,
+    "rating": 49.7,
     "meanRank": 246,
     "distanceUT": "205.0",
     "strideLengthUT": 22.64,
@@ -3031,7 +3021,7 @@
     "rankDiff": 259
   },
   "242": {
-    "rating": 63,
+    "rating": 56.2,
     "meanRank": 218,
     "distanceUT": "205.0",
     "strideLengthUT": 23.1,
@@ -3046,7 +3036,7 @@
     "rankDiff": 320
   },
   "243": {
-    "rating": 38.3,
+    "rating": 26.8,
     "meanRank": 344.6,
     "distanceUT": "205.0",
     "strideLengthUT": 20.44,
@@ -3061,7 +3051,7 @@
     "rankDiff": 182
   },
   "244": {
-    "rating": 51.8,
+    "rating": 42.9,
     "meanRank": 275.4,
     "distanceUT": "205.0",
     "strideLengthUT": 20.64,
@@ -3076,7 +3066,7 @@
     "rankDiff": 270
   },
   "245": {
-    "rating": 92.7,
+    "rating": 91.3,
     "meanRank": 66.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -3091,7 +3081,7 @@
     "rankDiff": 28
   },
   "246": {
-    "rating": 99.2,
+    "rating": 99.1,
     "meanRank": 33.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.82,
@@ -3115,7 +3105,7 @@
     "distanceUT": "205.0"
   },
   "250": {
-    "rating": 67,
+    "rating": 65.6,
     "meanRank": 28,
     "distanceUT": "404.32",
     "strideLengthUT": 22.57,
@@ -3130,7 +3120,7 @@
     "rankDiff": 45
   },
   "251": {
-    "rating": 68.7,
+    "rating": 62.9,
     "meanRank": 189,
     "distanceUT": "205.0",
     "strideLengthUT": 23.36,
@@ -3145,7 +3135,7 @@
     "rankDiff": 279
   },
   "252": {
-    "rating": 35.4,
+    "rating": 23.5,
     "meanRank": 359.2,
     "distanceUT": "205.0",
     "strideLengthUT": 20.7,
@@ -3160,7 +3150,7 @@
     "rankDiff": 186
   },
   "253": {
-    "rating": 80.8,
+    "rating": 77.3,
     "meanRank": 127.2,
     "distanceUT": "205.0",
     "strideLengthUT": 24.41,
@@ -3178,7 +3168,7 @@
     "distanceUT": "205.0"
   },
   "255": {
-    "rating": 67.4,
+    "rating": 61.4,
     "meanRank": 195.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -3193,7 +3183,7 @@
     "rankDiff": 332
   },
   "256": {
-    "rating": 66.6,
+    "rating": 60.4,
     "meanRank": 200,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -3208,7 +3198,7 @@
     "rankDiff": 169
   },
   "257": {
-    "rating": 40.7,
+    "rating": 29.8,
     "meanRank": 332,
     "distanceUT": "205.0",
     "strideLengthUT": 22.01,
@@ -3223,7 +3213,7 @@
     "rankDiff": 318
   },
   "258": {
-    "rating": 56.6,
+    "rating": 48.6,
     "meanRank": 250.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.1,
@@ -3238,7 +3228,7 @@
     "rankDiff": 102
   },
   "259": {
-    "rating": 59.6,
+    "rating": 52.2,
     "meanRank": 235.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -3256,7 +3246,7 @@
     "distanceUT": "205.0"
   },
   "261": {
-    "rating": 91.5,
+    "rating": 89.9,
     "meanRank": 72.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -3271,7 +3261,7 @@
     "rankDiff": 45
   },
   "262": {
-    "rating": 93.5,
+    "rating": 92.3,
     "meanRank": 62.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.87,
@@ -3289,7 +3279,7 @@
     "distanceUT": "205.0"
   },
   "264": {
-    "rating": 57.3,
+    "rating": 49.4,
     "meanRank": 247.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.52,
@@ -3304,7 +3294,7 @@
     "rankDiff": 82
   },
   "265": {
-    "rating": 79.5,
+    "rating": 75.7,
     "meanRank": 134,
     "distanceUT": "205.0",
     "strideLengthUT": 22.83,
@@ -3319,7 +3309,7 @@
     "rankDiff": 89
   },
   "266": {
-    "rating": 63.2,
+    "rating": 56.4,
     "meanRank": 217,
     "distanceUT": "205.0",
     "strideLengthUT": 22.64,
@@ -3334,7 +3324,7 @@
     "rankDiff": 250
   },
   "267": {
-    "rating": 77,
+    "rating": 72.7,
     "meanRank": 146.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.52,
@@ -3352,7 +3342,7 @@
     "distanceUT": "205.0"
   },
   "269": {
-    "rating": 89.6,
+    "rating": 87.7,
     "meanRank": 82.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -3370,7 +3360,7 @@
     "distanceUT": "205.0"
   },
   "271": {
-    "rating": 69.2,
+    "rating": 63.4,
     "meanRank": 186.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.9,
@@ -3385,7 +3375,7 @@
     "rankDiff": 265
   },
   "272": {
-    "rating": 78,
+    "rating": 73.9,
     "meanRank": 141.8,
     "distanceUT": "205.0",
     "strideLengthUT": 24.61,
@@ -3406,7 +3396,7 @@
     "distanceUT": "205.0"
   },
   "275": {
-    "rating": 42.1,
+    "rating": 31.4,
     "meanRank": 325,
     "distanceUT": "205.0",
     "strideLengthUT": 21.56,
@@ -3421,7 +3411,7 @@
     "rankDiff": 162
   },
   "276": {
-    "rating": 39.2,
+    "rating": 27.9,
     "meanRank": 340,
     "distanceUT": "205.0",
     "strideLengthUT": 22.01,
@@ -3436,7 +3426,7 @@
     "rankDiff": 240
   },
   "277": {
-    "rating": 57,
+    "rating": 49,
     "meanRank": 249,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -3451,7 +3441,7 @@
     "rankDiff": 250
   },
   "278": {
-    "rating": 72.3,
+    "rating": 67.2,
     "meanRank": 170.6,
     "distanceUT": "205.0",
     "strideLengthUT": 24.44,
@@ -3466,7 +3456,7 @@
     "rankDiff": 362
   },
   "279": {
-    "rating": 47,
+    "rating": 38.9,
     "meanRank": 42.6,
     "distanceUT": "404.32",
     "strideLengthUT": 21.72,
@@ -3481,7 +3471,7 @@
     "rankDiff": 32
   },
   "280": {
-    "rating": 47.9,
+    "rating": 38.3,
     "meanRank": 295.2,
     "distanceUT": "205.0",
     "strideLengthUT": 20.9,
@@ -3496,7 +3486,7 @@
     "rankDiff": 237
   },
   "281": {
-    "rating": 38.1,
+    "rating": 26.7,
     "meanRank": 345.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.52,
@@ -3511,7 +3501,7 @@
     "rankDiff": 390
   },
   "282": {
-    "rating": 38.9,
+    "rating": 27.5,
     "meanRank": 341.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.56,
@@ -3526,7 +3516,7 @@
     "rankDiff": 279
   },
   "283": {
-    "rating": 76.6,
+    "rating": 72.3,
     "meanRank": 148.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -3541,7 +3531,7 @@
     "rankDiff": 110
   },
   "284": {
-    "rating": 82.4,
+    "rating": 86.1,
     "meanRank": 16.8,
     "distanceUT": "404.32",
     "strideLengthUT": 22.24,
@@ -3559,7 +3549,7 @@
     "distanceUT": "205.0"
   },
   "286": {
-    "rating": 66.1,
+    "rating": 59.8,
     "meanRank": 202.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -3574,7 +3564,7 @@
     "rankDiff": 332
   },
   "287": {
-    "rating": 66.3,
+    "rating": 60,
     "meanRank": 201.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.47,
@@ -3589,7 +3579,7 @@
     "rankDiff": 356
   },
   "288": {
-    "rating": 39.6,
+    "rating": 28.5,
     "meanRank": 337.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.01,
@@ -3604,7 +3594,7 @@
     "rankDiff": 332
   },
   "289": {
-    "rating": 63.4,
+    "rating": 56.6,
     "meanRank": 216.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -3619,7 +3609,7 @@
     "rankDiff": 153
   },
   "290": {
-    "rating": 63.2,
+    "rating": 60.5,
     "meanRank": 30.8,
     "distanceUT": "404.32",
     "strideLengthUT": 22.34,
@@ -3637,7 +3627,7 @@
     "distanceUT": "205.0"
   },
   "292": {
-    "rating": 90.3,
+    "rating": 88.4,
     "meanRank": 79,
     "distanceUT": "205.0",
     "strideLengthUT": 22.47,
@@ -3652,7 +3642,7 @@
     "rankDiff": 82
   },
   "293": {
-    "rating": 79.1,
+    "rating": 81.7,
     "meanRank": 19.2,
     "distanceUT": "404.32",
     "strideLengthUT": 23.52,
@@ -3667,7 +3657,7 @@
     "rankDiff": 44
   },
   "294": {
-    "rating": 64.5,
+    "rating": 62.3,
     "meanRank": 29.8,
     "distanceUT": "404.32",
     "strideLengthUT": 21.65,
@@ -3685,7 +3675,7 @@
     "distanceUT": "205.0"
   },
   "296": {
-    "rating": 45.2,
+    "rating": 35,
     "meanRank": 309.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.1,
@@ -3700,7 +3690,7 @@
     "rankDiff": 310
   },
   "297": {
-    "rating": 59.3,
+    "rating": 51.8,
     "meanRank": 237,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -3715,7 +3705,7 @@
     "rankDiff": 186
   },
   "298": {
-    "rating": 89.2,
+    "rating": 87.2,
     "meanRank": 84.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -3730,7 +3720,7 @@
     "rankDiff": 58
   },
   "299": {
-    "rating": 65.1,
+    "rating": 63,
     "meanRank": 29.4,
     "distanceUT": "404.32",
     "strideLengthUT": 23.26,
@@ -3745,7 +3735,7 @@
     "rankDiff": 57
   },
   "300": {
-    "rating": 73.4,
+    "rating": 68.5,
     "meanRank": 165.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.1,
@@ -3760,7 +3750,7 @@
     "rankDiff": 225
   },
   "301": {
-    "rating": 83,
+    "rating": 79.8,
     "meanRank": 116.2,
     "distanceUT": "205.0",
     "strideLengthUT": 20.87,
@@ -3775,7 +3765,7 @@
     "rankDiff": 6
   },
   "302": {
-    "rating": 69.1,
+    "rating": 63.4,
     "meanRank": 187.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -3790,7 +3780,7 @@
     "rankDiff": 341
   },
   "303": {
-    "rating": 56.5,
+    "rating": 48.5,
     "meanRank": 251.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -3805,7 +3795,7 @@
     "rankDiff": 145
   },
   "304": {
-    "rating": 42.3,
+    "rating": 31.6,
     "meanRank": 324,
     "distanceUT": "205.0",
     "strideLengthUT": 20.44,
@@ -3820,7 +3810,7 @@
     "rankDiff": 225
   },
   "305": {
-    "rating": 53.2,
+    "rating": 44.5,
     "meanRank": 268.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.13,
@@ -3838,7 +3828,7 @@
     "distanceUT": "205.0"
   },
   "307": {
-    "rating": 54.4,
+    "rating": 45.9,
     "meanRank": 262.4,
     "distanceUT": "205.0",
     "strideLengthUT": 20.44,
@@ -3853,7 +3843,7 @@
     "rankDiff": 145
   },
   "308": {
-    "rating": 87.2,
+    "rating": 84.9,
     "meanRank": 94.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.7,
@@ -3868,7 +3858,7 @@
     "rankDiff": 72
   },
   "309": {
-    "rating": 25.3,
+    "rating": 10,
     "meanRank": 58.4,
     "distanceUT": "404.32",
     "strideLengthUT": 21.23,
@@ -3883,7 +3873,7 @@
     "rankDiff": 51
   },
   "310": {
-    "rating": 53.5,
+    "rating": 44.8,
     "meanRank": 267,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -3901,7 +3891,7 @@
     "distanceUT": "205.0"
   },
   "312": {
-    "rating": 72.2,
+    "rating": 72.6,
     "meanRank": 24.2,
     "distanceUT": "404.32",
     "strideLengthUT": 20.11,
@@ -3916,7 +3906,7 @@
     "rankDiff": 1
   },
   "313": {
-    "rating": 89,
+    "rating": 87,
     "meanRank": 85.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -3931,7 +3921,7 @@
     "rankDiff": 10
   },
   "314": {
-    "rating": 65.5,
+    "rating": 59.1,
     "meanRank": 205.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -3946,7 +3936,7 @@
     "rankDiff": 153
   },
   "315": {
-    "rating": 78.5,
+    "rating": 74.5,
     "meanRank": 139.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.88,
@@ -3961,7 +3951,7 @@
     "rankDiff": 353
   },
   "316": {
-    "rating": 81.5,
+    "rating": 78.1,
     "meanRank": 123.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.88,
@@ -3976,7 +3966,7 @@
     "rankDiff": 338
   },
   "317": {
-    "rating": 51.1,
+    "rating": 44.4,
     "meanRank": 39.6,
     "distanceUT": "404.32",
     "strideLengthUT": 21.92,
@@ -3991,7 +3981,7 @@
     "rankDiff": 31
   },
   "318": {
-    "rating": 95.7,
+    "rating": 94.9,
     "meanRank": 51.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.82,
@@ -4006,7 +3996,7 @@
     "rankDiff": 96
   },
   "319": {
-    "rating": 60.7,
+    "rating": 53.5,
     "meanRank": 229.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.7,
@@ -4021,7 +4011,7 @@
     "rankDiff": 304
   },
   "320": {
-    "rating": 92.3,
+    "rating": 99.3,
     "meanRank": 9.6,
     "distanceUT": "404.32",
     "strideLengthUT": 23.2,
@@ -4036,7 +4026,7 @@
     "rankDiff": 11
   },
   "321": {
-    "rating": 64.3,
+    "rating": 57.7,
     "meanRank": 211.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -4051,7 +4041,7 @@
     "rankDiff": 385
   },
   "322": {
-    "rating": 74.4,
+    "rating": 69.6,
     "meanRank": 160.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.9,
@@ -4066,7 +4056,7 @@
     "rankDiff": 182
   },
   "323": {
-    "rating": 63.9,
+    "rating": 57.2,
     "meanRank": 213.8,
     "distanceUT": "205.0",
     "strideLengthUT": 23.06,
@@ -4084,7 +4074,7 @@
     "distanceUT": "205.0"
   },
   "325": {
-    "rating": 54.1,
+    "rating": 45.6,
     "meanRank": 263.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.82,
@@ -4099,7 +4089,7 @@
     "rankDiff": 206
   },
   "326": {
-    "rating": 46.8,
+    "rating": 37,
     "meanRank": 301,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -4114,7 +4104,7 @@
     "rankDiff": 274
   },
   "327": {
-    "rating": 45.8,
+    "rating": 35.7,
     "meanRank": 306.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.13,
@@ -4129,7 +4119,7 @@
     "rankDiff": 326
   },
   "328": {
-    "rating": 82.1,
+    "rating": 78.8,
     "meanRank": 120.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -4147,7 +4137,7 @@
     "distanceUT": "205.0"
   },
   "330": {
-    "rating": 63.2,
+    "rating": 60.5,
     "meanRank": 30.8,
     "distanceUT": "404.32",
     "strideLengthUT": 22.97,
@@ -4162,7 +4152,7 @@
     "rankDiff": 56
   },
   "331": {
-    "rating": 52,
+    "rating": 43.2,
     "meanRank": 274.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -4180,7 +4170,7 @@
     "distanceUT": "205.0"
   },
   "333": {
-    "rating": 76,
+    "rating": 71.5,
     "meanRank": 152,
     "distanceUT": "205.0",
     "strideLengthUT": 23.75,
@@ -4201,7 +4191,7 @@
     "distanceUT": "205.0"
   },
   "336": {
-    "rating": 71.3,
+    "rating": 66,
     "meanRank": 175.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.93,
@@ -4216,7 +4206,7 @@
     "rankDiff": 274
   },
   "337": {
-    "rating": 61.9,
+    "rating": 54.9,
     "meanRank": 223.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -4231,7 +4221,7 @@
     "rankDiff": 206
   },
   "338": {
-    "rating": 68.2,
+    "rating": 62.3,
     "meanRank": 191.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.64,
@@ -4246,7 +4236,7 @@
     "rankDiff": 169
   },
   "339": {
-    "rating": 38.3,
+    "rating": 26.9,
     "meanRank": 344.2,
     "distanceUT": "205.0",
     "strideLengthUT": 19.59,
@@ -4261,7 +4251,7 @@
     "rankDiff": 153
   },
   "340": {
-    "rating": 68.8,
+    "rating": 63,
     "meanRank": 188.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -4276,7 +4266,7 @@
     "rankDiff": 135
   },
   "341": {
-    "rating": 40.6,
+    "rating": 29.6,
     "meanRank": 332.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.59,
@@ -4291,7 +4281,7 @@
     "rankDiff": 265
   },
   "342": {
-    "rating": 58.9,
+    "rating": 51.3,
     "meanRank": 239,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -4306,7 +4296,7 @@
     "rankDiff": 129
   },
   "343": {
-    "rating": 71.4,
+    "rating": 71.5,
     "meanRank": 24.8,
     "distanceUT": "404.32",
     "strideLengthUT": 23.43,
@@ -4321,7 +4311,7 @@
     "rankDiff": 54
   },
   "344": {
-    "rating": 42.3,
+    "rating": 31.6,
     "meanRank": 324,
     "distanceUT": "205.0",
     "strideLengthUT": 20.44,
@@ -4336,7 +4326,7 @@
     "rankDiff": 225
   },
   "345": {
-    "rating": 53.8,
+    "rating": 45.2,
     "meanRank": 265.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.82,
@@ -4354,7 +4344,7 @@
     "distanceUT": "205.0"
   },
   "347": {
-    "rating": 87.4,
+    "rating": 85,
     "meanRank": 93.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -4372,7 +4362,7 @@
     "distanceUT": "205.0"
   },
   "349": {
-    "rating": 91.1,
+    "rating": 89.5,
     "meanRank": 74.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.28,
@@ -4387,7 +4377,7 @@
     "rankDiff": 14
   },
   "350": {
-    "rating": 37.9,
+    "rating": 26.8,
     "meanRank": 49.2,
     "distanceUT": "404.32",
     "strideLengthUT": 21.42,
@@ -4405,7 +4395,7 @@
     "distanceUT": "205.0"
   },
   "352": {
-    "rating": 59.9,
+    "rating": 52.4,
     "meanRank": 234.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -4420,7 +4410,7 @@
     "rankDiff": 135
   },
   "353": {
-    "rating": 69.9,
+    "rating": 64.3,
     "meanRank": 183.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.1,
@@ -4444,7 +4434,7 @@
     "distanceUT": "205.0"
   },
   "357": {
-    "rating": 72,
+    "rating": 66.8,
     "meanRank": 172.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.29,
@@ -4459,7 +4449,7 @@
     "rankDiff": 216
   },
   "358": {
-    "rating": 56.4,
+    "rating": 48.3,
     "meanRank": 252,
     "distanceUT": "205.0",
     "strideLengthUT": 21.26,
@@ -4480,7 +4470,7 @@
     "distanceUT": "205.0"
   },
   "361": {
-    "rating": 80.8,
+    "rating": 77.3,
     "meanRank": 127.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -4495,7 +4485,7 @@
     "rankDiff": 104
   },
   "362": {
-    "rating": 90.9,
+    "rating": 89.2,
     "meanRank": 75.8,
     "distanceUT": "205.0",
     "strideLengthUT": 23.56,
@@ -4510,7 +4500,7 @@
     "rankDiff": 169
   },
   "363": {
-    "rating": 95.2,
+    "rating": 94.3,
     "meanRank": 53.8,
     "distanceUT": "205.0",
     "strideLengthUT": 23.56,
@@ -4525,7 +4515,7 @@
     "rankDiff": 89
   },
   "364": {
-    "rating": 48.4,
+    "rating": 38.8,
     "meanRank": 293,
     "distanceUT": "205.0",
     "strideLengthUT": 21.36,
@@ -4540,7 +4530,7 @@
     "rankDiff": 78
   },
   "365": {
-    "rating": 65.6,
+    "rating": 59.2,
     "meanRank": 205,
     "distanceUT": "205.0",
     "strideLengthUT": 22.47,
@@ -4555,7 +4545,7 @@
     "rankDiff": 117
   },
   "366": {
-    "rating": 67.3,
+    "rating": 66,
     "meanRank": 27.8,
     "distanceUT": "404.32",
     "strideLengthUT": 22.38,
@@ -4570,7 +4560,7 @@
     "rankDiff": 8
   },
   "367": {
-    "rating": 91.4,
+    "rating": 89.8,
     "meanRank": 73.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.93,
@@ -4585,7 +4575,7 @@
     "rankDiff": 96
   },
   "368": {
-    "rating": 75.6,
+    "rating": 71.1,
     "meanRank": 154,
     "distanceUT": "205.0",
     "strideLengthUT": 21.13,
@@ -4600,7 +4590,7 @@
     "rankDiff": 58
   },
   "369": {
-    "rating": 50.8,
+    "rating": 44,
     "meanRank": 39.8,
     "distanceUT": "404.32",
     "strideLengthUT": 21.19,
@@ -4618,7 +4608,7 @@
     "distanceUT": "205.0"
   },
   "371": {
-    "rating": 58.9,
+    "rating": 51.3,
     "meanRank": 239,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -4633,7 +4623,7 @@
     "rankDiff": 129
   },
   "372": {
-    "rating": 83.7,
+    "rating": 80.7,
     "meanRank": 112.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.85,
@@ -4648,7 +4638,7 @@
     "rankDiff": 310
   },
   "373": {
-    "rating": 76.1,
+    "rating": 71.7,
     "meanRank": 151.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.29,
@@ -4666,7 +4656,7 @@
     "distanceUT": "205.0"
   },
   "375": {
-    "rating": 56.9,
+    "rating": 48.9,
     "meanRank": 249.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -4687,7 +4677,7 @@
     "distanceUT": "205.0"
   },
   "378": {
-    "rating": 48.1,
+    "rating": 38.5,
     "meanRank": 294.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.59,
@@ -4702,7 +4692,7 @@
     "rankDiff": 375
   },
   "379": {
-    "rating": 80.3,
+    "rating": 76.7,
     "meanRank": 129.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.62,
@@ -4741,7 +4731,7 @@
     "distanceUT": "205.0"
   },
   "384": {
-    "rating": 60.7,
+    "rating": 53.4,
     "meanRank": 230,
     "distanceUT": "205.0",
     "strideLengthUT": 21.1,
@@ -4756,7 +4746,7 @@
     "rankDiff": 101
   },
   "385": {
-    "rating": 36.9,
+    "rating": 25.2,
     "meanRank": 351.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.83,
@@ -4771,7 +4761,7 @@
     "rankDiff": 359
   },
   "386": {
-    "rating": 44.2,
+    "rating": 35.2,
     "meanRank": 44.6,
     "distanceUT": "404.32",
     "strideLengthUT": 21.49,
@@ -4786,7 +4776,7 @@
     "rankDiff": 35
   },
   "387": {
-    "rating": 96.7,
+    "rating": 96.1,
     "meanRank": 46,
     "distanceUT": "205.0",
     "strideLengthUT": 23.13,
@@ -4801,7 +4791,7 @@
     "rankDiff": 22
   },
   "388": {
-    "rating": 60.7,
+    "rating": 53.4,
     "meanRank": 230.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.06,
@@ -4816,7 +4806,7 @@
     "rankDiff": 265
   },
   "389": {
-    "rating": 91.2,
+    "rating": 89.6,
     "meanRank": 74.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.47,
@@ -4834,7 +4824,7 @@
     "distanceUT": "205.0"
   },
   "391": {
-    "rating": 66.1,
+    "rating": 59.8,
     "meanRank": 202.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.51,
@@ -4849,7 +4839,7 @@
     "rankDiff": 370
   },
   "392": {
-    "rating": 77.4,
+    "rating": 73.2,
     "meanRank": 144.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -4864,7 +4854,7 @@
     "rankDiff": 58
   },
   "393": {
-    "rating": 54.6,
+    "rating": 46.2,
     "meanRank": 261,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -4879,7 +4869,7 @@
     "rankDiff": 279
   },
   "394": {
-    "rating": 57.5,
+    "rating": 49.7,
     "meanRank": 246.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -4894,16 +4884,12 @@
     "rankDiff": 169
   },
   "395": {
-    "rating": 83,
-    "meanRank": 116,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.3,
-    "rankTimeUt": 224,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "396": {
-    "rating": 62.6,
+    "rating": 55.6,
     "meanRank": 220.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.52,
@@ -4918,7 +4904,7 @@
     "rankDiff": 153
   },
   "397": {
-    "rating": 37.2,
+    "rating": 25.6,
     "meanRank": 349.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -4933,7 +4919,7 @@
     "rankDiff": 393
   },
   "398": {
-    "rating": 96.1,
+    "rating": 95.4,
     "meanRank": 49,
     "distanceUT": "205.0",
     "strideLengthUT": 24.02,
@@ -4951,7 +4937,7 @@
     "distanceUT": "205.0"
   },
   "400": {
-    "rating": 28.4,
+    "rating": 15.1,
     "meanRank": 395.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -4966,7 +4952,7 @@
     "rankDiff": 338
   },
   "401": {
-    "rating": 63,
+    "rating": 56.2,
     "meanRank": 218,
     "distanceUT": "205.0",
     "strideLengthUT": 23.1,
@@ -4981,7 +4967,7 @@
     "rankDiff": 320
   },
   "402": {
-    "rating": 71.7,
+    "rating": 66.5,
     "meanRank": 173.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.05,
@@ -4996,7 +4982,7 @@
     "rankDiff": 43
   },
   "403": {
-    "rating": 68.2,
+    "rating": 62.3,
     "meanRank": 191.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.64,
@@ -5014,7 +5000,7 @@
     "distanceUT": "205.0"
   },
   "405": {
-    "rating": 91.1,
+    "rating": 89.5,
     "meanRank": 74.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.28,
@@ -5029,7 +5015,7 @@
     "rankDiff": 14
   },
   "406": {
-    "rating": 47,
+    "rating": 37.1,
     "meanRank": 300.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -5044,7 +5030,7 @@
     "rankDiff": 326
   },
   "407": {
-    "rating": 64.5,
+    "rating": 58,
     "meanRank": 210.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.1,
@@ -5059,7 +5045,7 @@
     "rankDiff": 396
   },
   "408": {
-    "rating": 97.4,
+    "rating": 96.9,
     "meanRank": 42.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.87,
@@ -5074,7 +5060,7 @@
     "rankDiff": 11
   },
   "409": {
-    "rating": 78.2,
+    "rating": 74.2,
     "meanRank": 140.4,
     "distanceUT": "205.0",
     "strideLengthUT": 25.3,
@@ -5089,7 +5075,7 @@
     "rankDiff": 291
   },
   "410": {
-    "rating": 75.6,
+    "rating": 71.1,
     "meanRank": 153.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -5104,7 +5090,7 @@
     "rankDiff": 82
   },
   "411": {
-    "rating": 71.5,
+    "rating": 66.3,
     "meanRank": 174.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.56,
@@ -5119,7 +5105,7 @@
     "rankDiff": 145
   },
   "412": {
-    "rating": 91.2,
+    "rating": 89.5,
     "meanRank": 74.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.29,
@@ -5140,16 +5126,12 @@
     "distanceUT": "205.0"
   },
   "415": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "416": {
-    "rating": 68,
+    "rating": 62.1,
     "meanRank": 192.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -5164,7 +5146,7 @@
     "rankDiff": 359
   },
   "417": {
-    "rating": 49.6,
+    "rating": 40.3,
     "meanRank": 286.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.36,
@@ -5179,7 +5161,7 @@
     "rankDiff": 153
   },
   "418": {
-    "rating": 59.9,
+    "rating": 52.4,
     "meanRank": 234.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -5194,7 +5176,7 @@
     "rankDiff": 135
   },
   "419": {
-    "rating": 78,
+    "rating": 73.9,
     "meanRank": 141.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.62,
@@ -5215,7 +5197,7 @@
     "distanceUT": "205.0"
   },
   "422": {
-    "rating": 42.9,
+    "rating": 32.4,
     "meanRank": 320.8,
     "distanceUT": "205.0",
     "strideLengthUT": 20.9,
@@ -5239,7 +5221,7 @@
     "distanceUT": "205.0"
   },
   "426": {
-    "rating": 46.4,
+    "rating": 36.4,
     "meanRank": 303.2,
     "distanceUT": "205.0",
     "strideLengthUT": 20.44,
@@ -5254,7 +5236,7 @@
     "rankDiff": 124
   },
   "427": {
-    "rating": 56.8,
+    "rating": 48.8,
     "meanRank": 249.8,
     "distanceUT": "205.0",
     "strideLengthUT": 24.21,
@@ -5269,7 +5251,7 @@
     "rankDiff": 320
   },
   "428": {
-    "rating": 78.3,
+    "rating": 74.3,
     "meanRank": 140.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.13,
@@ -5284,7 +5266,7 @@
     "rankDiff": 28
   },
   "429": {
-    "rating": 65.9,
+    "rating": 59.6,
     "meanRank": 203.4,
     "distanceUT": "205.0",
     "strideLengthUT": 24.21,
@@ -5299,7 +5281,7 @@
     "rankDiff": 310
   },
   "430": {
-    "rating": 28.4,
+    "rating": 15.1,
     "meanRank": 395,
     "distanceUT": "205.0",
     "strideLengthUT": 20.31,
@@ -5314,7 +5296,7 @@
     "rankDiff": 196
   },
   "431": {
-    "rating": 44.2,
+    "rating": 33.9,
     "meanRank": 314.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.95,
@@ -5329,7 +5311,7 @@
     "rankDiff": 395
   },
   "432": {
-    "rating": 66.8,
+    "rating": 60.7,
     "meanRank": 198.8,
     "distanceUT": "205.0",
     "strideLengthUT": 23.1,
@@ -5344,7 +5326,7 @@
     "rankDiff": 270
   },
   "433": {
-    "rating": 54.4,
+    "rating": 48.8,
     "meanRank": 37.2,
     "distanceUT": "404.32",
     "strideLengthUT": 21.82,
@@ -5359,7 +5341,7 @@
     "rankDiff": 53
   },
   "434": {
-    "rating": 96,
+    "rating": 95.3,
     "meanRank": 49.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.56,
@@ -5374,7 +5356,7 @@
     "rankDiff": 72
   },
   "435": {
-    "rating": 63.2,
+    "rating": 56.4,
     "meanRank": 217.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -5389,7 +5371,7 @@
     "rankDiff": 216
   },
   "436": {
-    "rating": 89.8,
+    "rating": 87.9,
     "meanRank": 81.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.87,
@@ -5404,7 +5386,7 @@
     "rankDiff": 135
   },
   "437": {
-    "rating": 79.6,
+    "rating": 75.8,
     "meanRank": 133.6,
     "distanceUT": "205.0",
     "strideLengthUT": 24.11,
@@ -5419,7 +5401,7 @@
     "rankDiff": 368
   },
   "438": {
-    "rating": 65.8,
+    "rating": 59.5,
     "meanRank": 203.8,
     "distanceUT": "205.0",
     "strideLengthUT": 23.75,
@@ -5437,7 +5419,7 @@
     "distanceUT": "205.0"
   },
   "440": {
-    "rating": 91.2,
+    "rating": 89.6,
     "meanRank": 74.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.28,
@@ -5455,7 +5437,7 @@
     "distanceUT": "205.0"
   },
   "442": {
-    "rating": 99.1,
+    "rating": 99,
     "meanRank": 33.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.13,
@@ -5473,7 +5455,7 @@
     "distanceUT": "205.0"
   },
   "444": {
-    "rating": 51.9,
+    "rating": 45.5,
     "meanRank": 39,
     "distanceUT": "404.32",
     "strideLengthUT": 22.34,
@@ -5488,7 +5470,7 @@
     "rankDiff": 41
   },
   "445": {
-    "rating": 72.3,
+    "rating": 67.2,
     "meanRank": 170.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.47,
@@ -5503,7 +5485,7 @@
     "rankDiff": 299
   },
   "446": {
-    "rating": 82.1,
+    "rating": 78.8,
     "meanRank": 120.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -5521,7 +5503,7 @@
     "distanceUT": "205.0"
   },
   "448": {
-    "rating": 49,
+    "rating": 39.6,
     "meanRank": 289.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.6,
@@ -5536,7 +5518,7 @@
     "rankDiff": 291
   },
   "449": {
-    "rating": 80.3,
+    "rating": 76.7,
     "meanRank": 129.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.39,
@@ -5557,7 +5539,7 @@
     "distanceUT": "205.0"
   },
   "452": {
-    "rating": 31.6,
+    "rating": 18.9,
     "meanRank": 378.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.16,
@@ -5572,7 +5554,7 @@
     "rankDiff": 225
   },
   "453": {
-    "rating": 92.9,
+    "rating": 100,
     "meanRank": 9.2,
     "distanceUT": "404.32",
     "strideLengthUT": 23.46,
@@ -5590,7 +5572,7 @@
     "distanceUT": "205.0"
   },
   "455": {
-    "rating": 94.1,
+    "rating": 93,
     "meanRank": 59.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.13,
@@ -5605,7 +5587,7 @@
     "rankDiff": 75
   },
   "456": {
-    "rating": 47.9,
+    "rating": 38.3,
     "meanRank": 295.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -5623,7 +5605,7 @@
     "distanceUT": "205.0"
   },
   "458": {
-    "rating": 55.4,
+    "rating": 47.1,
     "meanRank": 257.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -5638,7 +5620,7 @@
     "rankDiff": 265
   },
   "459": {
-    "rating": 91.5,
+    "rating": 89.9,
     "meanRank": 72.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -5656,7 +5638,7 @@
     "distanceUT": "205.0"
   },
   "461": {
-    "rating": 70.6,
+    "rating": 65.2,
     "meanRank": 179.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.1,
@@ -5671,7 +5653,7 @@
     "rankDiff": 216
   },
   "462": {
-    "rating": 77,
+    "rating": 72.7,
     "meanRank": 146.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -5686,7 +5668,7 @@
     "rankDiff": 117
   },
   "463": {
-    "rating": 69.9,
+    "rating": 64.3,
     "meanRank": 183,
     "distanceUT": "205.0",
     "strideLengthUT": 21.59,
@@ -5701,7 +5683,7 @@
     "rankDiff": 48
   },
   "464": {
-    "rating": 66.7,
+    "rating": 60.6,
     "meanRank": 199.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -5716,7 +5698,7 @@
     "rankDiff": 216
   },
   "465": {
-    "rating": 65.2,
+    "rating": 58.8,
     "meanRank": 206.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -5731,7 +5713,7 @@
     "rankDiff": 104
   },
   "466": {
-    "rating": 82.8,
+    "rating": 79.6,
     "meanRank": 117.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.62,
@@ -5746,7 +5728,7 @@
     "rankDiff": 310
   },
   "467": {
-    "rating": 55.2,
+    "rating": 46.9,
     "meanRank": 258.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.13,
@@ -5761,7 +5743,7 @@
     "rankDiff": 240
   },
   "468": {
-    "rating": 62.3,
+    "rating": 55.4,
     "meanRank": 221.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.39,
@@ -5782,7 +5764,7 @@
     "distanceUT": "205.0"
   },
   "471": {
-    "rating": 46.1,
+    "rating": 37.8,
     "meanRank": 43.2,
     "distanceUT": "404.32",
     "strideLengthUT": 22.11,
@@ -5797,7 +5779,7 @@
     "rankDiff": 32
   },
   "472": {
-    "rating": 83.5,
+    "rating": 87.6,
     "meanRank": 16,
     "distanceUT": "404.32",
     "strideLengthUT": 22.18,
@@ -5812,7 +5794,7 @@
     "rankDiff": 6
   },
   "473": {
-    "rating": 47,
+    "rating": 37.1,
     "meanRank": 300.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -5827,7 +5809,7 @@
     "rankDiff": 291
   },
   "474": {
-    "rating": 75.1,
+    "rating": 70.5,
     "meanRank": 156.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.9,
@@ -5842,7 +5824,7 @@
     "rankDiff": 310
   },
   "475": {
-    "rating": 75.3,
+    "rating": 70.8,
     "meanRank": 155.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.59,
@@ -5857,7 +5839,7 @@
     "rankDiff": 117
   },
   "476": {
-    "rating": 77.8,
+    "rating": 73.7,
     "meanRank": 142.6,
     "distanceUT": "205.0",
     "strideLengthUT": 24.11,
@@ -5872,7 +5854,7 @@
     "rankDiff": 377
   },
   "477": {
-    "rating": 84.8,
+    "rating": 82,
     "meanRank": 107,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -5887,7 +5869,7 @@
     "rankDiff": 58
   },
   "478": {
-    "rating": 63.7,
+    "rating": 57,
     "meanRank": 214.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.18,
@@ -5902,7 +5884,7 @@
     "rankDiff": 206
   },
   "479": {
-    "rating": 68.1,
+    "rating": 62.2,
     "meanRank": 192.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.9,
@@ -5920,7 +5902,7 @@
     "distanceUT": "205.0"
   },
   "481": {
-    "rating": 49.5,
+    "rating": 40.2,
     "meanRank": 287.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.56,
@@ -5935,7 +5917,7 @@
     "rankDiff": 132
   },
   "482": {
-    "rating": 93.7,
+    "rating": 92.6,
     "meanRank": 61.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -5950,7 +5932,7 @@
     "rankDiff": 58
   },
   "483": {
-    "rating": 94.3,
+    "rating": 93.2,
     "meanRank": 58.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -5965,7 +5947,7 @@
     "rankDiff": 22
   },
   "484": {
-    "rating": 41.5,
+    "rating": 30.7,
     "meanRank": 328,
     "distanceUT": "205.0",
     "strideLengthUT": 21.56,
@@ -5980,7 +5962,7 @@
     "rankDiff": 186
   },
   "485": {
-    "rating": 57.9,
+    "rating": 50.1,
     "meanRank": 244.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.87,
@@ -6001,7 +5983,7 @@
     "distanceUT": "205.0"
   },
   "488": {
-    "rating": 60.4,
+    "rating": 56.8,
     "meanRank": 32.8,
     "distanceUT": "404.32",
     "strideLengthUT": 20.83,
@@ -6016,7 +5998,7 @@
     "rankDiff": 2
   },
   "489": {
-    "rating": 90.1,
+    "rating": 96.3,
     "meanRank": 11.2,
     "distanceUT": "404.32",
     "strideLengthUT": 22.74,
@@ -6031,7 +6013,7 @@
     "rankDiff": 6
   },
   "490": {
-    "rating": 71.5,
+    "rating": 66.3,
     "meanRank": 174.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -6049,7 +6031,7 @@
     "distanceUT": "205.0"
   },
   "492": {
-    "rating": 63,
+    "rating": 56.2,
     "meanRank": 218.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -6064,16 +6046,12 @@
     "rankDiff": 142
   },
   "493": {
-    "rating": 29.9,
-    "meanRank": 387.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11.1,
-    "rankTimeUt": 375,
-    "rankTimeGo": 400
+    "timeGO": 11.1
   },
   "494": {
-    "rating": 25.6,
+    "rating": 11.8,
     "meanRank": 409.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.16,
@@ -6088,7 +6066,7 @@
     "rankDiff": 365
   },
   "495": {
-    "rating": 56.6,
+    "rating": 48.6,
     "meanRank": 251,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -6103,7 +6081,7 @@
     "rankDiff": 296
   },
   "496": {
-    "rating": 70.3,
+    "rating": 64.8,
     "meanRank": 181,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -6118,7 +6096,7 @@
     "rankDiff": 193
   },
   "497": {
-    "rating": 60.9,
+    "rating": 53.7,
     "meanRank": 229,
     "distanceUT": "205.0",
     "strideLengthUT": 21.59,
@@ -6136,7 +6114,7 @@
     "distanceUT": "205.0"
   },
   "499": {
-    "rating": 90.1,
+    "rating": 88.3,
     "meanRank": 79.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -6151,7 +6129,7 @@
     "rankDiff": 89
   },
   "500": {
-    "rating": 87.6,
+    "rating": 93,
     "meanRank": 13,
     "distanceUT": "404.32",
     "strideLengthUT": 22.64,
@@ -6166,7 +6144,7 @@
     "rankDiff": 4
   },
   "501": {
-    "rating": 58.2,
+    "rating": 50.5,
     "meanRank": 242.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.29,
@@ -6181,7 +6159,7 @@
     "rankDiff": 304
   },
   "502": {
-    "rating": 81.7,
+    "rating": 78.3,
     "meanRank": 122.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -6196,7 +6174,7 @@
     "rankDiff": 30
   },
   "503": {
-    "rating": 45.6,
+    "rating": 35.6,
     "meanRank": 307,
     "distanceUT": "205.0",
     "strideLengthUT": 20.7,
@@ -6211,7 +6189,7 @@
     "rankDiff": 150
   },
   "504": {
-    "rating": 87.9,
+    "rating": 93.4,
     "meanRank": 12.8,
     "distanceUT": "404.32",
     "strideLengthUT": 23.69,
@@ -6226,7 +6204,7 @@
     "rankDiff": 20
   },
   "505": {
-    "rating": 71.5,
+    "rating": 66.2,
     "meanRank": 175,
     "distanceUT": "205.0",
     "strideLengthUT": 22.9,
@@ -6241,7 +6219,7 @@
     "rankDiff": 341
   },
   "506": {
-    "rating": 91.9,
+    "rating": 90.4,
     "meanRank": 70.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.47,
@@ -6256,7 +6234,7 @@
     "rankDiff": 58
   },
   "507": {
-    "rating": 37.1,
+    "rating": 25.4,
     "meanRank": 350.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.41,
@@ -6271,7 +6249,7 @@
     "rankDiff": 326
   },
   "508": {
-    "rating": 78.4,
+    "rating": 74.4,
     "meanRank": 139.6,
     "distanceUT": "205.0",
     "strideLengthUT": 24.15,
@@ -6289,7 +6267,7 @@
     "distanceUT": "205.0"
   },
   "510": {
-    "rating": 62.3,
+    "rating": 55.3,
     "meanRank": 221.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -6304,7 +6282,7 @@
     "rankDiff": 291
   },
   "511": {
-    "rating": 55.2,
+    "rating": 46.9,
     "meanRank": 258.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.13,
@@ -6319,7 +6297,7 @@
     "rankDiff": 240
   },
   "512": {
-    "rating": 53.5,
+    "rating": 44.8,
     "meanRank": 267,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -6334,7 +6312,7 @@
     "rankDiff": 286
   },
   "513": {
-    "rating": 46.1,
+    "rating": 37.8,
     "meanRank": 43.2,
     "distanceUT": "404.32",
     "strideLengthUT": 21.42,
@@ -6349,7 +6327,7 @@
     "rankDiff": 35
   },
   "514": {
-    "rating": 80.4,
+    "rating": 76.8,
     "meanRank": 129.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.59,
@@ -6364,7 +6342,7 @@
     "rankDiff": 58
   },
   "515": {
-    "rating": 51.2,
+    "rating": 42.1,
     "meanRank": 278.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -6382,7 +6360,7 @@
     "distanceUT": "205.0"
   },
   "517": {
-    "rating": 48.2,
+    "rating": 38.6,
     "meanRank": 294,
     "distanceUT": "205.0",
     "strideLengthUT": 22.01,
@@ -6397,34 +6375,22 @@
     "rankDiff": 206
   },
   "518": {
-    "rating": 98.3,
-    "meanRank": 38,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.3,
-    "rankTimeUt": 68,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "519": {
-    "rating": 90.5,
-    "meanRank": 77.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.8,
-    "rankTimeUt": 7,
-    "rankTimeGo": 148
+    "timeGO": 10.8
   },
   "520": {
-    "rating": 44.6,
-    "meanRank": 312,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11.1,
-    "rankTimeUt": 224,
-    "rankTimeGo": 400
+    "timeGO": 11.1
   },
   "521": {
-    "rating": 49.5,
+    "rating": 40.2,
     "meanRank": 287,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -6442,7 +6408,7 @@
     "distanceUT": "205.0"
   },
   "523": {
-    "rating": 60.6,
+    "rating": 53.3,
     "meanRank": 230.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.18,
@@ -6457,7 +6423,7 @@
     "rankDiff": 259
   },
   "524": {
-    "rating": 34.8,
+    "rating": 22.7,
     "meanRank": 362.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.52,
@@ -6472,7 +6438,7 @@
     "rankDiff": 394
   },
   "525": {
-    "rating": 63.8,
+    "rating": 57.1,
     "meanRank": 214,
     "distanceUT": "205.0",
     "strideLengthUT": 24.21,
@@ -6487,16 +6453,12 @@
     "rankDiff": 391
   },
   "526": {
-    "rating": 91.9,
-    "meanRank": 70.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.7,
-    "rankTimeUt": 7,
-    "rankTimeGo": 134
+    "timeGO": 10.7
   },
   "527": {
-    "rating": 93.9,
+    "rating": 92.7,
     "meanRank": 60.6,
     "distanceUT": "205.0",
     "strideLengthUT": 23.62,
@@ -6511,7 +6473,7 @@
     "rankDiff": 124
   },
   "528": {
-    "rating": 63.3,
+    "rating": 56.5,
     "meanRank": 216.8,
     "distanceUT": "205.0",
     "strideLengthUT": 24.02,
@@ -6529,7 +6491,7 @@
     "distanceUT": "205.0"
   },
   "530": {
-    "rating": 82.6,
+    "rating": 79.4,
     "meanRank": 118.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -6544,25 +6506,17 @@
     "rankDiff": 26
   },
   "531": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "532": {
-    "rating": 42.4,
-    "meanRank": 323.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11,
-    "rankTimeUt": 375,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "533": {
-    "rating": 70.4,
+    "rating": 64.9,
     "meanRank": 180.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -6577,7 +6531,7 @@
     "rankDiff": 341
   },
   "534": {
-    "rating": 63.9,
+    "rating": 57.3,
     "meanRank": 213.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -6592,7 +6546,7 @@
     "rankDiff": 347
   },
   "535": {
-    "rating": 69.3,
+    "rating": 63.6,
     "meanRank": 186,
     "distanceUT": "205.0",
     "strideLengthUT": 23.36,
@@ -6607,7 +6561,7 @@
     "rankDiff": 274
   },
   "536": {
-    "rating": 53.5,
+    "rating": 44.9,
     "meanRank": 266.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.1,
@@ -6622,7 +6576,7 @@
     "rankDiff": 145
   },
   "537": {
-    "rating": 83.2,
+    "rating": 87.2,
     "meanRank": 16.2,
     "distanceUT": "404.32",
     "strideLengthUT": 22.93,
@@ -6637,7 +6591,7 @@
     "rankDiff": 35
   },
   "538": {
-    "rating": 24.1,
+    "rating": 10,
     "meanRank": 417.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.16,
@@ -6652,7 +6606,7 @@
     "rankDiff": 365
   },
   "539": {
-    "rating": 85.8,
+    "rating": 83.2,
     "meanRank": 101.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.21,
@@ -6667,7 +6621,7 @@
     "rankDiff": 78
   },
   "540": {
-    "rating": 49,
+    "rating": 39.6,
     "meanRank": 289.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.16,
@@ -6682,7 +6636,7 @@
     "rankDiff": 196
   },
   "541": {
-    "rating": 55.4,
+    "rating": 47.2,
     "meanRank": 257,
     "distanceUT": "205.0",
     "strideLengthUT": 21.82,
@@ -6697,7 +6651,7 @@
     "rankDiff": 135
   },
   "542": {
-    "rating": 83.5,
+    "rating": 87.6,
     "meanRank": 16,
     "distanceUT": "404.32",
     "strideLengthUT": 22.44,
@@ -6712,7 +6666,7 @@
     "rankDiff": 9
   },
   "543": {
-    "rating": 76.2,
+    "rating": 71.8,
     "meanRank": 150.8,
     "distanceUT": "205.0",
     "strideLengthUT": 23.59,
@@ -6727,16 +6681,12 @@
     "rankDiff": 240
   },
   "544": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "545": {
-    "rating": 34.5,
+    "rating": 22.3,
     "meanRank": 364,
     "distanceUT": "205.0",
     "strideLengthUT": 21.82,
@@ -6751,16 +6701,12 @@
     "rankDiff": 279
   },
   "546": {
-    "rating": 23.6,
-    "meanRank": 419.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11.2,
-    "rankTimeUt": 375,
-    "rankTimeGo": 464
+    "timeGO": 11.2
   },
   "547": {
-    "rating": 53.5,
+    "rating": 44.9,
     "meanRank": 266.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.05,
@@ -6775,40 +6721,28 @@
     "rankDiff": 296
   },
   "548": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "549": {
     "distanceUT": "205.0"
   },
   "550": {
-    "rating": 23.6,
-    "meanRank": 419.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11.2,
-    "rankTimeUt": 375,
-    "rankTimeGo": 464
+    "timeGO": 11.2
   },
   "551": {
     "distanceUT": "205.0"
   },
   "552": {
-    "rating": 29.9,
-    "meanRank": 387.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11.1,
-    "rankTimeUt": 375,
-    "rankTimeGo": 400
+    "timeGO": 11.1
   },
   "553": {
-    "rating": 36.7,
+    "rating": 24.9,
     "meanRank": 352.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -6826,7 +6760,7 @@
     "distanceUT": "205.0"
   },
   "555": {
-    "rating": 41,
+    "rating": 30.1,
     "meanRank": 330.6,
     "distanceUT": "205.0",
     "strideLengthUT": 20.7,
@@ -6847,7 +6781,7 @@
     "distanceUT": "205.0"
   },
   "558": {
-    "rating": 87.7,
+    "rating": 85.4,
     "meanRank": 92,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -6862,7 +6796,7 @@
     "rankDiff": 20
   },
   "559": {
-    "rating": 90.1,
+    "rating": 88.3,
     "meanRank": 79.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -6877,7 +6811,7 @@
     "rankDiff": 20
   },
   "560": {
-    "rating": 57,
+    "rating": 49,
     "meanRank": 249,
     "distanceUT": "205.0",
     "strideLengthUT": 21.78,
@@ -6892,36 +6826,23 @@
     "rankDiff": 193
   },
   "561": {
-    "rating": 92.3,
-    "meanRank": 68.33,
     "distanceUT": "205.0",
     "strideLengthUT": 24.11,
     "timeUT": 9.4,
-    "timeGO": 10.9,
-    "rankTimeUt": 7,
-    "rankTimeGo": 182,
-    "rankStrideLengthUt": 16
+    "timeGO": 10.9
   },
   "562": {
-    "rating": 40.9,
-    "meanRank": 47,
     "distanceUT": "404.32",
     "timeUT": 21.4,
-    "timeGO": 11.8,
-    "rankTimeUt": 67,
-    "rankTimeGo": 27
+    "timeGO": 11.8
   },
   "563": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "564": {
-    "rating": 59,
+    "rating": 51.4,
     "meanRank": 238.6,
     "distanceUT": "205.0",
     "strideLengthUT": 21.33,
@@ -6942,7 +6863,7 @@
     "distanceUT": "205.0"
   },
   "567": {
-    "rating": 50.9,
+    "rating": 41.8,
     "meanRank": 280.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.1,
@@ -6957,7 +6878,7 @@
     "rankDiff": 350
   },
   "568": {
-    "rating": 89.9,
+    "rating": 88,
     "meanRank": 81,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -6975,16 +6896,12 @@
     "distanceUT": "205.0"
   },
   "570": {
-    "rating": 11.1,
-    "meanRank": 483.5,
     "distanceUT": "205.0",
     "timeUT": 10.4,
-    "timeGO": 11.7,
-    "rankTimeUt": 488,
-    "rankTimeGo": 479
+    "timeGO": 11.7
   },
   "571": {
-    "rating": 61.8,
+    "rating": 54.8,
     "meanRank": 224.2,
     "distanceUT": "205.0",
     "strideLengthUT": 20.87,
@@ -6999,7 +6916,7 @@
     "rankDiff": 96
   },
   "572": {
-    "rating": 79.8,
+    "rating": 76.1,
     "meanRank": 132.4,
     "distanceUT": "205.0",
     "strideLengthUT": 23.88,
@@ -7014,7 +6931,7 @@
     "rankDiff": 353
   },
   "573": {
-    "rating": 46.1,
+    "rating": 37.8,
     "meanRank": 43.2,
     "distanceUT": "404.32",
     "strideLengthUT": 21.92,
@@ -7029,16 +6946,12 @@
     "rankDiff": 43
   },
   "574": {
-    "rating": 99,
-    "meanRank": 34.5,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.2,
-    "rankTimeUt": 68,
-    "rankTimeGo": 1
+    "timeGO": 10.2
   },
   "575": {
-    "rating": 55.9,
+    "rating": 47.8,
     "meanRank": 254.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.18,
@@ -7053,16 +6966,12 @@
     "rankDiff": 196
   },
   "576": {
-    "rating": 90.5,
-    "meanRank": 77.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.8,
-    "rankTimeUt": 7,
-    "rankTimeGo": 148
+    "timeGO": 10.8
   },
   "577": {
-    "rating": 59.5,
+    "rating": 52,
     "meanRank": 236.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -7077,7 +6986,7 @@
     "rankDiff": 250
   },
   "578": {
-    "rating": 83.6,
+    "rating": 80.5,
     "meanRank": 113.2,
     "distanceUT": "205.0",
     "strideLengthUT": 21.52,
@@ -7098,7 +7007,7 @@
     "distanceUT": "205.0"
   },
   "581": {
-    "rating": 58.2,
+    "rating": 50.5,
     "meanRank": 242.8,
     "distanceUT": "205.0",
     "strideLengthUT": 23.82,
@@ -7113,7 +7022,7 @@
     "rankDiff": 318
   },
   "582": {
-    "rating": 88.6,
+    "rating": 86.5,
     "meanRank": 87.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -7128,7 +7037,7 @@
     "rankDiff": 110
   },
   "583": {
-    "rating": 77.6,
+    "rating": 73.5,
     "meanRank": 143.4,
     "distanceUT": "205.0",
     "strideLengthUT": 22.24,
@@ -7146,7 +7055,7 @@
     "distanceUT": "205.0"
   },
   "585": {
-    "rating": 67.2,
+    "rating": 61.1,
     "meanRank": 196.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -7161,7 +7070,7 @@
     "rankDiff": 124
   },
   "586": {
-    "rating": 84.3,
+    "rating": 81.4,
     "meanRank": 109.4,
     "distanceUT": "205.0",
     "strideLengthUT": 21.52,
@@ -7176,7 +7085,7 @@
     "rankDiff": 26
   },
   "587": {
-    "rating": 99.5,
+    "rating": 99.4,
     "meanRank": 32,
     "distanceUT": "205.0",
     "strideLengthUT": 23.56,
@@ -7191,7 +7100,7 @@
     "rankDiff": 36
   },
   "588": {
-    "rating": 54.9,
+    "rating": 46.5,
     "meanRank": 259.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.67,
@@ -7206,7 +7115,7 @@
     "rankDiff": 299
   },
   "589": {
-    "rating": 61.5,
+    "rating": 54.4,
     "meanRank": 226,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -7221,7 +7130,7 @@
     "rankDiff": 162
   },
   "590": {
-    "rating": 54.4,
+    "rating": 48.8,
     "meanRank": 37.2,
     "distanceUT": "404.32",
     "strideLengthUT": 22.44,
@@ -7239,7 +7148,7 @@
     "distanceUT": "205.0"
   },
   "592": {
-    "rating": 58.5,
+    "rating": 54.3,
     "meanRank": 34.2,
     "distanceUT": "404.32",
     "strideLengthUT": 24.11,
@@ -7254,7 +7163,7 @@
     "rankDiff": 45
   },
   "593": {
-    "rating": 61.9,
+    "rating": 54.9,
     "meanRank": 223.8,
     "distanceUT": "205.0",
     "strideLengthUT": 21.98,
@@ -7269,16 +7178,12 @@
     "rankDiff": 206
   },
   "594": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "595": {
-    "rating": 83.4,
+    "rating": 80.4,
     "meanRank": 113.8,
     "distanceUT": "205.0",
     "strideLengthUT": 23.2,
@@ -7293,7 +7198,7 @@
     "rankDiff": 240
   },
   "596": {
-    "rating": 61.6,
+    "rating": 54.5,
     "meanRank": 225.2,
     "distanceUT": "205.0",
     "strideLengthUT": 22.05,
@@ -7311,7 +7216,7 @@
     "distanceUT": "205.0"
   },
   "598": {
-    "rating": 82.8,
+    "rating": 79.6,
     "meanRank": 117.2,
     "distanceUT": "205.0",
     "strideLengthUT": 24.38,
@@ -7326,7 +7231,7 @@
     "rankDiff": 359
   },
   "599": {
-    "rating": 85,
+    "rating": 82.3,
     "meanRank": 105.6,
     "distanceUT": "205.0",
     "strideLengthUT": 22.28,
@@ -7341,16 +7246,12 @@
     "rankDiff": 96
   },
   "600": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "601": {
-    "rating": 48.9,
+    "rating": 39.5,
     "meanRank": 290.2,
     "distanceUT": "205.0",
     "strideLengthUT": 20.87,
@@ -7365,7 +7266,7 @@
     "rankDiff": 341
   },
   "602": {
-    "rating": 56.6,
+    "rating": 48.6,
     "meanRank": 251,
     "distanceUT": "205.0",
     "strideLengthUT": 22.6,
@@ -7380,16 +7281,12 @@
     "rankDiff": 169
   },
   "603": {
-    "rating": 10,
-    "meanRank": 489,
     "distanceUT": "205.0",
     "timeUT": 10.4,
-    "timeGO": 11.8,
-    "rankTimeUt": 488,
-    "rankTimeGo": 490
+    "timeGO": 11.8
   },
   "604": {
-    "rating": 36.3,
+    "rating": 24.5,
     "meanRank": 354.8,
     "distanceUT": "205.0",
     "strideLengthUT": 22.44,
@@ -7404,7 +7301,7 @@
     "rankDiff": 332
   },
   "605": {
-    "rating": 74.2,
+    "rating": 69.4,
     "meanRank": 161.2,
     "distanceUT": "205.0",
     "strideLengthUT": 23.29,
@@ -7419,37 +7316,25 @@
     "rankDiff": 179
   },
   "606": {
-    "rating": 37.2,
-    "meanRank": 350,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11.3,
-    "rankTimeUt": 224,
-    "rankTimeGo": 476
+    "timeGO": 11.3
   },
   "607": {
-    "rating": 90.5,
-    "meanRank": 77.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.8,
-    "rankTimeUt": 7,
-    "rankTimeGo": 148
+    "timeGO": 10.8
   },
   "608": {
     "distanceUT": "205.0"
   },
   "609": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "610": {
-    "rating": 65.9,
+    "rating": 64.1,
     "meanRank": 28.8,
     "distanceUT": "404.32",
     "strideLengthUT": 22.57,
@@ -7464,16 +7349,12 @@
     "rankDiff": 48
   },
   "611": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "612": {
-    "rating": 44.8,
+    "rating": 34.6,
     "meanRank": 311,
     "distanceUT": "205.0",
     "strideLengthUT": 21.59,
@@ -7488,91 +7369,55 @@
     "rankDiff": 286
   },
   "613": {
-    "rating": 13.8,
-    "meanRank": 469.5,
     "distanceUT": "205.0",
     "timeUT": 10.3,
-    "timeGO": 11.7,
-    "rankTimeUt": 460,
-    "rankTimeGo": 479
+    "timeGO": 11.7
   },
   "614": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "615": {
-    "rating": 90.5,
-    "meanRank": 77.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.8,
-    "rankTimeUt": 7,
-    "rankTimeGo": 148
+    "timeGO": 10.8
   },
   "616": {
-    "rating": 51.2,
-    "meanRank": 39.5,
     "distanceUT": "404.32",
     "timeUT": 21.3,
-    "timeGO": 11.8,
-    "rankTimeUt": 52,
-    "rankTimeGo": 27
+    "timeGO": 11.8
   },
   "617": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "618": {
-    "rating": 42.4,
-    "meanRank": 323.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11,
-    "rankTimeUt": 375,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "619": {
     "distanceUT": "205.0"
   },
   "620": {
-    "rating": 98.3,
-    "meanRank": 38,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.3,
-    "rankTimeUt": 68,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "621": {
     "distanceUT": "205.0"
   },
   "622": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "623": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "624": {
     "distanceUT": "205.0"
@@ -7581,313 +7426,185 @@
     "distanceUT": "205.0"
   },
   "626": {
-    "rating": 42.4,
-    "meanRank": 323.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11,
-    "rankTimeUt": 375,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "627": {
-    "rating": 45.7,
-    "meanRank": 43.5,
     "distanceUT": "404.32",
     "timeUT": 21.2,
-    "timeGO": 11.9,
-    "rankTimeUt": 43,
-    "rankTimeGo": 44
+    "timeGO": 11.9
   },
   "628": {
-    "rating": 84.2,
-    "meanRank": 15.5,
     "distanceUT": "404.32",
     "timeUT": 20.3,
-    "timeGO": 11.8,
-    "rankTimeUt": 4,
-    "rankTimeGo": 27
+    "timeGO": 11.8
   },
   "629": {
-    "rating": 29.9,
-    "meanRank": 387.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11.1,
-    "rankTimeUt": 375,
-    "rankTimeGo": 400
+    "timeGO": 11.1
   },
   "630": {
-    "rating": 39.5,
-    "meanRank": 48,
     "distanceUT": "404.32",
     "timeUT": 21.3,
-    "timeGO": 11.9,
-    "rankTimeUt": 52,
-    "rankTimeGo": 44
+    "timeGO": 11.9
   },
   "631": {
-    "rating": 91.9,
-    "meanRank": 70.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.7,
-    "rankTimeUt": 7,
-    "rankTimeGo": 134
+    "timeGO": 10.7
   },
   "632": {
     "distanceUT": "205.0"
   },
   "633": {
-    "rating": 21.5,
-    "meanRank": 430,
     "distanceUT": "205.0",
     "timeUT": 10.3,
-    "timeGO": 11.1,
-    "rankTimeUt": 460,
-    "rankTimeGo": 400
+    "timeGO": 11.1
   },
   "634": {
-    "rating": 72.4,
-    "meanRank": 170,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 11,
-    "rankTimeUt": 68,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "635": {
     "distanceUT": "205.0"
   },
   "636": {
-    "rating": 51.2,
-    "meanRank": 39.5,
     "distanceUT": "404.32",
     "timeUT": 21.3,
-    "timeGO": 11.8,
-    "rankTimeUt": 52,
-    "rankTimeGo": 27
+    "timeGO": 11.8
   },
   "637": {
-    "rating": 98.3,
-    "meanRank": 38,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.3,
-    "rankTimeUt": 68,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "638": {
     "distanceUT": "205.0"
   },
   "639": {
-    "rating": 98.3,
-    "meanRank": 38,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.3,
-    "rankTimeUt": 68,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "640": {
-    "rating": 21.5,
-    "meanRank": 430,
     "distanceUT": "205.0",
     "timeUT": 10.3,
-    "timeGO": 11.1,
-    "rankTimeUt": 460,
-    "rankTimeGo": 400
+    "timeGO": 11.1
   },
   "641": {
-    "rating": 90.5,
-    "meanRank": 77.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.8,
-    "rankTimeUt": 7,
-    "rankTimeGo": 148
+    "timeGO": 10.8
   },
   "642": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "643": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "644": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "645": {
-    "rating": 72.4,
-    "meanRank": 170,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 11,
-    "rankTimeUt": 68,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "646": {
     "distanceUT": "205.0"
   },
   "647": {
-    "rating": 98.3,
-    "meanRank": 38,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.3,
-    "rankTimeUt": 68,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "648": {
-    "rating": 98.3,
-    "meanRank": 38,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.3,
-    "rankTimeUt": 68,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "649": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "650": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "651": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "652": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "653": {
-    "rating": 90.5,
-    "meanRank": 77.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.8,
-    "rankTimeUt": 7,
-    "rankTimeGo": 148
+    "timeGO": 10.8
   },
   "654": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "655": {
     "distanceUT": "205.0"
   },
   "656": {
-    "rating": 72.4,
-    "meanRank": 170,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 11,
-    "rankTimeUt": 68,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "657": {
     "distanceUT": "205.0"
   },
   "658": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "659": {
-    "rating": 72.4,
-    "meanRank": 170,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 11,
-    "rankTimeUt": 68,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "660": {
-    "rating": 91.9,
-    "meanRank": 70.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.7,
-    "rankTimeUt": 7,
-    "rankTimeGo": 134
+    "timeGO": 10.7
   },
   "661": {
-    "rating": 90.5,
-    "meanRank": 77.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.8,
-    "rankTimeUt": 7,
-    "rankTimeGo": 148
+    "timeGO": 10.8
   },
   "662": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "663": {
     "distanceUT": "205.0"
   },
   "664": {
-    "rating": 51.2,
-    "meanRank": 39.5,
     "distanceUT": "404.32",
     "timeUT": 21.3,
-    "timeGO": 11.8,
-    "rankTimeUt": 52,
-    "rankTimeGo": 27
+    "timeGO": 11.8
   },
   "665": {
     "distanceUT": "205.0"
@@ -7896,70 +7613,42 @@
     "distanceUT": "205.0"
   },
   "667": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "668": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "669": {
-    "rating": 42.4,
-    "meanRank": 323.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11,
-    "rankTimeUt": 375,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "670": {
     "distanceUT": "205.0"
   },
   "671": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "672": {
-    "rating": 29.9,
-    "meanRank": 387.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11.1,
-    "rankTimeUt": 375,
-    "rankTimeGo": 400
+    "timeGO": 11.1
   },
   "673": {
-    "rating": 83,
-    "meanRank": 116,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.3,
-    "rankTimeUt": 224,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "674": {
-    "rating": 92,
-    "meanRank": 70,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.6,
-    "rankTimeUt": 7,
-    "rankTimeGo": 133
+    "timeGO": 10.6
   },
   "675": {
     "distanceUT": "205.0"
@@ -7968,391 +7657,227 @@
     "distanceUT": "205.0"
   },
   "677": {
-    "rating": 57.4,
-    "meanRank": 35,
     "distanceUT": "404.32",
     "timeUT": 21.2,
-    "timeGO": 11.8,
-    "rankTimeUt": 43,
-    "rankTimeGo": 27
+    "timeGO": 11.8
   },
   "678": {
-    "rating": 44.6,
-    "meanRank": 312,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11.1,
-    "rankTimeUt": 224,
-    "rankTimeGo": 400
+    "timeGO": 11.1
   },
   "679": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "680": {
-    "rating": 98.3,
-    "meanRank": 38,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.3,
-    "rankTimeUt": 68,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "681": {
     "distanceUT": "205.0"
   },
   "682": {
-    "rating": 91.9,
-    "meanRank": 70.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.7,
-    "rankTimeUt": 7,
-    "rankTimeGo": 134
+    "timeGO": 10.7
   },
   "683": {
-    "rating": 91.9,
-    "meanRank": 70.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.7,
-    "rankTimeUt": 7,
-    "rankTimeGo": 134
+    "timeGO": 10.7
   },
   "684": {
-    "rating": 78,
-    "meanRank": 20,
     "distanceUT": "404.32",
     "timeUT": 21.1,
-    "timeGO": 11.3,
-    "rankTimeUt": 29,
-    "rankTimeGo": 11
+    "timeGO": 11.3
   },
   "685": {
     "distanceUT": "205.0"
   },
   "686": {
-    "rating": 29.9,
-    "meanRank": 387.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11.1,
-    "rankTimeUt": 375,
-    "rankTimeGo": 400
+    "timeGO": 11.1
   },
   "687": {
-    "rating": 11.1,
-    "meanRank": 483.5,
     "distanceUT": "205.0",
     "timeUT": 10.4,
-    "timeGO": 11.7,
-    "rankTimeUt": 488,
-    "rankTimeGo": 479
+    "timeGO": 11.7
   },
   "688": {
-    "rating": 91.1,
-    "meanRank": 74.5,
     "distanceUT": "205.0",
     "timeUT": 9.3,
-    "timeGO": 10.8,
-    "rankTimeUt": 1,
-    "rankTimeGo": 148
+    "timeGO": 10.8
   },
   "689": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "690": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "691": {
-    "rating": 42.4,
-    "meanRank": 323.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11,
-    "rankTimeUt": 375,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "692": {
-    "rating": 42.4,
-    "meanRank": 323.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11,
-    "rankTimeUt": 375,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "693": {
     "distanceUT": "205.0"
   },
   "694": {
-    "rating": 98.3,
-    "meanRank": 38,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.3,
-    "rankTimeUt": 68,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "695": {
-    "rating": 100,
-    "meanRank": 4,
     "distanceUT": "404.32",
     "timeUT": 20.3,
-    "timeGO": 11.1,
-    "rankTimeUt": 4,
-    "rankTimeGo": 4
+    "timeGO": 11.1
   },
   "696": {
     "distanceUT": "205.0"
   },
   "697": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "698": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "699": {
-    "rating": 98.3,
-    "meanRank": 38,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.3,
-    "rankTimeUt": 68,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "700": {
-    "rating": 44.6,
-    "meanRank": 312,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11.1,
-    "rankTimeUt": 224,
-    "rankTimeGo": 400
+    "timeGO": 11.1
   },
   "701": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "702": {
-    "rating": 87.2,
-    "meanRank": 94.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.9,
-    "rankTimeUt": 7,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "703": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "704": {
     "distanceUT": "205.0"
   },
   "705": {
-    "rating": 90.5,
-    "meanRank": 77.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.8,
-    "rankTimeUt": 7,
-    "rankTimeGo": 148
+    "timeGO": 10.8
   },
   "706": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "707": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "708": {
-    "rating": 80.8,
-    "meanRank": 18,
     "distanceUT": "404.32",
     "timeUT": 21.1,
-    "timeGO": 11.2,
-    "rankTimeUt": 29,
-    "rankTimeGo": 7
+    "timeGO": 11.2
   },
   "709": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "710": {
-    "rating": 93.8,
-    "meanRank": 61,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.4,
-    "rankTimeUt": 68,
-    "rankTimeGo": 54
+    "timeGO": 10.4
   },
   "711": {
-    "rating": 13.8,
-    "meanRank": 469.5,
     "distanceUT": "205.0",
     "timeUT": 10.3,
-    "timeGO": 11.7,
-    "rankTimeUt": 460,
-    "rankTimeGo": 479
+    "timeGO": 11.7
   },
   "712": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "713": {
-    "rating": 38.4,
-    "meanRank": 344,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11.2,
-    "rankTimeUt": 224,
-    "rankTimeGo": 464
+    "timeGO": 11.2
   },
   "714": {
-    "rating": 87.2,
-    "meanRank": 94.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.9,
-    "rankTimeUt": 7,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "715": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "716": {
-    "rating": 87.2,
-    "meanRank": 94.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.9,
-    "rankTimeUt": 7,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "717": {
-    "rating": 98.3,
-    "meanRank": 38,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.3,
-    "rankTimeUt": 68,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "718": {
-    "rating": 82.1,
-    "meanRank": 17,
     "distanceUT": "404.32",
     "timeUT": 20.4,
-    "timeGO": 11.7,
-    "rankTimeUt": 11,
-    "rankTimeGo": 23
+    "timeGO": 11.7
   },
   "719": {
     "distanceUT": "205.0"
   },
   "720": {
-    "rating": 98.3,
-    "meanRank": 38,
     "distanceUT": "205.0",
     "timeUT": 10,
-    "timeGO": 10.3,
-    "rankTimeUt": 68,
-    "rankTimeGo": 8
+    "timeGO": 10.3
   },
   "721": {
-    "rating": 21.1,
-    "meanRank": 432.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11.8,
-    "rankTimeUt": 375,
-    "rankTimeGo": 490
+    "timeGO": 11.8
   },
   "722": {
-    "rating": 66,
-    "meanRank": 203,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 10.9,
-    "rankTimeUt": 224,
-    "rankTimeGo": 182
+    "timeGO": 10.9
   },
   "723": {
-    "rating": 23.6,
-    "meanRank": 419.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11.2,
-    "rankTimeUt": 375,
-    "rankTimeGo": 464
+    "timeGO": 11.2
   },
   "724": {
     "distanceUT": "205.0"
@@ -8361,40 +7886,24 @@
     "distanceUT": "205.0"
   },
   "726": {
-    "rating": 23.6,
-    "meanRank": 419.5,
     "distanceUT": "205.0",
     "timeUT": 10.2,
-    "timeGO": 11.2,
-    "rankTimeUt": 375,
-    "rankTimeGo": 464
+    "timeGO": 11.2
   },
   "727": {
-    "rating": 90.5,
-    "meanRank": 77.5,
     "distanceUT": "205.0",
     "timeUT": 9.4,
-    "timeGO": 10.8,
-    "rankTimeUt": 7,
-    "rankTimeGo": 148
+    "timeGO": 10.8
   },
   "728": {
-    "rating": 10,
-    "meanRank": 69.5,
     "distanceUT": "404.32",
     "timeUT": 21.4,
-    "timeGO": 12.7,
-    "rankTimeUt": 67,
-    "rankTimeGo": 72
+    "timeGO": 12.7
   },
   "729": {
-    "rating": 57.2,
-    "meanRank": 248,
     "distanceUT": "205.0",
     "timeUT": 10.1,
-    "timeGO": 11,
-    "rankTimeUt": 224,
-    "rankTimeGo": 272
+    "timeGO": 11
   },
   "730": {
     "distanceUT": "205.0"
