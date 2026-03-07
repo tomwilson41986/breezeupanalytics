@@ -111,8 +111,9 @@ def compute_ratings(df: pd.DataFrame) -> pd.DataFrame:
     for col in RANK_COLS:
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    # Drop rows where ALL ranking columns are missing (empty horses)
-    metric_mask = df[list(RANK_COLS)].notna().any(axis=1)
+    # Only rate horses that have BOTH stride and time data
+    required_cols = list(RANK_COLS.keys())
+    metric_mask = df[required_cols].notna().all(axis=1)
     df["_has_data"] = metric_mask
 
     rank_col_names: list[str] = []
@@ -124,6 +125,10 @@ def compute_ratings(df: pd.DataFrame) -> pd.DataFrame:
         df[rank_name] = df.groupby("Distance UT")[col].rank(
             method="min", ascending=ascending, na_option="keep"
         )
+
+    # Null out ranks for horses missing any required data (stride + time)
+    for rc in rank_col_names:
+        df.loc[~df["_has_data"], rc] = pd.NA
 
     # Composite score = mean of ranks (lower mean rank → better horse)
     df["Mean Rank"] = df[rank_col_names].mean(axis=1)
