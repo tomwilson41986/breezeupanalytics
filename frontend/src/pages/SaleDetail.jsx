@@ -66,30 +66,48 @@ export default function SaleDetail() {
     return () => { cancelled = true; };
   }, [saleKey]);
 
-  // Merge Under Tack data from latest.json into sale hips
+  // Merge Under Tack data from latest.json AND live-sale-times into sale hips
   const mergedHips = useMemo(() => {
     if (!sale?.hips) return [];
-    if (!utLatest?.hips?.length) return sale.hips;
 
     // Build lookup from UT latest data by hip_number
     const utMap = {};
-    for (const uh of utLatest.hips) {
-      utMap[uh.hip_number] = uh;
+    if (utLatest?.hips?.length) {
+      for (const uh of utLatest.hips) {
+        utMap[uh.hip_number] = uh;
+      }
     }
+
+    // Build lookup from live-sale-times data by hip_number
+    const timesMap = timesData?.hips || {};
 
     return sale.hips.map((hip) => {
       const ut = utMap[hip.hipNumber];
-      if (!ut) return hip;
+      const lt = timesMap[String(hip.hipNumber)];
+
+      if (!ut && !lt) return hip;
+
+      // Parse live-sale-times ut_time (may be string or number)
+      let ltTime = null;
+      let ltDistance = null;
+      if (lt) {
+        const t = typeof lt.ut_time === "number" ? lt.ut_time : parseFloat(lt.ut_time);
+        if (!isNaN(t) && t > 0) {
+          ltTime = t;
+          if (lt.distance && lt.distance !== "G") ltDistance = lt.distance;
+        }
+      }
+
       return {
         ...hip,
-        breezeTime: hip.breezeTime ?? ut.ut_time ?? null,
-        breezeDistance: hip.breezeDistance ?? ut.ut_distance ?? null,
-        breezeDate: hip.breezeDate ?? ut.ut_actual_date ?? null,
-        videoUrl: hip.videoUrl ?? ut.video_url ?? null,
-        walkVideoUrl: hip.walkVideoUrl ?? ut.walk_video_url ?? null,
+        breezeTime: hip.breezeTime ?? ut?.ut_time ?? ltTime ?? null,
+        breezeDistance: hip.breezeDistance ?? ut?.ut_distance ?? ltDistance ?? null,
+        breezeDate: hip.breezeDate ?? ut?.ut_actual_date ?? null,
+        videoUrl: hip.videoUrl ?? ut?.video_url ?? null,
+        walkVideoUrl: hip.walkVideoUrl ?? ut?.walk_video_url ?? null,
       };
     });
-  }, [sale, utLatest]);
+  }, [sale, utLatest, timesData]);
 
   // Compute Under Tack summary from merged hips
   const utSummary = useMemo(() => {
