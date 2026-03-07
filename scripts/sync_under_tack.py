@@ -50,6 +50,16 @@ class DecimalEncoder(json.JSONEncoder):
         return super().default(o)
 
 
+def _parse_ut_time(raw) -> float | None:
+    """Parse a ut_time value, returning None for non-numeric entries (e.g. 'G')."""
+    if not raw:
+        return None
+    try:
+        return float(raw)
+    except (ValueError, TypeError):
+        return None
+
+
 def _parse_ut_hip(hip_data: dict) -> dict:
     """Extract under-tack-relevant fields from a raw API hip record."""
     return {
@@ -65,7 +75,7 @@ def _parse_ut_hip(hip_data: dict) -> dict:
         "barn_number": hip_data.get("barn_number") or None,
         "state_bred": hip_data.get("foaling_area") or None,
         # Under tack fields
-        "ut_time": float(hip_data["ut_time"]) if hip_data.get("ut_time") else None,
+        "ut_time": _parse_ut_time(hip_data.get("ut_time")),
         "ut_distance": (hip_data.get("ut_distance") or "").strip() or None,
         "ut_set": hip_data.get("ut_set") or None,
         "ut_group": hip_data.get("ut_group") or None,
