@@ -239,15 +239,15 @@ export default function LotDetail() {
                 Breeze Rating
               </div>
             </div>
-            <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-3">
               <MetricCard
-                label="Stride UT (ft)"
+                label="Stride UT"
                 value={hip.ratings.strideLengthUT}
                 unit="ft"
                 rank={hip.ratings.rankStrideLengthUt}
               />
               <MetricCard
-                label="Stride GO (ft)"
+                label="Stride GO"
                 value={hip.ratings.strideLengthGO}
                 unit="ft"
                 rank={hip.ratings.rankStrideLengthGo}
@@ -264,6 +264,20 @@ export default function LotDetail() {
                 unit="s"
                 rank={hip.ratings.rankTimeGo}
               />
+              {hip.ratings.strideFreqUT != null && (
+                <MetricCard
+                  label="Freq UT"
+                  value={hip.ratings.strideFreqUT}
+                  unit="Hz"
+                />
+              )}
+              {hip.ratings.strideFreqGO != null && (
+                <MetricCard
+                  label="Freq GO"
+                  value={hip.ratings.strideFreqGO}
+                  unit="Hz"
+                />
+              )}
             </div>
           </div>
 
