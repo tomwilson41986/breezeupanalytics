@@ -2,7 +2,7 @@
 # All paths are relative to frontend/
 
 [build]
-  command = "cp -r ../data/under-tack/ public/data/under-tack/ 2>/dev/null; npm install && npm run build"
+  command = "cd .. && node scripts/publish-data.mjs && cd frontend && npm install && npm run build"
   publish = "dist"
   functions = "netlify/functions"
 

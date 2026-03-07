@@ -1,5 +1,5 @@
 [build]
-  command = "npm install xlsx && node scripts/convert-historic-data.mjs && cd frontend && npm install && npm run build"
+  command = "npm install xlsx && node scripts/convert-historic-data.mjs && node scripts/publish-data.mjs && cd frontend && npm install && npm run build"
   publish = "frontend/dist"
   functions = "frontend/netlify/functions"
 
@@ -23,4 +23,16 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Ratings and live-sale-times data — short cache (updates between builds)
+[[headers]]
+  for = "/data/live-sale-times/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=600"
+
+# Under-tack data — short cache (updates daily)
+[[headers]]
+  for = "/data/under-tack/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=600"
 

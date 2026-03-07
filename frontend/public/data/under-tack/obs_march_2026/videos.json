@@ -3,35 +3,23 @@
   "sale_name": "2026 March 2YOs in Training Sale",
   "videos": [
     {
-      "text": "Day 2 Live",
-      "url": "https://www.youtube.com/watch?v=duPDoLxZDZU"
+      "text": "Day 4 Live",
+      "url": "https://www.youtube.com/watch?v=oPk_AWJ4tZw"
     },
     {
       "text": "Day 1",
       "url": "https://www.youtube.com/watch?v=zvNrFNjvuCA"
+    },
+    {
+      "text": "Day 2",
+      "url": "https://youtu.be/qbOOIZh4N5M"
+    },
+    {
+      "text": "Day 3",
+      "url": "https://youtu.be/ty3a63G5yFo"
     }
   ],
   "links": [
-    {
-      "text": "Day 2 by Consignor",
-      "url": "https://obscatalog.com/OBSPAGES/26MarUTDay2Cons.pdf",
-      "icon": "file-earmark-pdf"
-    },
-    {
-      "text": "Day 2 by Set",
-      "url": "https://obscatalog.com/OBSPAGES/26MarUTDay2Set.pdf",
-      "icon": "file-earmark-pdf"
-    },
-    {
-      "text": "Day 3 by Consignor",
-      "url": "https://obscatalog.com/OBSPAGES/26MarUTDay3Cons.pdf",
-      "icon": "file-earmark-pdf"
-    },
-    {
-      "text": "Day 3 by Set",
-      "url": "https://obscatalog.com/OBSPAGES/26MarUTDay3Set.pdf",
-      "icon": "file-earmark-pdf"
-    },
     {
       "text": "Day 4 by Consignor",
       "url": "https://obscatalog.com/OBSPAGES/26MarUTDay4Cons.pdf",
@@ -45,6 +33,16 @@
     {
       "text": "Day 1 Results",
       "url": "https://obscatalog.com/OBSPAGES/26MarDay1UTResults.pdf",
+      "icon": "file-earmark-pdf"
+    },
+    {
+      "text": "Day 2 Results",
+      "url": "https://obscatalog.com/OBSPAGES/26MarDay2UTResults.pdf",
+      "icon": "file-earmark-pdf"
+    },
+    {
+      "text": "Day 3 Results",
+      "url": "https://obscatalog.com/OBSPAGES/26MarDay3UTResults.pdf",
       "icon": "file-earmark-pdf"
     }
   ],
@@ -74,5 +72,5 @@
       "default": null
     }
   ],
-  "fetched_at": "2026-03-05T12:31:15.487886+00:00"
+  "fetched_at": "2026-03-07T19:15:52.670880+00:00"
 }
