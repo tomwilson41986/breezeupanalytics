@@ -264,20 +264,6 @@ export default function LotDetail() {
                 unit="s"
                 rank={hip.ratings.rankTimeGo}
               />
-              {hip.ratings.strideFreqUT != null && (
-                <MetricCard
-                  label="Freq UT"
-                  value={hip.ratings.strideFreqUT}
-                  unit="Hz"
-                />
-              )}
-              {hip.ratings.strideFreqGO != null && (
-                <MetricCard
-                  label="Freq GO"
-                  value={hip.ratings.strideFreqGO}
-                  unit="Hz"
-                />
-              )}
             </div>
           </div>
 
