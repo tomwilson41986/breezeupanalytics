@@ -674,11 +674,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/235.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/235w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/235.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00235",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -726,11 +726,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/237.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/237w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/237.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00237",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -1272,11 +1272,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/266.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/266w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/266.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00266",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -1558,11 +1558,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/281.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/281w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/281.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00281",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -1740,11 +1740,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/289.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/289w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/289.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00289",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -1974,11 +1974,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/300.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/300w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/300.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00300",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -2286,11 +2286,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/314.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/314w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/314.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00314",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -2390,11 +2390,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/319.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/319w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/319.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00319",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -2598,11 +2598,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/328.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/328w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/328.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00328",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -2728,11 +2728,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/337.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/337w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/337.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00337",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -2962,11 +2962,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/349.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/349w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/349.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00349",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -3092,11 +3092,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/358.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/358w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/358.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00358",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -3924,11 +3924,11 @@
       "ut_expected_date": "03/05/2026",
       "ut_actual_date": "03/05/2026",
       "video_url": "https://obscatalog.com/2026/149/401.mp4?v=1772305512",
-      "walk_video_url": null,
+      "walk_video_url": "https://obscatalog.com/2026/149/401w.mp4?v=1772305512",
       "pedigree_pdf_url": "https://obscatalog.com/2026/149/401.pdf?v=1772305512",
       "updates_url": "https://ww2.equineline.com/obs/update.asp?sale=O626&hip=00401",
       "has_video": true,
-      "has_walk_video": false,
+      "has_walk_video": true,
       "in_out_status": "I"
     },
     {
@@ -4088,5 +4088,5 @@
       "in_out_status": "I"
     }
   ],
-  "fetched_at": "2026-03-07T19:15:52.670880+00:00"
+  "fetched_at": "2026-03-08T14:33:31.812569+00:00"
 }
