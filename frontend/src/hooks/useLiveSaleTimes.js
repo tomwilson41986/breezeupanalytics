@@ -78,7 +78,11 @@ function parseCsv(text) {
 }
 
 function normalizeHeader(header) {
-  const h = header.toLowerCase().replace(/#/g, "").replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+  // Remove special characters, then replace spaces with underscores
+  // Matches the Python normalizer in upload_live_sale_times.py
+  let h = header.toLowerCase().replace(/#/g, "").replace(/[()\/]/g, "").replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+  // Collapse multiple underscores and strip trailing/leading underscores
+  h = h.replace(/_+/g, "_").replace(/^_|_$/g, "");
   const aliases = {
     hip: "hip_number",
     hip_number: "hip_number",
