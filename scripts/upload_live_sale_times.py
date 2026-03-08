@@ -69,13 +69,19 @@ def parse_number(value: str):
         return value  # Keep as string if not numeric
 
 
-def parse_csv(csv_path: str) -> list[dict]:
-    """Parse the detailed times CSV into a list of hip records."""
+def parse_csv(csv_path: str) -> tuple[list[dict], dict[str, str]]:
+    """Parse the detailed times CSV into a list of hip records and column label map."""
     records = []
     with open(csv_path, "r", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         raw_headers = reader.fieldnames or []
         header_map = {h: normalize_header(h) for h in raw_headers}
+
+        # Build column_labels: normalized_key -> original display label
+        column_labels = {}
+        for raw_h, norm_h in header_map.items():
+            if norm_h:
+                column_labels[norm_h] = raw_h.strip()
 
         for row in reader:
             record = {}
@@ -85,10 +91,10 @@ def parse_csv(csv_path: str) -> list[dict]:
 
     logger.info("Parsed %d records from %s", len(records), csv_path)
     logger.info("Columns: %s", list(header_map.values()))
-    return records
+    return records, column_labels
 
 
-def build_times_json(records: list[dict], sale_key: str) -> dict:
+def build_times_json(records: list[dict], sale_key: str, column_labels: dict[str, str] | None = None) -> dict:
     """Build the JSON structure for S3 upload."""
     # Group by hip number
     by_hip = {}
@@ -99,13 +105,15 @@ def build_times_json(records: list[dict], sale_key: str) -> dict:
         hip_key = str(int(hip)) if isinstance(hip, (int, float)) else str(hip)
         by_hip[hip_key] = {k: v for k, v in rec.items()}
 
-    return {
+    result = {
         "sale_key": sale_key,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "count": len(by_hip),
         "columns": list(records[0].keys()) if records else [],
+        "column_labels": column_labels or {},
         "hips": by_hip,
     }
+    return result
 
 
 def upload_to_s3(data: dict, sale_key: str) -> None:
@@ -240,12 +248,12 @@ def main() -> None:
         print(f"Error: CSV file not found: {csv_path}", file=sys.stderr)
         sys.exit(1)
 
-    records = parse_csv(str(csv_path))
+    records, column_labels = parse_csv(str(csv_path))
     if not records:
         print("Error: no records parsed from CSV", file=sys.stderr)
         sys.exit(1)
 
-    data = build_times_json(records, args.sale)
+    data = build_times_json(records, args.sale, column_labels)
 
     print(f"Parsed {data['count']} hips with columns: {data['columns']}")
 
