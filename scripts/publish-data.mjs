@@ -146,7 +146,11 @@ function convertRatedCsvToJson(csvPath) {
 /* ── 2. Convert Times CSV → Times JSON ────────────────────── */
 
 function normalizeHeader(header) {
-  const h = header.toLowerCase().replace(/#/g, "").replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+  // Remove special characters, then replace spaces with underscores
+  // Matches the normalizers in upload_live_sale_times.py and useLiveSaleTimes.js
+  let h = header.toLowerCase().replace(/#/g, "").replace(/[()\/]/g, "").replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+  // Collapse multiple underscores and strip trailing/leading underscores
+  h = h.replace(/_+/g, "_").replace(/^_|_$/g, "");
   const aliases = {
     hip: "hip_number",
     hip_number: "hip_number",
