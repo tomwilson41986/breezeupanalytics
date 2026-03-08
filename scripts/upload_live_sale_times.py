@@ -36,7 +36,14 @@ logger = logging.getLogger(__name__)
 
 def normalize_header(header: str) -> str:
     """Normalize CSV header to a consistent snake_case key."""
-    h = header.strip().lower().replace("#", "").replace(" ", "_")
+    h = header.strip().lower()
+    # Remove special characters, replace spaces with underscores
+    h = h.replace("#", "").replace("(", "").replace(")", "").replace("/", "")
+    h = h.replace(" ", "_")
+    # Collapse multiple underscores and strip trailing/leading underscores
+    while "__" in h:
+        h = h.replace("__", "_")
+    h = h.strip("_")
     # Common aliases
     aliases = {
         "hip": "hip_number",

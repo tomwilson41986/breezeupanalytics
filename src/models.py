@@ -71,7 +71,7 @@ class Lot(Base):
     state_bred: Mapped[str | None] = mapped_column(String(50))
 
     # Under tack
-    under_tack_distance: Mapped[str | None] = mapped_column(String(10))  # "1/8" | "1/4"
+    under_tack_distance: Mapped[str | None] = mapped_column(String(10))  # "1/8" | "1/4" | "3/8"
     under_tack_time: Mapped[Decimal | None] = mapped_column(Numeric(5, 2))  # e.g. 10.1
     under_tack_date: Mapped[date | None] = mapped_column()
 

@@ -48,6 +48,7 @@ class FTHip:
 
     # Under tack
     under_tack_time: Decimal | None
+    under_tack_distance: str | None  # "1/8" | "1/4" | "3/8"
     under_tack_surface: str | None
     under_tack_date: str | None
 
@@ -182,6 +183,31 @@ def _parse_ut_time(raw) -> Decimal | None:
         return None
 
 
+def _parse_ut_distance(horse: dict) -> str | None:
+    """Extract under-tack distance from FT API data.
+
+    Checks the explicit API field first, then falls back to deriving
+    the distance from the breeze time (same logic as OBS legacy).
+    """
+    # Check explicit API field
+    raw = horse.get("under_tack_show_distance")
+    if raw:
+        dist = str(raw).strip()
+        if dist:
+            return dist
+
+    # Derive from time if no explicit distance
+    ut_time = _parse_ut_time(horse.get("under_tack_show_time"))
+    if ut_time is None:
+        return None
+    t = float(ut_time)
+    if t <= 15:
+        return "1/8"
+    if t <= 27:
+        return "1/4"
+    return "3/8"
+
+
 def _parse_hip(horse: dict, sale_key: str) -> FTHip:
     """Parse a single horse record from the API response."""
     status = _parse_sale_status(horse)
@@ -221,6 +247,7 @@ def _parse_hip(horse: dict, sale_key: str) -> FTHip:
         barn_number=horse.get("barn") or None,
         session_date=horse.get("session") or None,
         under_tack_time=_parse_ut_time(horse.get("under_tack_show_time")),
+        under_tack_distance=_parse_ut_distance(horse),
         under_tack_surface=horse.get("under_tack_show_surface") or None,
         under_tack_date=horse.get("under_tack_show_day") or None,
         sale_price=_parse_sale_price(horse),
