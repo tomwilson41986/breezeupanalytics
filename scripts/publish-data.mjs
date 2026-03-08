@@ -118,9 +118,9 @@ function convertRatedCsvToJson(csvPath) {
     const timeGO = parseNumber(row["Time GO"]);
     if (timeGO != null && typeof timeGO === "number") entry.timeGO = Math.round(timeGO * 100) / 100;
 
-    // Diff
+    // Diff – source CSV is in metres; convert to feet for display consistency
     const diff = parseNumber(row["diff"]);
-    if (diff != null && typeof diff === "number") entry.diff = Math.round(diff * 100) / 100;
+    if (diff != null && typeof diff === "number") entry.diff = Math.round(diff * 3.28084 * 100) / 100;
 
     // Individual ranks
     const rankMap = {
