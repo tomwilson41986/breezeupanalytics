@@ -15,6 +15,8 @@ const SORT_FIELDS = [
   { key: "breezeTime", label: "UT Time" },
   { key: "strideLengthUT", label: "Stride Length UT (ft)" },
   { key: "strideLengthGO", label: "Stride Length GO (ft)" },
+  { key: "strideFreqUT", label: "Stride Freq UT" },
+  { key: "strideFreqGO", label: "Stride Freq GO" },
   { key: "sire", label: "Sire" },
   { key: "rating", label: "Rating" },
 ];
@@ -46,8 +48,9 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
     }
 
     list.sort((a, b) => {
-      let av = sortBy === "rating" ? a.ratings?.rating : sortBy === "strideLengthUT" ? a.ratings?.strideLengthUT : sortBy === "strideLengthGO" ? a.ratings?.strideLengthGO : sortBy === "breezeTime" ? (a.breezeTime ?? a.ratings?.timeUT) : a[sortBy];
-      let bv = sortBy === "rating" ? b.ratings?.rating : sortBy === "strideLengthUT" ? b.ratings?.strideLengthUT : sortBy === "strideLengthGO" ? b.ratings?.strideLengthGO : sortBy === "breezeTime" ? (b.breezeTime ?? b.ratings?.timeUT) : b[sortBy];
+      const ratingFields = ["rating", "strideLengthUT", "strideLengthGO", "strideFreqUT", "strideFreqGO"];
+      let av = ratingFields.includes(sortBy) ? a.ratings?.[sortBy] : sortBy === "breezeTime" ? (a.breezeTime ?? a.ratings?.timeUT) : a[sortBy];
+      let bv = ratingFields.includes(sortBy) ? b.ratings?.[sortBy] : sortBy === "breezeTime" ? (b.breezeTime ?? b.ratings?.timeUT) : b[sortBy];
       if (av == null) return 1;
       if (bv == null) return -1;
       if (typeof av === "string") av = av.toLowerCase();
@@ -147,6 +150,8 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
               <SortHeader field="breezeTime">UT Time</SortHeader>
               <SortHeader field="strideLengthUT">Stride Length UT (ft)</SortHeader>
               <SortHeader field="strideLengthGO">Stride Length GO (ft)</SortHeader>
+              <SortHeader field="strideFreqUT">Stride Freq UT</SortHeader>
+              <SortHeader field="strideFreqGO">Stride Freq GO</SortHeader>
               <th className="px-3 py-3 text-left text-[11px] font-medium uppercase tracking-wider text-gray-400">
                 UT Video
               </th>
@@ -209,6 +214,16 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
                 <td className="px-3 py-2.5 font-mono text-gray-600 text-xs">
                   {hip.ratings?.strideLengthGO != null
                     ? `${hip.ratings.strideLengthGO}ft`
+                    : <span className="text-gray-300">—</span>}
+                </td>
+                <td className="px-3 py-2.5 font-mono text-gray-600 text-xs">
+                  {hip.ratings?.strideFreqUT != null
+                    ? hip.ratings.strideFreqUT.toFixed(2)
+                    : <span className="text-gray-300">—</span>}
+                </td>
+                <td className="px-3 py-2.5 font-mono text-gray-600 text-xs">
+                  {hip.ratings?.strideFreqGO != null
+                    ? hip.ratings.strideFreqGO.toFixed(2)
                     : <span className="text-gray-300">—</span>}
                 </td>
                 <td className="px-3 py-2.5">
