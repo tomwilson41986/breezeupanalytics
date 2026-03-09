@@ -65,6 +65,12 @@ def rated_csv_to_json(path: Path) -> dict:
         if pd.notna(row.get("Stride Length GO (ft)")):
             entry["strideLengthGO"] = round(float(row["Stride Length GO (ft)"]), 2)
 
+        # Stride frequencies
+        if pd.notna(row.get("Stride Frequency UT")):
+            entry["strideFreqUT"] = round(float(row["Stride Frequency UT"]), 2)
+        if pd.notna(row.get("Stride Frequency GO")):
+            entry["strideFreqGO"] = round(float(row["Stride Frequency GO"]), 2)
+
         # Times
         if pd.notna(row.get("Time UT")):
             entry["timeUT"] = round(float(row["Time UT"]), 2)
