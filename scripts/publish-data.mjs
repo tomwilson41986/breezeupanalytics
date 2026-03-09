@@ -111,6 +111,13 @@ function convertRatedCsvToJson(csvPath) {
     const slGO = parseNumber(row["Stride Length GO (ft)"]);
     if (slGO != null && typeof slGO === "number") entry.strideLengthGO = Math.round(slGO * 100) / 100;
 
+    // Stride frequencies
+    const sfUT = parseNumber(row["Stride Frequency UT"]);
+    if (sfUT != null && typeof sfUT === "number") entry.strideFreqUT = Math.round(sfUT * 100) / 100;
+
+    const sfGO = parseNumber(row["Stride Frequency GO"]);
+    if (sfGO != null && typeof sfGO === "number") entry.strideFreqGO = Math.round(sfGO * 100) / 100;
+
     // Times
     const timeUT = parseNumber(row["Time UT"]);
     if (timeUT != null && typeof timeUT === "number") entry.timeUT = Math.round(timeUT * 100) / 100;
