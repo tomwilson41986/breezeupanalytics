@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   useHistoricVendors,
   useHistoricVendorBySale,
@@ -166,7 +166,9 @@ function OverallTab() {
               <tr key={v.vendor} className="table-row-hover">
                 <td className="px-3 py-2.5 font-mono text-gray-400 text-xs">{i + 1}</td>
                 <td className="px-3 py-2.5 font-medium text-gray-900 max-w-[220px]">
-                  <div className="truncate">{v.vendor}</div>
+                  <Link to={`/vendor/${encodeURIComponent(v.vendor)}`} className="truncate block text-brand-600 hover:text-brand-800 hover:underline">
+                    {v.vendor}
+                  </Link>
                 </td>
                 <td className="px-3 py-2.5 text-center font-mono text-gray-600">{v.runners}</td>
                 <td className="px-3 py-2.5 text-center font-mono text-gray-600">{v.winners}</td>
@@ -303,7 +305,9 @@ function BySaleTab() {
               <tr key={v.vendor} className="table-row-hover">
                 <td className="px-3 py-2.5 font-mono text-gray-400 text-xs">{i + 1}</td>
                 <td className="px-3 py-2.5 font-medium text-gray-900 max-w-[200px]">
-                  <div className="truncate">{v.vendor}</div>
+                  <Link to={`/vendor/${encodeURIComponent(v.vendor)}`} className="truncate block text-brand-600 hover:text-brand-800 hover:underline">
+                    {v.vendor}
+                  </Link>
                 </td>
                 <td className="px-3 py-2.5 text-center text-gray-600">{v.cataloged}</td>
                 <td className="px-3 py-2.5 text-center text-gray-600">{v.sold}</td>
@@ -511,7 +515,11 @@ function RecordsTab() {
                   <div className="truncate">{r.dam || "—"}</div>
                 </td>
                 <td className="px-3 py-2.5 text-gray-700 max-w-[160px]">
-                  <div className="truncate">{r.vendor || "—"}</div>
+                  {r.vendor ? (
+                    <Link to={`/vendor/${encodeURIComponent(r.vendor)}`} className="truncate block text-brand-600 hover:text-brand-800 hover:underline">
+                      {r.vendor}
+                    </Link>
+                  ) : "—"}
                 </td>
                 <td className="px-3 py-2.5 text-right font-mono font-medium text-gray-900">
                   {r.price > 0 ? formatCurrency(r.price) : "—"}

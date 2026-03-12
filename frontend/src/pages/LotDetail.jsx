@@ -132,7 +132,10 @@ export default function LotDetail() {
               </h1>
               <p className="text-sm text-gray-500 mt-1">
                 {colorLabel(hip.color)} {sexLabel(hip.sex)} &middot;{" "}
-                {hip.yearOfBirth || "—"} &middot; Consigned by {hip.consignor}
+                {hip.yearOfBirth || "—"} &middot; Consigned by{" "}
+                <Link to={`/vendor/${encodeURIComponent(hip.consignor)}`} className="text-brand-600 hover:text-brand-800 hover:underline">
+                  {hip.consignor}
+                </Link>
               </p>
             </>
           )}

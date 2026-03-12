@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { formatCompact, formatNumber } from "../../lib/format";
 
 export default function ConsignorTable({ consignors, limit = 20 }) {
@@ -39,7 +40,9 @@ export default function ConsignorTable({ consignors, limit = 20 }) {
                   {i + 1}
                 </td>
                 <td className="py-2 px-2 text-gray-700 font-medium">
-                  {c.name}
+                  <Link to={`/vendor/${encodeURIComponent(c.name)}`} className="text-brand-600 hover:text-brand-800 hover:underline">
+                    {c.name}
+                  </Link>
                 </td>
                 <td className="py-2 px-2 text-right text-gray-500 font-mono">
                   {formatNumber(c.count)}
