@@ -9,6 +9,7 @@ import TimeAnalysis from "./pages/TimeAnalysis";
 import PerformanceTracker from "./pages/PerformanceTracker";
 import BreezePerformance from "./pages/BreezePerformance";
 import Vendors from "./pages/Vendors";
+import VendorProfile from "./pages/VendorProfile";
 import VendorSireAnalytics from "./pages/VendorSireAnalytics";
 import BreezeScatter from "./pages/BreezeScatter";
 
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="analytics/benchmarks" element={<VendorSireAnalytics />} />
           <Route path="vendors" element={<Vendors />} />
           <Route path="vendors/:tab" element={<Vendors />} />
+          <Route path="vendor/:vendorName" element={<VendorProfile />} />
         </Route>
       </Routes>
     </BrowserRouter>

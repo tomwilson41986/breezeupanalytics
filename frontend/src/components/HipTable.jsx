@@ -190,7 +190,9 @@ export default function HipTable({ hips, saleKey, assetIndex }) {
                   {sexLabel(hip.sex)}
                 </td>
                 <td className="px-3 py-2.5 text-gray-500 text-xs max-w-[200px] truncate whitespace-nowrap">
-                  {hip.consignor}
+                  <Link to={`/vendor/${encodeURIComponent(hip.consignor)}`} className="text-brand-600 hover:text-brand-800 hover:underline">
+                    {hip.consignor}
+                  </Link>
                 </td>
                 <td className="px-3 py-2.5">
                   {hip.ratings?.rating != null ? (
