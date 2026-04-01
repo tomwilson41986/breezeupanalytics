@@ -114,7 +114,7 @@ export const SALE_ASSET_MAP = [
 
   // ── OBS 2026 (Live / Upcoming) ───────────────────────────────
   { saleEntity: null, year: 2026, s3Key: "obs_march_2026", displayName: "OBS March 2YO in Training 2026", company: "OBS", month: 3, location: "Ocala, FL", hipRange: null, recordCount: null, obsId: 149 },
-  { saleEntity: null, year: 2026, s3Key: "obs_spring_2026", displayName: "OBS Spring 2YO in Training 2026", company: "OBS", month: 4, location: "Ocala, FL", hipRange: null, recordCount: null, obsId: null },
+  { saleEntity: null, year: 2026, s3Key: "obs_spring_2026", displayName: "OBS Spring 2YO in Training 2026", company: "OBS", month: 4, location: "Ocala, FL", hipRange: [1, 1224], recordCount: 1224, obsId: 150 },
   { saleEntity: null, year: 2026, s3Key: "obs_june_2026", displayName: "OBS June 2YO & HRA 2026", company: "OBS", month: 6, location: "Ocala, FL", hipRange: null, recordCount: null, obsId: null },
 ];
 

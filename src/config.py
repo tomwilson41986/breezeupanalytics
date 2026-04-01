@@ -39,6 +39,7 @@ OBS_CATALOG_IDS: dict[str, int] = {
     "obs_june_2025": 145,
     # 2026
     "obs_march_2026": 149,
+    "obs_spring_2026": 150,
 }
 
 # OBS legacy results pages (obscatalog.com) for pre-2024 sales.
